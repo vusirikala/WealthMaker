@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Calendar } from "lucide-react";
+import { ExternalLink, Calendar, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -39,15 +39,15 @@ export default function NewsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[600px]">
-        <div className="text-slate-600">Loading news...</div>
+        <div className="w-16 h-16 spinner"></div>
       </div>
     );
   }
 
   if (news.length === 0) {
     return (
-      <div className="glass rounded-2xl p-8 text-center" data-testid="no-news">
-        <p className="text-slate-600">No news available. Add stocks to your portfolio to see related news.</p>
+      <div className="glass-card rounded-3xl p-8 text-center border border-purple-500/30" data-testid="no-news">
+        <p className="text-gray-400">No news available. Add stocks to your portfolio to see related news.</p>
       </div>
     );
   }
@@ -58,45 +58,51 @@ export default function NewsTab() {
         <div
           key={idx}
           data-testid="news-card"
-          className="glass rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+          className="glass-card rounded-3xl p-6 neon-glow border border-purple-500/30 hover-lift group stagger-item"
         >
-          <div className="flex gap-4">
+          <div className="flex gap-6">
             {item.image && (
-              <img
-                src={item.image}
-                alt={item.headline}
-                className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
+              <div className="relative overflow-hidden rounded-2xl flex-shrink-0 w-40 h-40">
+                <img
+                  src={item.image}
+                  alt={item.headline}
+                  className="w-full h-full object-cover group-hover:scale-110 smooth-transition"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
+              </div>
             )}
             <div className="flex-1">
-              <div className="flex items-start justify-between gap-4 mb-2">
+              <div className="flex items-start justify-between gap-4 mb-3">
                 <div>
-                  <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full mb-2">
+                  <span className="inline-block px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full mb-3 neon-glow">
                     {item.ticker}
                   </span>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:gradient-text smooth-transition">
                     {item.headline}
                   </h3>
                 </div>
               </div>
               
               {item.summary && (
-                <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                <p className="text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed">
                   {item.summary}
                 </p>
               )}
               
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-slate-500">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
+                <div className="flex items-center gap-4 text-xs text-gray-400">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-teal-400" />
                     {formatDate(item.datetime)}
                   </span>
                   {item.source && (
-                    <span>{item.source}</span>
+                    <span className="flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
+                      {item.source}
+                    </span>
                   )}
                 </div>
                 {item.url && (
@@ -104,7 +110,7 @@ export default function NewsTab() {
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white px-5 py-2 rounded-full smooth-transition hover-lift"
                   >
                     Read more
                     <ExternalLink className="w-4 h-4" />
