@@ -1,20 +1,69 @@
 import { useState, useEffect } from "react";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, Zap } from "lucide-react";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Area, AreaChart, CartesianGrid } from "recharts";
+import { TrendingUp, TrendingDown, DollarSign, Zap, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const COLORS = ['#a855f7', '#14b8a6', '#fb7185', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+const COLORS = ['#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
+
+// Generate realistic portfolio data
+const generatePortfolioData = (days) => {
+  const data = [];
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+  
+  let baseValue = 10000;
+  
+  for (let i = 0; i <= days; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
+    
+    // Simulate market volatility with trend
+    const trend = 0.0003; // Slight upward trend
+    const volatility = (Math.random() - 0.5) * 100;
+    baseValue = baseValue * (1 + trend) + volatility;
+    
+    data.push({
+      date: date.toISOString().split('T')[0],
+      value: Math.round(baseValue * 100) / 100,
+      displayDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    });
+  }
+  
+  return data;
+};
+
+const TIME_RANGES = [
+  { label: '1W', days: 7 },
+  { label: '1M', days: 30 },
+  { label: '3M', days: 90 },
+  { label: '6M', days: 180 },
+  { label: '1Y', days: 365 },
+  { label: 'ALL', days: 730 }, // 2 years
+];
 
 export default function PortfolioTab() {
   const [portfolio, setPortfolio] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedRange, setSelectedRange] = useState('6M');
+  const [performanceData, setPerformanceData] = useState([]);
+  const [fullData] = useState(generatePortfolioData(730)); // Generate 2 years of data
 
   useEffect(() => {
     loadPortfolio();
   }, []);
+
+  useEffect(() => {
+    // Filter data based on selected range
+    const range = TIME_RANGES.find(r => r.label === selectedRange);
+    if (range && fullData.length > 0) {
+      const filteredData = fullData.slice(-range.days);
+      setPerformanceData(filteredData);
+    }
+  }, [selectedRange, fullData]);
 
   const loadPortfolio = async () => {
     try {
@@ -43,8 +92,8 @@ export default function PortfolioTab() {
 
   if (!portfolio) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center border border-purple-500/30">
-        <p className="text-gray-400">No portfolio data available</p>
+      <div className="clean-card rounded-2xl p-8 text-center">
+        <p className="text-gray-600">No portfolio data available</p>
       </div>
     );
   }
@@ -77,123 +126,147 @@ export default function PortfolioTab() {
     value: parseFloat(value.toFixed(2)),
   }));
 
-  const performanceData = [
-    { month: 'Jan', value: 10000 },
-    { month: 'Feb', value: 10500 },
-    { month: 'Mar', value: 10300 },
-    { month: 'Apr', value: 11200 },
-    { month: 'May', value: 11800 },
-    { month: 'Jun', value: 12100 },
-  ];
+  const startValue = performanceData[0]?.value || 10000;
+  const endValue = performanceData[performanceData.length - 1]?.value || 10000;
+  const totalReturn = ((endValue - startValue) / startValue * 100).toFixed(2);
+  const isPositive = parseFloat(totalReturn) >= 0;
 
-  const totalReturn = ((performanceData[performanceData.length - 1].value - performanceData[0].value) / performanceData[0].value * 100).toFixed(2);
+  // Custom tooltip for performance chart
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      const value = payload[0].value;
+      const change = ((value - startValue) / startValue * 100).toFixed(2);
+      
+      return (
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
+          <p className="text-sm font-semibold text-gray-900">{new Date(data.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          <p className="text-lg font-bold text-gray-900">${value.toLocaleString()}</p>
+          <p className={`text-sm font-medium ${parseFloat(change) >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            {parseFloat(change) >= 0 ? '+' : ''}{change}%
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-6" data-testid="portfolio-tab">
       {/* Portfolio Summary */}
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="glass-card rounded-3xl p-6 neon-glow border border-purple-500/30 hover-lift stagger-item" data-testid="risk-card">
+        <div className="clean-card p-6 card-hover fade-in-1" data-testid="risk-card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Risk Tolerance</h3>
-            <Zap className="w-5 h-5 text-purple-400" />
+            <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider">Risk Tolerance</h3>
+            <Zap className="w-5 h-5 text-cyan-600" />
           </div>
-          <p className="text-4xl font-black gradient-text capitalize">{portfolio.risk_tolerance}</p>
+          <p className="text-4xl font-bold text-gray-900 capitalize">{portfolio.risk_tolerance}</p>
         </div>
 
-        <div className="glass-card rounded-3xl p-6 neon-glow border border-teal-500/30 hover-lift stagger-item" data-testid="roi-card">
+        <div className="clean-card p-6 card-hover fade-in-2" data-testid="roi-card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">ROI Target</h3>
-            <DollarSign className="w-5 h-5 text-teal-400" />
+            <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider">ROI Target</h3>
+            <DollarSign className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="text-4xl font-black gradient-text">{portfolio.roi_expectations}%</p>
+          <p className="text-4xl font-bold gradient-text">{portfolio.roi_expectations}%</p>
         </div>
 
-        <div className="glass-card rounded-3xl p-6 neon-glow border border-pink-500/30 hover-lift stagger-item" data-testid="return-card">
+        <div className="clean-card p-6 card-hover fade-in-3" data-testid="return-card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">6-Month Return</h3>
-            {totalReturn >= 0 ? (
-              <TrendingUp className="w-5 h-5 text-teal-400" />
+            <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider">{selectedRange} Return</h3>
+            {isPositive ? (
+              <TrendingUp className="w-5 h-5 text-emerald-600" />
             ) : (
-              <TrendingDown className="w-5 h-5 text-pink-600" />
+              <TrendingDown className="w-5 h-5 text-red-600" />
             )}
           </div>
-          <p className={`text-4xl font-black ${totalReturn >= 0 ? 'text-teal-400' : 'text-pink-400'}`}>
-            {totalReturn >= 0 ? '+' : ''}{totalReturn}%
+          <p className={`text-4xl font-bold ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
+            {isPositive ? '+' : ''}{totalReturn}%
           </p>
         </div>
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Sector Allocation */}
-        <div className="glass-card rounded-3xl p-6 neon-glow border border-purple-500/30 hover-lift" data-testid="sector-chart">
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <span className="gradient-text">Sector Allocation</span>
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={sectorChartData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, value }) => `${name}: ${value}%`}
-                outerRadius={90}
-                fill="#8884d8"
-                dataKey="value"
+      {/* Performance Chart - Enhanced */}
+      <div className="clean-card p-6 card-hover" data-testid="performance-chart">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 mb-1">Portfolio Performance</h3>
+            <p className="text-sm text-gray-600">Track your investment growth over time</p>
+          </div>
+          
+          {/* Time Range Selector */}
+          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+            {TIME_RANGES.map((range) => (
+              <Button
+                key={range.label}
+                onClick={() => setSelectedRange(range.label)}
+                size="sm"
+                variant={selectedRange === range.label ? "default" : "ghost"}
+                className={`
+                  px-4 py-2 text-sm font-semibold rounded-md smooth-transition
+                  ${selectedRange === range.label 
+                    ? 'bg-gradient-to-r from-cyan-600 to-emerald-600 text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-white hover:text-gray-900'
+                  }
+                `}
               >
-                {sectorChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ background: '#18122b', border: '1px solid #a855f7', borderRadius: '12px', color: 'white' }} />
-            </PieChart>
-          </ResponsiveContainer>
+                {range.label}
+              </Button>
+            ))}
+          </div>
         </div>
 
-        {/* Asset Type Allocation */}
-        <div className="glass-card rounded-3xl p-6 neon-glow border border-teal-500/30 hover-lift" data-testid="asset-type-chart">
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <span className="gradient-text">Asset Type Distribution</span>
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={assetTypeChartData}>
-              <XAxis dataKey="name" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
-              <Tooltip contentStyle={{ background: '#18122b', border: '1px solid #14b8a6', borderRadius: '12px', color: 'white' }} />
-              <Bar dataKey="value" fill="url(#colorGradient)" radius={[12, 12, 0, 0]} />
-              <defs>
-                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#14b8a6" stopOpacity={1}/>
-                  <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.8}/>
-                </linearGradient>
-              </defs>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Performance Chart */}
-      <div className="glass-card rounded-3xl p-6 neon-glow border border-pink-500/30 hover-lift" data-testid="performance-chart">
-        <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <span className="gradient-text">Portfolio Performance</span>
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={performanceData}>
-            <XAxis dataKey="month" stroke="#9ca3af" />
-            <YAxis stroke="#9ca3af" />
-            <Tooltip contentStyle={{ background: '#18122b', border: '1px solid #fb7185', borderRadius: '12px', color: 'white' }} />
-            <Legend wrapperStyle={{ color: 'white' }} />
-            <Line type="monotone" dataKey="value" stroke="url(#lineGradient)" strokeWidth={3} name="Portfolio Value ($)" dot={{ fill: '#fb7185', r: 5 }} />
+        <ResponsiveContainer width="100%" height={400}>
+          <AreaChart data={performanceData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
-              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#a855f7" />
-                <stop offset="50%" stopColor="#14b8a6" />
-                <stop offset="100%" stopColor="#fb7185" />
+              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={isPositive ? "#10b981" : "#ef4444"} stopOpacity={0.3}/>
+                <stop offset="95%" stopColor={isPositive ? "#10b981" : "#ef4444"} stopOpacity={0}/>
               </linearGradient>
             </defs>
-          </LineChart>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis 
+              dataKey="displayDate" 
+              stroke="#9ca3af"
+              tick={{ fontSize: 12 }}
+              tickLine={{ stroke: '#e5e7eb' }}
+            />
+            <YAxis 
+              stroke="#9ca3af"
+              tick={{ fontSize: 12 }}
+              tickLine={{ stroke: '#e5e7eb' }}
+              tickFormatter={(value) => `$${(value / 1000).toFixed(1)}k`}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Area 
+              type="monotone" 
+              dataKey="value" 
+              stroke={isPositive ? "#10b981" : "#ef4444"}
+              strokeWidth={2.5}
+              fill="url(#colorValue)"
+              dot={false}
+              activeDot={{ r: 6, fill: isPositive ? "#10b981" : "#ef4444" }}
+            />
+          </AreaChart>
         </ResponsiveContainer>
+
+        {/* Stats below chart */}
+        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Starting Value</p>
+            <p className="text-lg font-bold text-gray-900">${startValue.toLocaleString()}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Current Value</p>
+            <p className="text-lg font-bold text-gray-900">${endValue.toLocaleString()}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-600 mb-1">Total Gain/Loss</p>
+            <p className={`text-lg font-bold ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
+              ${Math.abs(endValue - startValue).toLocaleString()}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Holdings Table */}
