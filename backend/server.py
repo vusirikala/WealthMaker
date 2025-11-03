@@ -136,7 +136,10 @@ async def get_me(user: User = Depends(require_auth)):
 async def process_session(request: Request, response: Response):
     session_id = request.headers.get("X-Session-ID")
     if not session_id:
+        logger.error("No session ID in request")
         raise HTTPException(status_code=400, detail="Session ID required")
+    
+    logger.info(f"Processing session ID: {session_id[:10]}...")
     
     # Call Emergent auth service
     async with httpx.AsyncClient() as client:
@@ -147,6 +150,7 @@ async def process_session(request: Request, response: Response):
             )
             resp.raise_for_status()
             session_data = resp.json()
+            logger.info(f"Successfully got session data for user: {session_data.get('email')}")
         except Exception as e:
             logger.error(f"Failed to get session data: {e}")
             raise HTTPException(status_code=400, detail="Invalid session")
