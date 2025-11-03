@@ -1,14 +1,20 @@
 {
-  "timestamp": "2025-11-03T04:59:43.512641+00:00",
+  "timestamp": "2025-11-03T05:00:20.129271+00:00",
   "total_tests": 10,
-  "passed_tests": 2,
-  "success_rate": 20.0,
+  "passed_tests": 4,
+  "success_rate": 40.0,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "success": true,
+      "details": "",
+      "response_data": {
+        "_id": "test-user-1762146019",
+        "email": "test.user.1762146019@example.com",
+        "name": "Test User 1762146019",
+        "picture": "https://via.placeholder.com/150",
+        "created_at": "2025-11-03T05:00:19.578000"
+      }
     },
     {
       "test": "GET /auth/me (unauthenticated)",
@@ -20,14 +26,16 @@
     },
     {
       "test": "POST /auth/logout",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "success": true,
+      "details": "",
+      "response_data": {
+        "success": true
+      }
     },
     {
       "test": "GET /chat/messages",
       "success": false,
-      "details": "Status: 500, Type: <class 'str'>",
+      "details": "Status: 401, Type: <class 'dict'>",
       "response_data": {
         "message_count": 0
       }
@@ -35,7 +43,7 @@
     {
       "test": "POST /chat/send",
       "success": false,
-      "details": "Status: 500",
+      "details": "Status: 401",
       "response_data": {
         "has_response": false
       }
@@ -43,7 +51,7 @@
     {
       "test": "GET /chat/messages (after send)",
       "success": false,
-      "details": "Status: 500, Messages: 0",
+      "details": "Status: 401, Messages: 0",
       "response_data": {
         "message_count": 0
       }
@@ -51,7 +59,7 @@
     {
       "test": "GET /portfolio",
       "success": false,
-      "details": "Status: 500",
+      "details": "Status: 401",
       "response_data": {
         "risk_tolerance": null,
         "roi_expectations": null,
@@ -61,7 +69,7 @@
     {
       "test": "GET /news",
       "success": false,
-      "details": "Status: 500, Type: <class 'str'>",
+      "details": "Status: 401, Type: <class 'dict'>",
       "response_data": {
         "news_count": 0
       }
@@ -77,8 +85,10 @@
     {
       "test": "POST /chat/send (malformed)",
       "success": false,
-      "details": "Expected 400/422, got 500",
-      "response_data": "Internal Server Error"
+      "details": "Expected 400/422, got 401",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     }
   ]
 }
