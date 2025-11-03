@@ -157,10 +157,10 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="glass-card rounded-3xl p-8 hover-lift stagger-item" data-testid="feature-chat">
             <div className="relative mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl flex items-center justify-center neon-glow">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 to-cyan-800 rounded-2xl flex items-center justify-center neon-glow">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <Zap className="absolute -top-2 -right-2 w-6 h-6 text-teal-400" />
+              <Zap className="absolute -top-2 -right-2 w-6 h-6 text-emerald-400" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">AI Financial Advisor</h3>
             <p className="text-gray-300 leading-relaxed">
@@ -170,10 +170,10 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
 
           <div className="glass-card rounded-3xl p-8 hover-lift stagger-item" data-testid="feature-portfolio">
             <div className="relative mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl flex items-center justify-center neon-glow">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl flex items-center justify-center neon-glow">
                 <BarChart3 className="w-8 h-8 text-white" />
               </div>
-              <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-coral-400" />
+              <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-cyan-400" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">Visual Analytics</h3>
             <p className="text-gray-300 leading-relaxed">
@@ -183,10 +183,10 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
 
           <div className="glass-card rounded-3xl p-8 hover-lift stagger-item" data-testid="feature-news">
             <div className="relative mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-600 to-pink-800 rounded-2xl flex items-center justify-center neon-glow">
+              <div className="w-16 h-16 bg-gradient-to-br from-ocean-blue to-cyan-700 rounded-2xl flex items-center justify-center neon-glow">
                 <Newspaper className="w-8 h-8 text-white" />
               </div>
-              <TrendingUp className="absolute -top-2 -right-2 w-6 h-6 text-purple-400" />
+              <TrendingUp className="absolute -top-2 -right-2 w-6 h-6 text-emerald-400" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">Real-Time Market News</h3>
             <p className="text-gray-300 leading-relaxed">
