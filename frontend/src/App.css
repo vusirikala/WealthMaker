@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animated-bg {
-  background: linear-gradient(-45deg, #0f0a1f, #1a0b2e, #2d1b4e, #16213e);
+  background: linear-gradient(-45deg, #0a1929, #0c2d48, #134e7a, #064e3b);
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
 }
