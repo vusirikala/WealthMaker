@@ -147,6 +147,10 @@ print('Setup complete');
             f"Expected 401, got {status}" if not success else "",
             data
         )
+
+    def test_logout_endpoint(self):
+        """Test logout endpoint separately to avoid invalidating session"""
+        print("\n🚪 Testing Logout Endpoint...")
         
         # Test logout
         status, data = self.make_request('POST', 'auth/logout')
