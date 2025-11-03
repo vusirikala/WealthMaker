@@ -119,9 +119,9 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
 
         {/* Hero */}
         <div className="text-center max-w-5xl mx-auto mb-24 stagger-item">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 pulse-glow">
-            <Sparkles className="w-4 h-4 text-teal-400" />
-            <span className="text-sm font-medium text-purple-300">AI-Powered Financial Intelligence</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 pulse-glow">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm font-medium text-cyan-300">AI-Powered Financial Intelligence</span>
           </div>
           
           <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black mb-8 leading-tight">
