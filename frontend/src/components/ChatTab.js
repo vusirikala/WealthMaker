@@ -287,14 +287,14 @@ export default function ChatTab() {
         )}
         {isLoading && (
           <div className="flex gap-4 justify-start">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0 pulse-glow">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
               <Bot className="w-6 h-6 text-white" />
             </div>
-            <div className="glass-card rounded-3xl px-6 py-4 border border-purple-500/30">
+            <div className="bg-white rounded-2xl px-6 py-4 border border-gray-200 shadow-sm">
               <div className="flex gap-2">
-                <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                <div className="w-2 h-2 bg-cyan-600 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
               </div>
             </div>
           </div>
@@ -303,15 +303,15 @@ export default function ChatTab() {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-purple-500/20 p-4 glass-card">
+      <div className="border-t border-gray-200 p-4 bg-white">
         <div className="flex gap-3">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask about your investment strategy..."
+            placeholder="Describe your investment goals..."
             data-testid="chat-input"
-            className="resize-none rounded-2xl border-2 border-purple-500/30 bg-transparent text-white placeholder:text-gray-500 focus:border-purple-500 smooth-transition"
+            className="resize-none rounded-xl border-2 border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-cyan-500 smooth-transition"
             rows={2}
             disabled={isLoading}
           />
@@ -319,7 +319,7 @@ export default function ChatTab() {
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || isLoading}
             data-testid="send-button"
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-2xl px-8 neon-glow hover-lift"
+            className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white rounded-xl px-8 shadow-md"
           >
             <Send className="w-5 h-5" />
           </Button>
