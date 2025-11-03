@@ -269,27 +269,72 @@ export default function PortfolioTab() {
         </div>
       </div>
 
+      {/* Charts Grid */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Sector Allocation */}
+        <div className="clean-card p-6 card-hover" data-testid="sector-chart">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Sector Allocation</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={sectorChartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, value }) => `${name}: ${value}%`}
+                outerRadius={90}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {sectorChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Asset Type Allocation */}
+        <div className="clean-card p-6 card-hover" data-testid="asset-type-chart">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Asset Type Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={assetTypeChartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" stroke="#6b7280" tick={{ fontSize: 12 }} />
+              <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+              <Bar dataKey="value" fill="url(#barGradient)" radius={[8, 8, 0, 0]} />
+              <defs>
+                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#06b6d4" stopOpacity={1}/>
+                  <stop offset="100%" stopColor="#10b981" stopOpacity={0.8}/>
+                </linearGradient>
+              </defs>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       {/* Holdings Table */}
-      <div className="glass-card rounded-3xl p-6 neon-glow border border-purple-500/30 hover-lift" data-testid="holdings-table">
-        <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <span className="gradient-text">Current Holdings</span>
-        </h3>
+      <div className="clean-card p-6 card-hover" data-testid="holdings-table">
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Current Holdings</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-purple-500/30">
-                <th className="text-left py-4 px-4 text-sm font-semibold text-purple-300 uppercase tracking-wider">Ticker</th>
-                <th className="text-left py-4 px-4 text-sm font-semibold text-purple-300 uppercase tracking-wider">Type</th>
-                <th className="text-left py-4 px-4 text-sm font-semibold text-purple-300 uppercase tracking-wider">Sector</th>
-                <th className="text-right py-4 px-4 text-sm font-semibold text-purple-300 uppercase tracking-wider">Allocation</th>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-4 px-4 text-sm font-semibold text-gray-700 uppercase tracking-wider">Ticker</th>
+                <th className="text-left py-4 px-4 text-sm font-semibold text-gray-700 uppercase tracking-wider">Type</th>
+                <th className="text-left py-4 px-4 text-sm font-semibold text-gray-700 uppercase tracking-wider">Sector</th>
+                <th className="text-right py-4 px-4 text-sm font-semibold text-gray-700 uppercase tracking-wider">Allocation</th>
               </tr>
             </thead>
             <tbody>
               {portfolio.allocations?.map((alloc, idx) => (
-                <tr key={idx} className="border-b border-purple-500/10 hover:bg-purple-500/10 smooth-transition">
-                  <td className="py-4 px-4 font-bold text-white">{alloc.ticker}</td>
-                  <td className="py-4 px-4 text-gray-300">{alloc.asset_type}</td>
-                  <td className="py-4 px-4 text-gray-300">{alloc.sector}</td>
+                <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 smooth-transition">
+                  <td className="py-4 px-4 font-bold text-gray-900">{alloc.ticker}</td>
+                  <td className="py-4 px-4 text-gray-600">{alloc.asset_type}</td>
+                  <td className="py-4 px-4 text-gray-600">{alloc.sector}</td>
                   <td className="py-4 px-4 text-right font-bold gradient-text">{alloc.allocation}%</td>
                 </tr>
               ))}
