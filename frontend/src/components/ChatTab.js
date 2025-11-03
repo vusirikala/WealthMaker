@@ -99,6 +99,7 @@ export default function ChatTab() {
   };
 
   const handleAcceptPortfolio = async (suggestionId, portfolioData) => {
+    console.log("Accepting portfolio with data:", portfolioData);
     try {
       const response = await fetch(`${API}/portfolio/accept`, {
         method: "POST",
@@ -113,6 +114,7 @@ export default function ChatTab() {
       });
 
       if (response.ok) {
+        console.log("Portfolio accepted successfully");
         toast.success("Portfolio updated successfully!", {
           icon: <CheckCircle2 className="w-5 h-5" />,
         });
@@ -133,8 +135,11 @@ export default function ChatTab() {
         setMessages(prev => [...prev, confirmMsg]);
         
         // Refresh portfolio data (trigger event)
+        console.log("Dispatching portfolioUpdated event");
         window.dispatchEvent(new Event('portfolioUpdated'));
       } else {
+        const errorData = await response.json();
+        console.error("Failed to accept portfolio:", errorData);
         toast.error("Failed to update portfolio");
       }
     } catch (error) {
