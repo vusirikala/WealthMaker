@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 
@@ -78,7 +78,9 @@ export default function ChatTab() {
         setMessages((prev) => [...prev, aiMessage]);
 
         if (data.portfolio_updated) {
-          toast.success("Portfolio updated based on your preferences!");
+          toast.success("Portfolio updated based on your preferences!", {
+            icon: <Sparkles className="w-4 h-4" />,
+          });
         }
       } else {
         toast.error("Failed to send message");
@@ -101,23 +103,26 @@ export default function ChatTab() {
   if (isLoadingHistory) {
     return (
       <div className="flex items-center justify-center h-[600px]">
-        <div className="text-slate-600">Loading chat...</div>
+        <div className="w-16 h-16 spinner"></div>
       </div>
     );
   }
 
   return (
-    <div className="glass rounded-2xl overflow-hidden shadow-xl" data-testid="chat-interface">
+    <div className="glass-card rounded-3xl overflow-hidden neon-glow border border-purple-500/30" data-testid="chat-interface">
       {/* Messages Area */}
-      <div className="h-[600px] overflow-y-auto p-6 space-y-4" data-testid="chat-messages">
+      <div className="h-[600px] overflow-y-auto p-6 space-y-6" data-testid="chat-messages">
         {messages.length === 0 ? (
-          <div className="text-center text-slate-500 mt-20">
-            <Bot className="w-16 h-16 mx-auto mb-4 text-blue-600" />
-            <h3 className="text-xl font-semibold text-slate-800 mb-2">
-              Welcome to Your Financial Advisor!
+          <div className="text-center text-gray-400 mt-32 stagger-item">
+            <div className="relative inline-block mb-6">
+              <Bot className="w-20 h-20 mx-auto text-purple-400" style={{ filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.8))' }} />
+              <div className="absolute inset-0 bg-purple-400 blur-2xl opacity-50 animate-pulse"></div>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-3">
+              <span className="gradient-text">Welcome to Your AI Financial Advisor!</span>
             </h3>
-            <p className="text-sm">
-              Tell me about your investment preferences, risk tolerance, and goals.
+            <p className="text-base text-gray-300 max-w-md mx-auto">
+              Tell me about your investment preferences, risk tolerance, and financial goals.
             </p>
           </div>
         ) : (
@@ -125,48 +130,48 @@ export default function ChatTab() {
             <div
               key={idx}
               data-testid={`message-${msg.role}`}
-              className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"} smooth-transition hover:scale-[1.02]`}
             >
               {msg.role === "assistant" && (
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0 neon-glow">
+                  <Bot className="w-6 h-6 text-white" />
                 </div>
               )}
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={`max-w-[80%] rounded-3xl px-6 py-4 smooth-transition ${
                   msg.role === "user"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-slate-800 shadow-md"
+                    ? "bg-gradient-to-r from-teal-600 to-cyan-600 text-white neon-glow"
+                    : "glass-card text-white border border-purple-500/30"
                 }`}
               >
                 {msg.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none text-sm">
+                  <div className="prose prose-sm max-w-none text-sm text-gray-100">
                     <ReactMarkdown>
                       {msg.message}
                     </ReactMarkdown>
                   </div>
                 ) : (
-                  <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
                 )}
               </div>
               {msg.role === "user" && (
-                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 text-slate-600" />
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center flex-shrink-0 neon-glow">
+                  <User className="w-6 h-6 text-white" />
                 </div>
               )}
             </div>
           ))
         )}
         {isLoading && (
-          <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-5 h-5 text-blue-600" />
+          <div className="flex gap-4 justify-start">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0 pulse-glow">
+              <Bot className="w-6 h-6 text-white" />
             </div>
-            <div className="bg-white rounded-2xl px-4 py-3 shadow-md">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+            <div className="glass-card rounded-3xl px-6 py-4 border border-purple-500/30">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce"></div>
+                <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
               </div>
             </div>
           </div>
@@ -175,15 +180,15 @@ export default function ChatTab() {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-slate-200 p-4 bg-white/50">
-        <div className="flex gap-2">
+      <div className="border-t border-purple-500/20 p-4 glass-card">
+        <div className="flex gap-3">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Tell me about your investment goals..."
+            placeholder="Ask about your investment strategy..."
             data-testid="chat-input"
-            className="resize-none rounded-xl border-slate-300 focus:border-blue-500"
+            className="resize-none rounded-2xl border-2 border-purple-500/30 bg-transparent text-white placeholder:text-gray-500 focus:border-purple-500 smooth-transition"
             rows={2}
             disabled={isLoading}
           />
@@ -191,7 +196,7 @@ export default function ChatTab() {
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || isLoading}
             data-testid="send-button"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-2xl px-8 neon-glow hover-lift"
           >
             <Send className="w-5 h-5" />
           </Button>
