@@ -176,52 +176,110 @@ export default function ChatTab() {
   return (
     <div className="clean-card rounded-2xl overflow-hidden shadow-sm" data-testid="chat-interface">
       {/* Messages Area */}
-      <div className="h-[600px] overflow-y-auto p-6 space-y-6" data-testid="chat-messages">
+      <div className="h-[600px] overflow-y-auto p-6 space-y-6 bg-gray-50" data-testid="chat-messages">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-400 mt-32 stagger-item">
-            <div className="relative inline-block mb-6">
-              <Bot className="w-20 h-20 mx-auto text-purple-400" style={{ filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.8))' }} />
-              <div className="absolute inset-0 bg-purple-400 blur-2xl opacity-50 animate-pulse"></div>
+          <div className="text-center text-gray-500 mt-32 fade-in">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+              <Bot className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">
-              <span className="gradient-text">Welcome to Your AI Financial Advisor!</span>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              Welcome to Your AI Financial Advisor!
             </h3>
-            <p className="text-base text-gray-300 max-w-md mx-auto">
+            <p className="text-base text-gray-600 max-w-md mx-auto">
               Tell me about your investment preferences, risk tolerance, and financial goals.
             </p>
           </div>
         ) : (
           messages.map((msg, idx) => (
-            <div
-              key={idx}
-              data-testid={`message-${msg.role}`}
-              className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"} smooth-transition hover:scale-[1.02]`}
-            >
-              {msg.role === "assistant" && (
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0 neon-glow">
-                  <Bot className="w-6 h-6 text-white" />
-                </div>
-              )}
+            <div key={idx}>
               <div
-                className={`max-w-[80%] rounded-3xl px-6 py-4 smooth-transition ${
-                  msg.role === "user"
-                    ? "bg-gradient-to-r from-teal-600 to-cyan-600 text-white neon-glow"
-                    : "glass-card text-white border border-purple-500/30"
-                }`}
+                data-testid={`message-${msg.role}`}
+                className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"} smooth-transition`}
               >
-                {msg.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none text-sm text-gray-100">
-                    <ReactMarkdown>
-                      {msg.message}
-                    </ReactMarkdown>
+                {msg.role === "assistant" && (
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Bot className="w-6 h-6 text-white" />
                   </div>
-                ) : (
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                )}
+                <div
+                  className={`max-w-[80%] rounded-2xl px-6 py-4 smooth-transition ${
+                    msg.role === "user"
+                      ? "bg-gradient-to-r from-cyan-600 to-emerald-600 text-white shadow-md"
+                      : "bg-white text-gray-900 shadow-sm border border-gray-200"
+                  }`}
+                >
+                  {msg.role === "assistant" ? (
+                    <div className="prose prose-sm max-w-none text-sm text-gray-900">
+                      <ReactMarkdown>
+                        {msg.message}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
+                  )}
+                </div>
+                {msg.role === "user" && (
+                  <div className="w-10 h-10 rounded-xl bg-gray-700 flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
                 )}
               </div>
-              {msg.role === "user" && (
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center flex-shrink-0 neon-glow">
-                  <User className="w-6 h-6 text-white" />
+
+              {/* Portfolio Suggestion Card */}
+              {msg.role === "assistant" && msg.portfolio_suggestion && msg.suggestion_id && pendingSuggestions[msg.suggestion_id] && (
+                <div className="ml-14 mt-4 clean-card p-6 max-w-[80%] border-2 border-cyan-200 bg-gradient-to-br from-cyan-50 to-emerald-50">
+                  <div className="flex items-center gap-2 mb-4">
+                    <TrendingUp className="w-5 h-5 text-cyan-600" />
+                    <h4 className="font-bold text-gray-900">Portfolio Recommendation</h4>
+                  </div>
+                  
+                  <div className="space-y-3 mb-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Risk Tolerance:</span>
+                      <span className="font-semibold text-gray-900 capitalize">{msg.portfolio_suggestion.risk_tolerance}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">ROI Target:</span>
+                      <span className="font-semibold text-gray-900">{msg.portfolio_suggestion.roi_expectations}%</span>
+                    </div>
+                    
+                    <div className="divider my-3"></div>
+                    
+                    <div>
+                      <p className="text-sm font-semibold text-gray-700 mb-2">Allocations:</p>
+                      <div className="space-y-2">
+                        {msg.portfolio_suggestion.allocations?.map((alloc, i) => (
+                          <div key={i} className="flex justify-between items-center text-sm bg-white rounded-lg p-2 border border-gray-200">
+                            <div>
+                              <span className="font-bold text-gray-900">{alloc.ticker}</span>
+                              <span className="text-gray-500 ml-2">({alloc.asset_type})</span>
+                            </div>
+                            <span className="font-semibold gradient-text">{alloc.allocation}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => handleAcceptPortfolio(msg.suggestion_id, msg.portfolio_suggestion)}
+                      className="flex-1 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white rounded-lg font-semibold shadow-md"
+                      data-testid="accept-portfolio-btn"
+                    >
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Accept Portfolio
+                    </Button>
+                    <Button
+                      onClick={() => handleRejectPortfolio(msg.suggestion_id)}
+                      variant="outline"
+                      className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold"
+                      data-testid="reject-portfolio-btn"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Reject
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
