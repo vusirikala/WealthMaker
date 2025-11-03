@@ -66,6 +66,11 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
   };
 
   const handleGoogleLogin = () => {
+    // Close modal and show processing state
+    setShowLoginModal(false);
+    setIsProcessing(true);
+    
+    // Directly redirect to Google OAuth
     const redirectUrl = encodeURIComponent(`${window.location.origin}/`);
     window.location.href = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
   };
