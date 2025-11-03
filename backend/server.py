@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,10 +7,12 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, timedelta
+import finnhub
+import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,52 +22,422 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Finnhub setup
+finnhub_client = finnhub.Client(api_key=os.environ.get('FINNHUB_API_KEY', ''))
+
 # Create the main app without a prefix
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+# Models
+class User(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(alias="_id")
+    email: str
+    name: str
+    picture: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class UserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    user_id: str
+    session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ChatMessage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
+    user_id: str
+    role: str  # 'user' or 'assistant'
+    message: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+class Portfolio(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id")
+    user_id: str
+    risk_tolerance: str  # 'low', 'medium', 'high'
+    roi_expectations: float
+    retirement_age: Optional[int] = None
+    investment_horizon: Optional[str] = None
+    preferences: Dict[str, Any] = Field(default_factory=dict)
+    allocations: List[Dict[str, Any]] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-# Add your routes to the router instead of directly to app
-@api_router.get("/")
-async def root():
-    return {"message": "Hello World"}
+class ChatRequest(BaseModel):
+    message: str
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+class ChatResponse(BaseModel):
+    message: str
+    portfolio_updated: bool = False
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+class SessionDataResponse(BaseModel):
+    id: str
+    email: str
+    name: str
+    picture: str
+    session_token: str
+
+# Auth dependency
+async def get_current_user(request: Request) -> Optional[User]:
+    # Check session_token from cookie first
+    session_token = request.cookies.get("session_token")
     
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
+    # Fallback to Authorization header
+    if not session_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            session_token = auth_header.replace("Bearer ", "")
     
-    return status_checks
+    if not session_token:
+        return None
+    
+    # Find session in database
+    session = await db.user_sessions.find_one({"session_token": session_token})
+    if not session:
+        return None
+    
+    # Check if session expired
+    if session["expires_at"] < datetime.now(timezone.utc):
+        return None
+    
+    # Get user
+    user_doc = await db.users.find_one({"_id": session["user_id"]})
+    if not user_doc:
+        return None
+    
+    return User(**user_doc)
+
+async def require_auth(user: Optional[User] = Depends(get_current_user)) -> User:
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return user
+
+# Auth routes
+@api_router.get("/auth/me")
+async def get_me(user: User = Depends(require_auth)):
+    return user
+
+@api_router.post("/auth/session")
+async def process_session(request: Request, response: Response):
+    session_id = request.headers.get("X-Session-ID")
+    if not session_id:
+        raise HTTPException(status_code=400, detail="Session ID required")
+    
+    # Call Emergent auth service
+    async with httpx.AsyncClient() as client:
+        try:
+            resp = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id}
+            )
+            resp.raise_for_status()
+            session_data = resp.json()
+        except Exception as e:
+            logger.error(f"Failed to get session data: {e}")
+            raise HTTPException(status_code=400, detail="Invalid session")
+    
+    # Check if user exists
+    existing_user = await db.users.find_one({"_id": session_data["id"]})
+    if not existing_user:
+        # Create new user
+        user_doc = {
+            "_id": session_data["id"],
+            "email": session_data["email"],
+            "name": session_data["name"],
+            "picture": session_data.get("picture"),
+            "created_at": datetime.now(timezone.utc)
+        }
+        await db.users.insert_one(user_doc)
+    
+    # Create session
+    session_token = session_data["session_token"]
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    session_doc = {
+        "user_id": session_data["id"],
+        "session_token": session_token,
+        "expires_at": expires_at,
+        "created_at": datetime.now(timezone.utc)
+    }
+    await db.user_sessions.insert_one(session_doc)
+    
+    # Set cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,
+        path="/"
+    )
+    
+    return {"success": True, "user": session_data}
+
+@api_router.post("/auth/logout")
+async def logout(response: Response, user: User = Depends(require_auth)):
+    session_token = None
+    # Get from cookie or header
+    # (handled by get_current_user)
+    
+    # Delete all sessions for user
+    await db.user_sessions.delete_many({"user_id": user.id})
+    
+    # Clear cookie
+    response.delete_cookie("session_token", path="/")
+    
+    return {"success": True}
+
+# Chat routes
+@api_router.get("/chat/messages")
+async def get_chat_messages(user: User = Depends(require_auth)):
+    messages = await db.chat_messages.find(
+        {"user_id": user.id},
+        {"_id": 0}
+    ).sort("timestamp", 1).to_list(1000)
+    
+    for msg in messages:
+        if isinstance(msg['timestamp'], str):
+            msg['timestamp'] = datetime.fromisoformat(msg['timestamp'])
+    
+    return messages
+
+@api_router.post("/chat/send", response_model=ChatResponse)
+async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
+    user_message = chat_request.message
+    
+    # Save user message
+    user_msg_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user.id,
+        "role": "user",
+        "message": user_message,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.chat_messages.insert_one(user_msg_doc)
+    
+    # Get chat history
+    history = await db.chat_messages.find(
+        {"user_id": user.id},
+        {"_id": 0}
+    ).sort("timestamp", 1).to_list(100)
+    
+    # Get current portfolio
+    portfolio_doc = await db.portfolios.find_one({"user_id": user.id})
+    portfolio_context = ""
+    if portfolio_doc:
+        portfolio_context = f"\n\nCurrent Portfolio:\n- Risk Tolerance: {portfolio_doc.get('risk_tolerance', 'Not set')}\n- ROI Expectations: {portfolio_doc.get('roi_expectations', 'Not set')}%\n- Allocations: {len(portfolio_doc.get('allocations', []))} assets"
+    
+    # Create system message
+    system_message = f"""You are an expert financial advisor helping users build and manage their investment portfolio. 
+
+Your role:
+1. Understand user's investment preferences (risk tolerance, ROI expectations, retirement goals, investment horizon)
+2. Recommend portfolio allocations across different asset classes (stocks, bonds, crypto, indexes)
+3. Suggest specific tickers and allocation percentages
+4. Explain your recommendations in clear, simple terms
+5. Update portfolios based on user's changing preferences
+
+When recommending portfolios:
+- For LOW risk: 60-70% bonds, 20-30% blue-chip stocks, 5-10% index funds
+- For MEDIUM risk: 40% stocks, 30% bonds, 20% index funds, 10% alternative investments
+- For HIGH risk: 50-60% growth stocks, 20% crypto, 10-15% emerging markets, 10% bonds
+
+Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allocation percentages.{portfolio_context}
+
+Respond in a friendly, professional tone. Keep responses concise but informative."""
+    
+    try:
+        # Initialize LLM chat
+        chat = LlmChat(
+            api_key=os.environ.get('OPENAI_API_KEY'),
+            session_id=f"portfolio_chat_{user.id}",
+            system_message=system_message
+        ).with_model("openai", "gpt-5")
+        
+        # Send message
+        llm_message = UserMessage(text=user_message)
+        ai_response = await chat.send_message(llm_message)
+        
+    except Exception as e:
+        logger.error(f"LLM error: {e}")
+        ai_response = "I apologize, but I'm having trouble processing your request right now. Please try again."
+    
+    # Save AI response
+    ai_msg_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user.id,
+        "role": "assistant",
+        "message": ai_response,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.chat_messages.insert_one(ai_msg_doc)
+    
+    # Check if we should update portfolio (simple heuristic)
+    portfolio_updated = False
+    lower_message = user_message.lower()
+    if any(keyword in lower_message for keyword in ['risk', 'invest', 'portfolio', 'allocate', 'stocks', 'bonds', 'crypto']):
+        # Extract and update portfolio info
+        await update_portfolio_from_conversation(user.id, user_message, ai_response)
+        portfolio_updated = True
+    
+    return ChatResponse(message=ai_response, portfolio_updated=portfolio_updated)
+
+async def update_portfolio_from_conversation(user_id: str, user_message: str, ai_response: str):
+    """Update portfolio based on conversation - simplified version"""
+    portfolio = await db.portfolios.find_one({"user_id": user_id})
+    
+    lower_msg = user_message.lower()
+    
+    # Extract risk tolerance
+    risk = None
+    if 'low risk' in lower_msg or 'conservative' in lower_msg or 'safe' in lower_msg:
+        risk = 'low'
+    elif 'high risk' in lower_msg or 'aggressive' in lower_msg:
+        risk = 'high'
+    elif 'medium risk' in lower_msg or 'moderate' in lower_msg or 'balanced' in lower_msg:
+        risk = 'medium'
+    
+    # Extract ROI expectations
+    roi = None
+    if '5%' in lower_msg or 'five percent' in lower_msg:
+        roi = 5.0
+    elif '10%' in lower_msg or 'ten percent' in lower_msg:
+        roi = 10.0
+    elif '15%' in lower_msg or 'fifteen percent' in lower_msg:
+        roi = 15.0
+    elif '20%' in lower_msg or 'twenty percent' in lower_msg:
+        roi = 20.0
+    
+    if portfolio:
+        # Update existing
+        update_data = {"updated_at": datetime.now(timezone.utc)}
+        if risk:
+            update_data["risk_tolerance"] = risk
+        if roi:
+            update_data["roi_expectations"] = roi
+        
+        await db.portfolios.update_one(
+            {"user_id": user_id},
+            {"$set": update_data}
+        )
+    else:
+        # Create new
+        portfolio_doc = {
+            "_id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "risk_tolerance": risk or 'medium',
+            "roi_expectations": roi or 10.0,
+            "preferences": {},
+            "allocations": get_default_allocations(risk or 'medium'),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        await db.portfolios.insert_one(portfolio_doc)
+
+def get_default_allocations(risk_tolerance: str) -> List[Dict[str, Any]]:
+    """Generate default portfolio allocations based on risk tolerance"""
+    if risk_tolerance == 'low':
+        return [
+            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 60, "sector": "Fixed Income"},
+            {"asset_type": "Stocks", "ticker": "AAPL", "allocation": 15, "sector": "Technology"},
+            {"asset_type": "Stocks", "ticker": "JNJ", "allocation": 15, "sector": "Healthcare"},
+            {"asset_type": "Index", "ticker": "SPY", "allocation": 10, "sector": "Diversified"}
+        ]
+    elif risk_tolerance == 'high':
+        return [
+            {"asset_type": "Stocks", "ticker": "TSLA", "allocation": 25, "sector": "Technology"},
+            {"asset_type": "Stocks", "ticker": "NVDA", "allocation": 25, "sector": "Technology"},
+            {"asset_type": "Crypto", "ticker": "BTC-USD", "allocation": 20, "sector": "Cryptocurrency"},
+            {"asset_type": "Stocks", "ticker": "PLTR", "allocation": 15, "sector": "Technology"},
+            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 10, "sector": "Fixed Income"},
+            {"asset_type": "Index", "ticker": "QQQ", "allocation": 5, "sector": "Technology"}
+        ]
+    else:  # medium
+        return [
+            {"asset_type": "Stocks", "ticker": "AAPL", "allocation": 20, "sector": "Technology"},
+            {"asset_type": "Stocks", "ticker": "MSFT", "allocation": 15, "sector": "Technology"},
+            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 30, "sector": "Fixed Income"},
+            {"asset_type": "Index", "ticker": "SPY", "allocation": 20, "sector": "Diversified"},
+            {"asset_type": "Stocks", "ticker": "V", "allocation": 10, "sector": "Financial"},
+            {"asset_type": "Index", "ticker": "VTI", "allocation": 5, "sector": "Diversified"}
+        ]
+
+# Portfolio routes
+@api_router.get("/portfolio")
+async def get_portfolio(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    if not portfolio:
+        # Create default portfolio
+        portfolio_doc = {
+            "_id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "risk_tolerance": "medium",
+            "roi_expectations": 10.0,
+            "preferences": {},
+            "allocations": get_default_allocations("medium"),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        await db.portfolios.insert_one(portfolio_doc)
+        portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    # Convert dates
+    if isinstance(portfolio.get('created_at'), str):
+        portfolio['created_at'] = datetime.fromisoformat(portfolio['created_at'])
+    if isinstance(portfolio.get('updated_at'), str):
+        portfolio['updated_at'] = datetime.fromisoformat(portfolio['updated_at'])
+    
+    return portfolio
+
+# News routes
+@api_router.get("/news")
+async def get_portfolio_news(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id})
+    
+    if not portfolio or not portfolio.get('allocations'):
+        return []
+    
+    # Get unique tickers
+    tickers = list(set([alloc['ticker'] for alloc in portfolio['allocations'] if alloc['asset_type'] == 'Stocks']))
+    
+    all_news = []
+    try:
+        for ticker in tickers[:5]:  # Limit to 5 stocks to avoid rate limits
+            try:
+                news = finnhub_client.company_news(ticker, _from="2025-01-01", to="2025-12-31")
+                for item in news[:3]:  # Top 3 news per stock
+                    all_news.append({
+                        "ticker": ticker,
+                        "headline": item.get('headline', ''),
+                        "summary": item.get('summary', ''),
+                        "url": item.get('url', ''),
+                        "image": item.get('image', ''),
+                        "source": item.get('source', ''),
+                        "datetime": datetime.fromtimestamp(item.get('datetime', 0), tz=timezone.utc) if item.get('datetime') else None
+                    })
+            except Exception as e:
+                logger.error(f"Error fetching news for {ticker}: {e}")
+                continue
+    except Exception as e:
+        logger.error(f"Finnhub error: {e}")
+    
+    # Sort by datetime
+    all_news.sort(key=lambda x: x['datetime'] if x['datetime'] else datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+    
+    return all_news[:20]  # Return top 20 news items
 
 # Include the router in the main app
 app.include_router(api_router)
@@ -76,13 +449,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
