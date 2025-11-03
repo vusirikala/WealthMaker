@@ -49,7 +49,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
   };
 
   const handleLogin = () => {
-    const redirectUrl = encodeURIComponent(`${window.location.origin}/dashboard`);
+    const redirectUrl = encodeURIComponent(`${window.location.origin}/`);
     window.location.href = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
   };
 
