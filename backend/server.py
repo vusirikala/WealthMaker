@@ -167,6 +167,9 @@ async def process_session(request: Request, response: Response):
             "created_at": datetime.now(timezone.utc)
         }
         await db.users.insert_one(user_doc)
+        logger.info(f"Created new user: {session_data['email']}")
+    else:
+        logger.info(f"User already exists: {session_data['email']}")
     
     # Create session
     session_token = session_data["session_token"]
@@ -178,6 +181,7 @@ async def process_session(request: Request, response: Response):
         "created_at": datetime.now(timezone.utc)
     }
     await db.user_sessions.insert_one(session_doc)
+    logger.info(f"Created session for user: {session_data['email']}")
     
     # Set cookie
     response.set_cookie(
@@ -189,6 +193,7 @@ async def process_session(request: Request, response: Response):
         max_age=7 * 24 * 60 * 60,
         path="/"
     )
+    logger.info(f"Set cookie for user: {session_data['email']}")
     
     return {"success": True, "user": session_data}
 
