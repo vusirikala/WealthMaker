@@ -90,7 +90,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
               width: Math.random() * 5 + 2 + 'px',
               height: Math.random() * 5 + 2 + 'px',
               left: Math.random() * 100 + '%',
-              background: `rgba(${i % 3 === 0 ? '168, 85, 247' : i % 3 === 1 ? '20, 184, 166' : '251, 113, 133'}, 0.6)`,
+              background: `rgba(${i % 3 === 0 ? '6, 182, 212' : i % 3 === 1 ? '16, 185, 129' : '12, 74, 110'}, 0.6)`,
               animation: `particle-float ${Math.random() * 10 + 10}s linear infinite`,
               animationDelay: `${Math.random() * 5}s`
             }}
