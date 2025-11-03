@@ -17,6 +17,22 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
       const sessionId = hash.split("session_id=")[1].split("&")[0];
       handleSessionCallback(sessionId);
     }
+
+    // Listen for messages from popup window
+    const handleMessage = (event) => {
+      // Verify origin for security
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'AUTH_SUCCESS' && event.data.sessionId) {
+        handleSessionCallback(event.data.sessionId);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   const handleSessionCallback = async (sessionId) => {
@@ -60,8 +76,34 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
   };
 
   const handleLogin = () => {
-    const redirectUrl = encodeURIComponent(`${window.location.origin}/`);
-    window.location.href = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
+    // Create a special callback page URL
+    const callbackUrl = encodeURIComponent(`${window.location.origin}/auth-callback`);
+    const authUrl = `https://auth.emergentagent.com/?redirect=${callbackUrl}`;
+    
+    // Open popup window
+    const width = 500;
+    const height = 600;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+    
+    const popup = window.open(
+      authUrl,
+      'Google Sign In',
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
+
+    // Check if popup was blocked
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      toast.error('Popup blocked. Please allow popups for this site.');
+      return;
+    }
+
+    // Monitor popup
+    const checkPopup = setInterval(() => {
+      if (!popup || popup.closed) {
+        clearInterval(checkPopup);
+      }
+    }, 1000);
   };
 
   if (isProcessing) {
