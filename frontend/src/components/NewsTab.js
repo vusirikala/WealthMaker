@@ -1,9 +1,98 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Calendar, TrendingUp, Clock, Newspaper } from "lucide-react";
+import { 
+  ExternalLink, 
+  Clock, 
+  Newspaper,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  BarChart3,
+  Briefcase,
+  Building2,
+  Cpu,
+  Landmark,
+  Shield,
+  Zap,
+  Globe,
+  Rocket
+} from "lucide-react";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+
+// Icon mapping based on keywords and sectors
+const getNewsIcon = (headline, ticker, index) => {
+  const headlineLower = headline.toLowerCase();
+  
+  // Keyword-based icon selection
+  if (headlineLower.includes('earnings') || headlineLower.includes('profit') || headlineLower.includes('revenue')) {
+    return { icon: DollarSign, color: 'emerald' };
+  }
+  if (headlineLower.includes('loss') || headlineLower.includes('decline') || headlineLower.includes('down')) {
+    return { icon: TrendingDown, color: 'red' };
+  }
+  if (headlineLower.includes('growth') || headlineLower.includes('surge') || headlineLower.includes('rally') || headlineLower.includes('gain')) {
+    return { icon: TrendingUp, color: 'cyan' };
+  }
+  if (headlineLower.includes('technology') || headlineLower.includes('ai') || headlineLower.includes('tech') || headlineLower.includes('software')) {
+    return { icon: Cpu, color: 'blue' };
+  }
+  if (headlineLower.includes('bank') || headlineLower.includes('financial') || headlineLower.includes('credit')) {
+    return { icon: Landmark, color: 'purple' };
+  }
+  if (headlineLower.includes('market') || headlineLower.includes('trading') || headlineLower.includes('stock')) {
+    return { icon: BarChart3, color: 'orange' };
+  }
+  if (headlineLower.includes('merger') || headlineLower.includes('acquisition') || headlineLower.includes('deal')) {
+    return { icon: Briefcase, color: 'indigo' };
+  }
+  if (headlineLower.includes('launch') || headlineLower.includes('innovation') || headlineLower.includes('new')) {
+    return { icon: Rocket, color: 'pink' };
+  }
+  if (headlineLower.includes('security') || headlineLower.includes('data') || headlineLower.includes('breach')) {
+    return { icon: Shield, color: 'red' };
+  }
+  if (headlineLower.includes('energy') || headlineLower.includes('power') || headlineLower.includes('electric')) {
+    return { icon: Zap, color: 'yellow' };
+  }
+  if (headlineLower.includes('global') || headlineLower.includes('international') || headlineLower.includes('worldwide')) {
+    return { icon: Globe, color: 'teal' };
+  }
+  if (headlineLower.includes('company') || headlineLower.includes('corporate') || headlineLower.includes('business')) {
+    return { icon: Building2, color: 'slate' };
+  }
+  
+  // Fallback: rotate through icons based on index
+  const fallbackIcons = [
+    { icon: BarChart3, color: 'cyan' },
+    { icon: TrendingUp, color: 'emerald' },
+    { icon: DollarSign, color: 'blue' },
+    { icon: Briefcase, color: 'indigo' },
+    { icon: Cpu, color: 'purple' },
+    { icon: Building2, color: 'slate' },
+  ];
+  
+  return fallbackIcons[index % fallbackIcons.length];
+};
+
+const getIconColorClasses = (color) => {
+  const colorMap = {
+    cyan: 'bg-cyan-100 text-cyan-600',
+    emerald: 'bg-emerald-100 text-emerald-600',
+    blue: 'bg-blue-100 text-blue-600',
+    red: 'bg-red-100 text-red-600',
+    orange: 'bg-orange-100 text-orange-600',
+    purple: 'bg-purple-100 text-purple-600',
+    indigo: 'bg-indigo-100 text-indigo-600',
+    pink: 'bg-pink-100 text-pink-600',
+    yellow: 'bg-yellow-100 text-yellow-600',
+    teal: 'bg-teal-100 text-teal-600',
+    slate: 'bg-slate-100 text-slate-600',
+  };
+  
+  return colorMap[color] || colorMap.cyan;
+};
 
 export default function NewsTab() {
   const [news, setNews] = useState([]);
@@ -69,71 +158,82 @@ export default function NewsTab() {
         <p className="text-gray-600">Stay updated with news for stocks in your portfolio</p>
       </div>
 
-      {news.map((item, idx) => (
-        <div
-          key={idx}
-          data-testid="news-card"
-          className="clean-card p-6 card-hover group fade-in"
-        >
-          <div className="flex gap-6">
-            {item.image && (
-              <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-48 h-32 bg-gray-100">
-                <img
-                  src={item.image}
-                  alt={item.headline}
-                  className="w-full h-full object-cover group-hover:scale-105 smooth-transition"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+      {news.map((item, idx) => {
+        const { icon: IconComponent, color } = getNewsIcon(item.headline, item.ticker, idx);
+        const iconColorClasses = getIconColorClasses(color);
+        
+        return (
+          <div
+            key={idx}
+            data-testid="news-card"
+            className="clean-card p-6 card-hover group fade-in"
+          >
+            <div className="flex gap-6">
+              {/* Icon instead of image for variety */}
+              <div className={`flex-shrink-0 w-14 h-14 rounded-xl ${iconColorClasses} flex items-center justify-center`}>
+                <IconComponent className="w-7 h-7" />
               </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center px-3 py-1 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-full">
-                      {item.ticker}
-                    </span>
-                    {item.source && (
-                      <span className="text-xs text-gray-500 font-medium">{item.source}</span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
-                    {item.headline}
-                  </h3>
+
+              {item.image && (
+                <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-48 h-32 bg-gray-100">
+                  <img
+                    src={item.image}
+                    alt={item.headline}
+                    className="w-full h-full object-cover group-hover:scale-105 smooth-transition"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
                 </div>
-              </div>
-              
-              {item.summary && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-                  {item.summary}
-                </p>
               )}
               
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-gray-500">
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-cyan-600" />
-                    {formatDate(item.datetime)}
-                  </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="inline-flex items-center px-3 py-1 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-full">
+                        {item.ticker}
+                      </span>
+                      {item.source && (
+                        <span className="text-xs text-gray-500 font-medium">{item.source}</span>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
+                      {item.headline}
+                    </h3>
+                  </div>
                 </div>
-                {item.url && (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 smooth-transition group"
-                  >
-                    Read Article
-                    <ExternalLink className="w-4 h-4 group-hover:translate-x-1 smooth-transition" />
-                  </a>
+                
+                {item.summary && (
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                    {item.summary}
+                  </p>
                 )}
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-cyan-600" />
+                      {formatDate(item.datetime)}
+                    </span>
+                  </div>
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 smooth-transition group"
+                    >
+                      Read Article
+                      <ExternalLink className="w-4 h-4 group-hover:translate-x-1 smooth-transition" />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
