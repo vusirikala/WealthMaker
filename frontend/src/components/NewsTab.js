@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Calendar, TrendingUp } from "lucide-react";
+import { ExternalLink, Calendar, TrendingUp, Clock, Newspaper } from "lucide-react";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -33,6 +33,12 @@ export default function NewsTab() {
   const formatDate = (datetime) => {
     if (!datetime) return "Recently";
     const date = new Date(datetime);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return "Just now";
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
@@ -46,74 +52,81 @@ export default function NewsTab() {
 
   if (news.length === 0) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center border border-purple-500/30" data-testid="no-news">
-        <p className="text-gray-400">No news available. Add stocks to your portfolio to see related news.</p>
+      <div className="clean-card rounded-2xl p-12 text-center" data-testid="no-news">
+        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+          <Newspaper className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No News Available</h3>
+        <p className="text-gray-600">Add stocks to your portfolio to see related news and market updates.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4" data-testid="news-tab">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Latest Market News</h2>
+        <p className="text-gray-600">Stay updated with news for stocks in your portfolio</p>
+      </div>
+
       {news.map((item, idx) => (
         <div
           key={idx}
           data-testid="news-card"
-          className="glass-card rounded-3xl p-6 neon-glow border border-purple-500/30 hover-lift group stagger-item"
+          className="clean-card p-6 card-hover group fade-in"
         >
           <div className="flex gap-6">
             {item.image && (
-              <div className="relative overflow-hidden rounded-2xl flex-shrink-0 w-40 h-40">
+              <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-48 h-32 bg-gray-100">
                 <img
                   src={item.image}
                   alt={item.headline}
-                  className="w-full h-full object-cover group-hover:scale-110 smooth-transition"
+                  className="w-full h-full object-cover group-hover:scale-105 smooth-transition"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
               </div>
             )}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <span className="inline-block px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full mb-3 neon-glow">
-                    {item.ticker}
-                  </span>
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:gradient-text smooth-transition">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-flex items-center px-3 py-1 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-full">
+                      {item.ticker}
+                    </span>
+                    {item.source && (
+                      <span className="text-xs text-gray-500 font-medium">{item.source}</span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
                     {item.headline}
                   </h3>
                 </div>
               </div>
               
               {item.summary && (
-                <p className="text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
                   {item.summary}
                 </p>
               )}
               
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-gray-400">
+                <div className="flex items-center gap-4 text-xs text-gray-500">
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-teal-400" />
+                    <Clock className="w-3.5 h-3.5 text-cyan-600" />
                     {formatDate(item.datetime)}
                   </span>
-                  {item.source && (
-                    <span className="flex items-center gap-1.5">
-                      <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
-                      {item.source}
-                    </span>
-                  )}
                 </div>
                 {item.url && (
                   <a
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white px-5 py-2 rounded-full smooth-transition hover-lift"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:text-cyan-700 smooth-transition group"
                   >
-                    Read more
-                    <ExternalLink className="w-4 h-4" />
+                    Read Article
+                    <ExternalLink className="w-4 h-4 group-hover:translate-x-1 smooth-transition" />
                   </a>
                 )}
               </div>
