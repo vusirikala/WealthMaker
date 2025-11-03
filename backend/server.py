@@ -452,6 +452,53 @@ def get_default_allocations(risk_tolerance: str) -> List[Dict[str, Any]]:
         ]
 
 # Portfolio routes
+@api_router.post("/portfolio/accept")
+async def accept_portfolio(request: AcceptPortfolioRequest, user: User = Depends(require_auth)):
+    """Accept a portfolio suggestion and update the user's portfolio"""
+    try:
+        # Get the suggestion
+        suggestion = await db.portfolio_suggestions.find_one({"_id": request.suggestion_id, "user_id": user.id})
+        
+        if not suggestion:
+            raise HTTPException(status_code=404, detail="Portfolio suggestion not found or expired")
+        
+        portfolio_data = request.portfolio_data
+        
+        # Check if user has an existing portfolio
+        existing_portfolio = await db.portfolios.find_one({"user_id": user.id})
+        
+        portfolio_doc = {
+            "user_id": user.id,
+            "risk_tolerance": portfolio_data.get("risk_tolerance", "medium"),
+            "roi_expectations": portfolio_data.get("roi_expectations", 10.0),
+            "preferences": portfolio_data.get("preferences", {}),
+            "allocations": portfolio_data.get("allocations", []),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        
+        if existing_portfolio:
+            # Update existing portfolio
+            await db.portfolios.update_one(
+                {"user_id": user.id},
+                {"$set": portfolio_doc}
+            )
+            logger.info(f"Updated portfolio for user {user.id}")
+        else:
+            # Create new portfolio
+            portfolio_doc["_id"] = str(uuid.uuid4())
+            portfolio_doc["created_at"] = datetime.now(timezone.utc)
+            await db.portfolios.insert_one(portfolio_doc)
+            logger.info(f"Created new portfolio for user {user.id}")
+        
+        # Delete the suggestion after acceptance
+        await db.portfolio_suggestions.delete_one({"_id": request.suggestion_id})
+        
+        return {"success": True, "message": "Portfolio updated successfully"}
+        
+    except Exception as e:
+        logger.error(f"Error accepting portfolio: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update portfolio")
+
 @api_router.get("/portfolio")
 async def get_portfolio(user: User = Depends(require_auth)):
     portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
