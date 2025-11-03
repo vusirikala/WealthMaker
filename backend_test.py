@@ -277,6 +277,7 @@ print('Setup complete');
         self.test_portfolio_endpoints()
         self.test_news_endpoints()
         self.test_error_handling()
+        self.test_logout_endpoint()  # Test logout last to avoid session invalidation
         
         # Print summary
         print("\n" + "=" * 50)
