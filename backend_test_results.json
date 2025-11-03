@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-11-03T04:59:43.512641+00:00",
+  "total_tests": 10,
+  "passed_tests": 2,
+  "success_rate": 20.0,
+  "test_details": [
+    {
+      "test": "GET /auth/me (authenticated)",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    },
+    {
+      "test": "GET /auth/me (unauthenticated)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "POST /auth/logout",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    },
+    {
+      "test": "GET /chat/messages",
+      "success": false,
+      "details": "Status: 500, Type: <class 'str'>",
+      "response_data": {
+        "message_count": 0
+      }
+    },
+    {
+      "test": "POST /chat/send",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": {
+        "has_response": false
+      }
+    },
+    {
+      "test": "GET /chat/messages (after send)",
+      "success": false,
+      "details": "Status: 500, Messages: 0",
+      "response_data": {
+        "message_count": 0
+      }
+    },
+    {
+      "test": "GET /portfolio",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": {
+        "risk_tolerance": null,
+        "roi_expectations": null,
+        "allocation_count": 0
+      }
+    },
+    {
+      "test": "GET /news",
+      "success": false,
+      "details": "Status: 500, Type: <class 'str'>",
+      "response_data": {
+        "news_count": 0
+      }
+    },
+    {
+      "test": "GET /invalid/endpoint",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test": "POST /chat/send (malformed)",
+      "success": false,
+      "details": "Expected 400/422, got 500",
+      "response_data": "Internal Server Error"
+    }
+  ]
+}
