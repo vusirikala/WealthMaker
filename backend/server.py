@@ -315,25 +315,61 @@ Respond in a friendly, professional tone. Keep responses concise but informative
         logger.error(f"LLM error: {e}")
         ai_response = "I apologize, but I'm having trouble processing your request right now. Please try again."
     
-    # Save AI response
+    # Check if response contains a portfolio suggestion
+    portfolio_suggestion = None
+    suggestion_id = None
+    clean_response = ai_response
+    
+    if "[PORTFOLIO_SUGGESTION]" in ai_response and "[/PORTFOLIO_SUGGESTION]" in ai_response:
+        try:
+            # Extract the JSON between markers
+            start = ai_response.index("[PORTFOLIO_SUGGESTION]") + len("[PORTFOLIO_SUGGESTION]")
+            end = ai_response.index("[/PORTFOLIO_SUGGESTION]")
+            json_str = ai_response[start:end].strip()
+            
+            # Parse the portfolio data
+            import json
+            portfolio_data = json.loads(json_str)
+            
+            # Generate a suggestion ID
+            suggestion_id = str(uuid.uuid4())
+            
+            # Store suggestion temporarily
+            await db.portfolio_suggestions.insert_one({
+                "_id": suggestion_id,
+                "user_id": user.id,
+                "portfolio_data": portfolio_data,
+                "created_at": datetime.now(timezone.utc),
+                "expires_at": datetime.now(timezone.utc) + timedelta(hours=24)
+            })
+            
+            portfolio_suggestion = portfolio_data
+            
+            # Remove the marker from the response
+            clean_response = ai_response[:ai_response.index("[PORTFOLIO_SUGGESTION]")].strip()
+            
+            logger.info(f"Portfolio suggestion created with ID: {suggestion_id}")
+            
+        except Exception as e:
+            logger.error(f"Error parsing portfolio suggestion: {e}")
+    
+    # Save AI response (clean version)
     ai_msg_doc = {
         "id": str(uuid.uuid4()),
         "user_id": user.id,
         "role": "assistant",
-        "message": ai_response,
-        "timestamp": datetime.now(timezone.utc).isoformat()
+        "message": clean_response,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "suggestion_id": suggestion_id
     }
     await db.chat_messages.insert_one(ai_msg_doc)
     
-    # Check if we should update portfolio (simple heuristic)
-    portfolio_updated = False
-    lower_message = user_message.lower()
-    if any(keyword in lower_message for keyword in ['risk', 'invest', 'portfolio', 'allocate', 'stocks', 'bonds', 'crypto']):
-        # Extract and update portfolio info
-        await update_portfolio_from_conversation(user.id, user_message, ai_response)
-        portfolio_updated = True
-    
-    return ChatResponse(message=ai_response, portfolio_updated=portfolio_updated)
+    return ChatResponse(
+        message=clean_response, 
+        portfolio_updated=False,
+        portfolio_suggestion=portfolio_suggestion,
+        suggestion_id=suggestion_id
+    )
 
 async def update_portfolio_from_conversation(user_id: str, user_message: str, ai_response: str):
     """Update portfolio based on conversation - simplified version"""
