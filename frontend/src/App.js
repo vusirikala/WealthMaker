@@ -3,6 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import Dashboard from "@/pages/Dashboard";
+import AuthCallback from "@/pages/AuthCallback";
 import { Toaster } from "@/components/ui/sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
