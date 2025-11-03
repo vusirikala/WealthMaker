@@ -59,6 +59,10 @@ function App() {
             }
           />
           <Route
+            path="/auth-callback"
+            element={<AuthCallback />}
+          />
+          <Route
             path="/dashboard"
             element={
               isAuthenticated ? (
