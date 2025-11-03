@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Bot, User, Sparkles } from "lucide-react";
+import { Send, Bot, User, Sparkles, CheckCircle2, XCircle, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 
@@ -13,6 +13,7 @@ export default function ChatTab() {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [pendingSuggestions, setPendingSuggestions] = useState({});
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -74,13 +75,17 @@ export default function ChatTab() {
           role: "assistant",
           message: data.message,
           timestamp: new Date().toISOString(),
+          portfolio_suggestion: data.portfolio_suggestion,
+          suggestion_id: data.suggestion_id,
         };
         setMessages((prev) => [...prev, aiMessage]);
 
-        if (data.portfolio_updated) {
-          toast.success("Portfolio updated based on your preferences!", {
-            icon: <Sparkles className="w-4 h-4" />,
-          });
+        if (data.portfolio_suggestion && data.suggestion_id) {
+          // Store the suggestion
+          setPendingSuggestions(prev => ({
+            ...prev,
+            [data.suggestion_id]: data.portfolio_suggestion
+          }));
         }
       } else {
         toast.error("Failed to send message");
@@ -91,6 +96,66 @@ export default function ChatTab() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAcceptPortfolio = async (suggestionId, portfolioData) => {
+    try {
+      const response = await fetch(`${API}/portfolio/accept`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ 
+          suggestion_id: suggestionId,
+          portfolio_data: portfolioData
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("Portfolio updated successfully!", {
+          icon: <CheckCircle2 className="w-5 h-5" />,
+        });
+        
+        // Remove from pending suggestions
+        setPendingSuggestions(prev => {
+          const newSuggestions = { ...prev };
+          delete newSuggestions[suggestionId];
+          return newSuggestions;
+        });
+
+        // Add a confirmation message
+        const confirmMsg = {
+          role: "assistant",
+          message: "Great! I've updated your portfolio. You can view it in the Portfolio tab.",
+          timestamp: new Date().toISOString(),
+        };
+        setMessages(prev => [...prev, confirmMsg]);
+        
+        // Refresh portfolio data (trigger event)
+        window.dispatchEvent(new Event('portfolioUpdated'));
+      } else {
+        toast.error("Failed to update portfolio");
+      }
+    } catch (error) {
+      console.error("Error accepting portfolio:", error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleRejectPortfolio = (suggestionId) => {
+    setPendingSuggestions(prev => {
+      const newSuggestions = { ...prev };
+      delete newSuggestions[suggestionId];
+      return newSuggestions;
+    });
+
+    const rejectMsg = {
+      role: "assistant",
+      message: "No problem! Feel free to tell me more about what you're looking for, and I can suggest a different portfolio allocation.",
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, rejectMsg]);
   };
 
   const handleKeyPress = (e) => {
@@ -109,7 +174,7 @@ export default function ChatTab() {
   }
 
   return (
-    <div className="glass-card rounded-3xl overflow-hidden neon-glow border border-purple-500/30" data-testid="chat-interface">
+    <div className="clean-card rounded-2xl overflow-hidden shadow-sm" data-testid="chat-interface">
       {/* Messages Area */}
       <div className="h-[600px] overflow-y-auto p-6 space-y-6" data-testid="chat-messages">
         {messages.length === 0 ? (
