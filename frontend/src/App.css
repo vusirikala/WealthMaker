@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --electric-purple: #a855f7;
-  --deep-purple: #7c3aed;
-  --teal: #14b8a6;
-  --coral: #fb7185;
-  --dark-bg: #0f0a1f;
-  --card-bg: rgba(24, 18, 43, 0.8);
-  --glass-bg: rgba(168, 85, 247, 0.05);
+  --ocean-blue: #0c4a6e;
+  --deep-ocean: #075985;
+  --cyan: #06b6d4;
+  --emerald: #10b981;
+  --dark-bg: #0a1929;
+  --card-bg: rgba(12, 74, 110, 0.1);
+  --glass-bg: rgba(6, 182, 212, 0.05);
 }
 
 * {
