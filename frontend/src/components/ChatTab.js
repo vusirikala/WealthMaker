@@ -140,11 +140,13 @@ export default function ChatTab() {
                 }`}
               >
                 {msg.role === "assistant" ? (
-                  <ReactMarkdown className="prose prose-sm max-w-none">
-                    {msg.message}
-                  </ReactMarkdown>
+                  <div className="prose prose-sm max-w-none text-sm">
+                    <ReactMarkdown>
+                      {msg.message}
+                    </ReactMarkdown>
+                  </div>
                 ) : (
-                  <p className="text-sm">{msg.message}</p>
+                  <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
                 )}
               </div>
               {msg.role === "user" && (
