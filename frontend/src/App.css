@@ -214,7 +214,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.4), transparent);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
 }
