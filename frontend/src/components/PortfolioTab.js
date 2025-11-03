@@ -54,6 +54,17 @@ export default function PortfolioTab() {
 
   useEffect(() => {
     loadPortfolio();
+    
+    // Listen for portfolio updates from chat
+    const handlePortfolioUpdate = () => {
+      loadPortfolio();
+    };
+    
+    window.addEventListener('portfolioUpdated', handlePortfolioUpdate);
+    
+    return () => {
+      window.removeEventListener('portfolioUpdated', handlePortfolioUpdate);
+    };
   }, []);
 
   useEffect(() => {
