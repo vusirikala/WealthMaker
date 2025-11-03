@@ -54,17 +54,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 10, 31, 0.5);
+  background: rgba(10, 25, 41, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--electric-purple), var(--teal));
+  background: linear-gradient(180deg, var(--cyan), var(--emerald));
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--coral), var(--electric-purple));
+  background: linear-gradient(180deg, var(--emerald), var(--ocean-blue));
 }
 
 /* Prose styling for markdown */
