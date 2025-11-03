@@ -78,9 +78,21 @@ class Portfolio(BaseModel):
 class ChatRequest(BaseModel):
     message: str
 
+class PortfolioSuggestion(BaseModel):
+    risk_tolerance: str
+    roi_expectations: float
+    allocations: List[Dict[str, Any]]
+    reasoning: str
+
 class ChatResponse(BaseModel):
     message: str
     portfolio_updated: bool = False
+    portfolio_suggestion: Optional[PortfolioSuggestion] = None
+    suggestion_id: Optional[str] = None
+
+class AcceptPortfolioRequest(BaseModel):
+    suggestion_id: str
+    portfolio_data: Dict[str, Any]
 
 class SessionDataResponse(BaseModel):
     id: str
