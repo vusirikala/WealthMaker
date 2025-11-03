@@ -78,11 +78,14 @@ export default function PortfolioTab() {
 
   const loadPortfolio = async () => {
     try {
-      const response = await fetch(`${API}/portfolio`, {
+      // Add cache busting to ensure fresh data
+      const response = await fetch(`${API}/portfolio?t=${Date.now()}`, {
         credentials: "include",
+        cache: "no-store"
       });
       if (response.ok) {
         const data = await response.json();
+        console.log("Portfolio loaded:", data);
         setPortfolio(data);
       }
     } catch (error) {
