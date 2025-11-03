@@ -160,26 +160,26 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Glass morphism effects */
 .glass-card {
-  background: rgba(24, 18, 43, 0.7);
+  background: rgba(12, 74, 110, 0.15);
   backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .glass-card:hover {
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 12px 48px rgba(168, 85, 247, 0.3), 0 0 30px rgba(20, 184, 166, 0.2);
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 12px 48px rgba(6, 182, 212, 0.3), 0 0 30px rgba(16, 185, 129, 0.2);
 }
 
 /* Neon glow effects */
 .neon-glow {
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(20, 184, 166, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.2);
 }
 
 .neon-border {
   border: 2px solid transparent;
   background: linear-gradient(var(--dark-bg), var(--dark-bg)) padding-box,
-              linear-gradient(135deg, var(--electric-purple), var(--teal), var(--coral)) border-box;
+              linear-gradient(135deg, var(--cyan), var(--emerald), var(--ocean-blue)) border-box;
   position: relative;
 }
 
