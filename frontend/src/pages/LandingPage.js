@@ -103,15 +103,15 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         <nav className="flex justify-between items-center mb-20 stagger-item">
           <div className="flex items-center gap-3 group">
             <div className="relative">
-              <TrendingUp className="w-10 h-10 text-purple-400" style={{ filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))' }} />
-              <div className="absolute inset-0 bg-purple-400 blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+              <TrendingUp className="w-10 h-10 text-cyan-400" style={{ filter: 'drop-shadow(0 0 10px rgba(6, 182, 212, 0.8))' }} />
+              <div className="absolute inset-0 bg-cyan-400 blur-xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
             </div>
             <span className="text-3xl font-bold gradient-text">SmartFolio</span>
           </div>
           <Button
             onClick={handleLogin}
             data-testid="login-button"
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full shadow-lg neon-glow font-semibold"
+            className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white px-8 py-3 rounded-full shadow-lg neon-glow font-semibold"
           >
             Sign In
           </Button>
