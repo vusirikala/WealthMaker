@@ -3,7 +3,6 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import Dashboard from "@/pages/Dashboard";
-import AuthCallback from "@/pages/AuthCallback";
 import { Toaster } from "@/components/ui/sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -38,8 +37,8 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="animate-pulse text-lg text-slate-600">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-50">
+        <div className="animate-pulse text-lg text-gray-600">Loading...</div>
       </div>
     );
   }
@@ -57,10 +56,6 @@ function App() {
                 <LandingPage setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
               )
             }
-          />
-          <Route
-            path="/auth-callback"
-            element={<AuthCallback />}
           />
           <Route
             path="/dashboard"
