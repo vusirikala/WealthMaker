@@ -169,33 +169,22 @@ export default function NewsTab() {
             className="clean-card p-6 card-hover group fade-in"
           >
             <div className="flex gap-6">
-              {/* Icon instead of image for variety */}
-              <div className={`flex-shrink-0 w-14 h-14 rounded-xl ${iconColorClasses} flex items-center justify-center`}>
-                <IconComponent className="w-7 h-7" />
+              {/* Contextual Icon */}
+              <div className={`flex-shrink-0 w-16 h-16 rounded-2xl ${iconColorClasses} flex items-center justify-center shadow-sm`}>
+                <IconComponent className="w-8 h-8" />
               </div>
-
-              {item.image && (
-                <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-48 h-32 bg-gray-100">
-                  <img
-                    src={item.image}
-                    alt={item.headline}
-                    className="w-full h-full object-cover group-hover:scale-105 smooth-transition"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="inline-flex items-center px-3 py-1 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-full">
                         {item.ticker}
                       </span>
                       {item.source && (
-                        <span className="text-xs text-gray-500 font-medium">{item.source}</span>
+                        <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full border border-gray-200">
+                          {item.source}
+                        </span>
                       )}
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
@@ -205,7 +194,7 @@ export default function NewsTab() {
                 </div>
                 
                 {item.summary && (
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed">
                     {item.summary}
                   </p>
                 )}
