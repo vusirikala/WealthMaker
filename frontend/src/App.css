@@ -150,7 +150,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, var(--electric-purple), var(--teal), var(--coral), var(--electric-purple));
+  background: linear-gradient(90deg, var(--cyan), var(--emerald), var(--ocean-blue), var(--cyan));
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
