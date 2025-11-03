@@ -70,9 +70,9 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
     setShowLoginModal(false);
     setIsProcessing(true);
     
-    // Directly redirect to Google OAuth
+    // Directly redirect to Google OAuth with auto-continue parameter
     const redirectUrl = encodeURIComponent(`${window.location.origin}/`);
-    window.location.href = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
+    window.location.href = `https://auth.emergentagent.com/?redirect=${redirectUrl}&auto_continue=true`;
   };
 
   if (isProcessing) {
