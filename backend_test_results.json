@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-03T05:00:20.129271+00:00",
+  "timestamp": "2025-11-03T05:01:16.231799+00:00",
   "total_tests": 10,
-  "passed_tests": 4,
-  "success_rate": 40.0,
+  "passed_tests": 9,
+  "success_rate": 90.0,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762146019",
-        "email": "test.user.1762146019@example.com",
-        "name": "Test User 1762146019",
+        "_id": "test-user-1762146042",
+        "email": "test.user.1762146042@example.com",
+        "name": "Test User 1762146042",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-03T05:00:19.578000"
+        "created_at": "2025-11-03T05:00:43.037000"
       }
     },
     {
@@ -25,17 +25,9 @@
       }
     },
     {
-      "test": "POST /auth/logout",
+      "test": "GET /chat/messages",
       "success": true,
       "details": "",
-      "response_data": {
-        "success": true
-      }
-    },
-    {
-      "test": "GET /chat/messages",
-      "success": false,
-      "details": "Status: 401, Type: <class 'dict'>",
       "response_data": {
         "message_count": 0
       }
@@ -43,35 +35,35 @@
     {
       "test": "POST /chat/send",
       "success": false,
-      "details": "Status: 401",
+      "details": "Status: 408",
       "response_data": {
         "has_response": false
       }
     },
     {
       "test": "GET /chat/messages (after send)",
-      "success": false,
-      "details": "Status: 401, Messages: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 2
       }
     },
     {
       "test": "GET /portfolio",
-      "success": false,
-      "details": "Status: 401",
+      "success": true,
+      "details": "",
       "response_data": {
-        "risk_tolerance": null,
-        "roi_expectations": null,
-        "allocation_count": 0
+        "risk_tolerance": "medium",
+        "roi_expectations": 10.0,
+        "allocation_count": 6
       }
     },
     {
       "test": "GET /news",
-      "success": false,
-      "details": "Status: 401, Type: <class 'dict'>",
+      "success": true,
+      "details": "",
       "response_data": {
-        "news_count": 0
+        "news_count": 9
       }
     },
     {
@@ -84,10 +76,31 @@
     },
     {
       "test": "POST /chat/send (malformed)",
-      "success": false,
-      "details": "Expected 400/422, got 401",
+      "success": true,
+      "details": "",
       "response_data": {
-        "detail": "Not authenticated"
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "message"
+            ],
+            "msg": "Field required",
+            "input": {
+              "invalid": "data"
+            },
+            "url": "https://errors.pydantic.dev/2.12/v/missing"
+          }
+        ]
+      }
+    },
+    {
+      "test": "POST /auth/logout",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "success": true
       }
     }
   ]
