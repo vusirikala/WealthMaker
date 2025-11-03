@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Shield, BarChart3, Newspaper } from "lucide-react";
 import { toast } from "sonner";
@@ -8,6 +9,7 @@ const API = `${BACKEND_URL}/api`;
 
 export default function LandingPage({ setIsAuthenticated, setUser }) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check for session_id in URL fragment
@@ -34,16 +36,21 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         setUser(data.user);
         setIsAuthenticated(true);
         
-        // Clean URL
-        window.history.replaceState({}, document.title, "/dashboard");
+        // Clean URL and navigate to dashboard
+        window.history.replaceState({}, document.title, "/");
         toast.success("Welcome to SmartFolio!");
+        
+        // Navigate to dashboard
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 100);
       } else {
         toast.error("Authentication failed. Please try again.");
+        setIsProcessing(false);
       }
     } catch (error) {
       console.error("Session processing error:", error);
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setIsProcessing(false);
     }
   };
