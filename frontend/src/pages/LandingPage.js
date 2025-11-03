@@ -138,7 +138,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
               onClick={handleLogin}
               data-testid="get-started-button"
               size="lg"
-              className="bg-gradient-to-r from-purple-600 via-pink-600 to-teal-600 hover:from-purple-700 hover:via-pink-700 hover:to-teal-700 text-white px-12 py-7 text-xl rounded-full font-bold neon-glow hover-lift group"
+              className="bg-gradient-to-r from-cyan-600 via-emerald-600 to-ocean-blue hover:from-cyan-700 hover:via-emerald-700 hover:to-ocean-blue text-white px-12 py-7 text-xl rounded-full font-bold neon-glow hover-lift group"
             >
               Get Started Free
               <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-2 transition-transform" />
@@ -146,7 +146,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 px-10 py-7 text-xl rounded-full font-semibold backdrop-blur-sm"
+              className="border-2 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 px-10 py-7 text-xl rounded-full font-semibold backdrop-blur-sm"
             >
               Watch Demo
             </Button>
