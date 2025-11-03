@@ -21,6 +21,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
   }, []);
 
   const handleSessionCallback = async (sessionId) => {
+    console.log("Processing session ID:", sessionId.substring(0, 10) + "...");
     setIsProcessing(true);
     try {
       const response = await fetch(`${API}/auth/session`, {
@@ -31,8 +32,11 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         },
       });
 
+      console.log("Session response status:", response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log("Session data received:", data.user.email);
         setUser(data.user);
         setIsAuthenticated(true);
         
@@ -41,10 +45,13 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         toast.success("Welcome to SmartFolio!");
         
         // Navigate to dashboard
+        console.log("Navigating to dashboard...");
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 100);
       } else {
+        const errorText = await response.text();
+        console.error("Authentication failed:", response.status, errorText);
         toast.error("Authentication failed. Please try again.");
         setIsProcessing(false);
       }
