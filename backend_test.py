@@ -502,6 +502,9 @@ print('Setup complete');
         
         # Run test suites
         self.test_auth_endpoints()
+        self.test_admin_endpoints()
+        self.test_data_endpoints()
+        self.test_authentication_requirements()
         self.test_chat_endpoints()
         self.test_portfolio_endpoints()
         self.test_news_endpoints()
