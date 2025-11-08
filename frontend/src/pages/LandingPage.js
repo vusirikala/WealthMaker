@@ -106,7 +106,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
               
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to SmartFolio</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to WealthMaker</h2>
               <p className="text-gray-600 mb-8">Sign in to start building your investment portfolio</p>
 
               {/* Google Sign In Button */}
