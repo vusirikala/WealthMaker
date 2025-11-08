@@ -829,11 +829,11 @@ def analyze_context_completeness(user_context: Dict[str, Any]) -> Dict[str, Any]
     
     # Personal portfolio requirements
     if portfolio_type == 'personal':
-        if not user_context.get('age'):
+        if not user_context.get('date_of_birth'):
             missing_fields.append({
-                "field": "age",
+                "field": "date_of_birth",
                 "importance": "high",
-                "question": "How old are you? This helps me understand your investment timeline."
+                "question": "What is your date of birth? This helps me understand your investment timeline."
             })
         
         if not user_context.get('annual_income'):
