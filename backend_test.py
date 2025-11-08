@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for SmartFolio Financial Analyst App
-Tests authentication, chat, portfolio, and news endpoints
+Comprehensive Backend API Testing for WealthMaker Financial App
+Tests authentication, shared assets database, admin endpoints, and data endpoints
 """
 
 import requests
@@ -11,7 +11,7 @@ import time
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional
 
-class SmartFolioAPITester:
+class WealthMakerAPITester:
     def __init__(self, base_url="https://dataflow-finance.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
