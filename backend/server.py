@@ -320,6 +320,83 @@ async def update_user_context(context_update: Dict[str, Any], user: User = Depen
         updated_context = await db.user_context.find_one({"user_id": user.id})
         return updated_context
 
+# Helper function for context extraction
+async def extract_and_update_context(user_id: str, user_message: str, ai_response: str):
+    """Extract context from conversation and update user context"""
+    
+    extraction_prompt = f"""Based on the following conversation, extract any relevant financial information about the user.
+Return ONLY a JSON object with the extracted information. Use null for any information not mentioned.
+
+User message: {user_message}
+AI response: {ai_response}
+
+Extract the following if mentioned:
+{{
+  "portfolio_type": "personal or institutional (null if not mentioned)",
+  "age": number or null,
+  "retirement_age": number or null,
+  "net_worth": number or null,
+  "annual_income": number or null,
+  "monthly_investment": number or null,
+  "annual_investment": number or null,
+  "investment_mode": "sip, adhoc, or both (null if not mentioned)",
+  "risk_tolerance": "conservative, moderate, aggressive, or very_aggressive (null if not mentioned)",
+  "risk_details": "string description of risk tolerance (null if not mentioned)",
+  "roi_expectations": number or null,
+  "investment_style": "active, passive, or hybrid (null if not mentioned)",
+  "activity_level": "string description (null if not mentioned)",
+  "diversification_preference": "highly_diversified, moderately_diversified, or concentrated (null if not mentioned)",
+  "investment_strategy": ["array", "of", "strategies"] or null,
+  "liquidity_requirements": [{{"goal": "string", "when": "string", "amount": number}}] or null,
+  "sector_preferences": {{"stocks": {{"allowed": true, "sectors": ["tech", "healthcare"]}}, "crypto": {{"allowed": false}}}} or null,
+  "institution_name": "string or null",
+  "institution_sector": "string or null",
+  "annual_revenue": number or null,
+  "annual_profit": number or null,
+  "retirement_plans": "string or null",
+  "making_for": "self or someone_else (null if not mentioned)",
+  "existing_investments": {{"description": "string"}} or null
+}}
+
+Return ONLY valid JSON, no other text."""
+
+    try:
+        # Use LLM to extract structured data
+        chat = LlmChat(
+            api_key=os.environ.get('OPENAI_API_KEY'),
+            session_id=f"context_extraction_{user_id}_{uuid.uuid4()}",
+            system_message="You are a data extraction assistant. Extract financial information from conversations and return it as valid JSON."
+        ).with_model("openai", "gpt-5")
+        
+        extraction_response = await chat.send_message(UserMessage(text=extraction_prompt))
+        
+        # Parse the JSON response
+        import json
+        import re
+        
+        # Try to extract JSON from response
+        json_match = re.search(r'\{.*\}', extraction_response, re.DOTALL)
+        if json_match:
+            extracted_data = json.loads(json_match.group())
+            
+            # Remove null values and empty arrays
+            update_data = {k: v for k, v in extracted_data.items() if v is not None and v != [] and v != {}}
+            
+            if update_data:
+                # Update user context
+                update_data["updated_at"] = datetime.now(timezone.utc)
+                update_data["last_conversation_at"] = datetime.now(timezone.utc)
+                
+                await db.user_context.update_one(
+                    {"user_id": user_id},
+                    {"$set": update_data},
+                    upsert=True
+                )
+                logger.info(f"Updated context for user {user_id}: {list(update_data.keys())}")
+    
+    except Exception as e:
+        logger.error(f"Error in context extraction: {e}")
+
 # Chat routes
 @api_router.get("/chat/messages")
 async def get_chat_messages(user: User = Depends(require_auth)):
