@@ -46,7 +46,7 @@ export default function OnboardingForm({ onComplete }) {
       // Prepare context data
       const contextData = {
         portfolio_type: formData.portfolio_type,
-        age: formData.age ? parseInt(formData.age) : null,
+        date_of_birth: formData.date_of_birth || null,
         annual_income: formData.annual_income ? parseFloat(formData.annual_income) : null,
         monthly_investment: formData.monthly_investment ? parseFloat(formData.monthly_investment) : null,
         risk_tolerance: formData.risk_tolerance,
