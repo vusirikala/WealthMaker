@@ -35,28 +35,28 @@ async def get_asset_data(
     return data
 
 
-@router.post("/historical/batch")
-async def get_historical_data_batch(
+@router.post("/assets/batch")
+async def get_assets_batch(
     symbols: List[str],
-    force_refresh: bool = False,
     user: User = Depends(require_auth)
 ):
     """
-    Get historical data for multiple stocks at once
+    Get complete data for multiple assets from shared database
+    This is the main endpoint for fetching portfolio data
     
     Body:
-    - symbols: List of stock ticker symbols (e.g., ["AAPL", "MSFT", "GOOGL"])
-    - force_refresh: Whether to force refresh data
+    - symbols: List of ticker symbols (e.g., ["AAPL", "MSFT", "BTC-USD"])
     
-    Returns dictionary mapping symbols to their historical data
+    Returns dictionary mapping symbols to their complete asset data
     """
     symbols = [s.upper() for s in symbols]
     
-    results = await historical_data_service.get_multiple_stocks(symbols, force_refresh)
+    assets_data = await shared_assets_service.get_assets_data(symbols)
     
     return {
-        "count": len(results),
-        "data": results
+        "count": len(assets_data),
+        "requested": len(symbols),
+        "data": assets_data
     }
 
 
