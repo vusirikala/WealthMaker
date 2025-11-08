@@ -219,7 +219,7 @@ export default function OnboardingForm({ onComplete }) {
         onClick={() => {
           setStep(2);
           // Update total steps based on portfolio type
-          setTotalSteps(formData.portfolio_type === "personal" ? 6 : 5);
+          setTotalSteps(5);
         }}
         disabled={!formData.portfolio_type}
         className="w-full h-12 text-base font-semibold bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
