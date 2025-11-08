@@ -130,27 +130,27 @@ async def add_asset_to_track(
 
 
 @router.get("/tracked")
-async def get_tracked_stocks(user: User = Depends(require_auth)):
+async def get_tracked_assets(user: User = Depends(require_auth)):
     """
-    Get all stocks that user is tracking
-    Returns historical data for each tracked stock
+    Get all assets that user is tracking
+    Returns complete data from shared database for each tracked asset
     """
     from utils.database import db
     
     user_context = await db.user_context.find_one({"user_id": user.id})
     
     if not user_context or not user_context.get('tracked_symbols'):
-        return {"symbols": [], "data": {}}
+        return {"symbols": [], "count": 0, "data": {}}
     
     symbols = user_context.get('tracked_symbols', [])
     
-    # Get data for all tracked symbols
-    data = await historical_data_service.get_multiple_stocks(symbols)
+    # Get data from shared database
+    assets_data = await shared_assets_service.get_assets_data(symbols)
     
     return {
         "symbols": symbols,
-        "count": len(symbols),
-        "data": data
+        "count": len(assets_data),
+        "data": assets_data
     }
 
 
