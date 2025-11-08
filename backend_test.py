@@ -70,6 +70,8 @@ db.user_context.insertOne({{
   tracked_symbols: [],
   risk_tolerance: "medium",
   roi_expectations: 10,
+  portfolio_type: "personal",
+  investment_goals: ["growth"],
   created_at: new Date(),
   updated_at: new Date()
 }});
