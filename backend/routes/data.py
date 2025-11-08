@@ -80,34 +80,35 @@ async def search_assets(
 
 
 @router.post("/track")
-async def add_stock_to_track(
+async def add_asset_to_track(
     symbol: str,
     user: User = Depends(require_auth)
 ):
     """
-    Add a stock to track for this user
-    This triggers initial historical data fetch and adds to user's watchlist
+    Add an asset to user's watchlist
+    Asset must exist in shared database
     """
     from utils.database import db
-    import uuid
     from datetime import datetime, timezone
     
     symbol = symbol.upper()
     
-    # Fetch historical data (this will cache it)
-    data = await historical_data_service.get_stock_data(symbol)
+    # Check if asset exists in shared database
+    asset_data = await shared_assets_service.get_single_asset(symbol)
     
-    if not data:
-        raise HTTPException(status_code=404, detail=f"Could not find stock data for {symbol}")
+    if not asset_data:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Asset {symbol} not found in shared database. Contact admin to add it."
+        )
     
-    # Add to user's tracked stocks
-    tracked_stocks = await db.user_context.find_one({"user_id": user.id})
+    # Add to user's tracked symbols
+    user_context = await db.user_context.find_one({"user_id": user.id})
     
-    if not tracked_stocks:
+    if not user_context:
         raise HTTPException(status_code=404, detail="User context not found")
     
-    # Initialize tracked_symbols if not exists
-    current_tracked = tracked_stocks.get('tracked_symbols', [])
+    current_tracked = user_context.get('tracked_symbols', [])
     
     if symbol not in current_tracked:
         current_tracked.append(symbol)
@@ -123,8 +124,8 @@ async def add_stock_to_track(
     return {
         "success": True,
         "symbol": symbol,
-        "message": f"Now tracking {data['company_info']['name']}",
-        "data": data
+        "message": f"Now tracking {asset_data['name']}",
+        "asset": asset_data
     }
 
 
