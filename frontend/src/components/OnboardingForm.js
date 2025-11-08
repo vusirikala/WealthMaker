@@ -847,7 +847,7 @@ export default function OnboardingForm({ onComplete }) {
               </CardDescription>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-emerald-100 rounded-full">
-              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / 4) * 100)}% Complete</span>
+              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / 5) * 100)}% Complete</span>
             </div>
           </div>
           <div className="flex gap-2">
