@@ -219,8 +219,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Historical Data Service API endpoints"
-    - "Live Data Service API endpoints"
+    - "AI Insights Engine"
+    - "Action Recommendations Engine"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
