@@ -425,12 +425,6 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     }
     await db.chat_messages.insert_one(user_msg_doc)
     
-    # Get chat history
-    history = await db.chat_messages.find(
-        {"user_id": user.id},
-        {"_id": 0}
-    ).sort("timestamp", 1).to_list(100)
-    
     # Get user context
     user_context = await db.user_context.find_one({"user_id": user.id})
     if not user_context:
