@@ -115,28 +115,43 @@ export default function Dashboard({ user, setIsAuthenticated }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
-                <Avatar className="w-8 h-8 border-2 border-cyan-500">
-                  <AvatarImage src={user?.picture} alt={user?.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-emerald-500 text-white text-sm font-semibold">
-                    {user?.name?.[0] || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
-                </div>
-              </div>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                data-testid="logout-button"
-                className="rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <Avatar className="w-8 h-8 border-2 border-cyan-500">
+                      <AvatarImage src={user?.picture} alt={user?.name} />
+                      <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-emerald-500 text-white text-sm font-semibold">
+                        {user?.name?.[0] || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden sm:block text-left">
+                      <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setCurrentView("dashboard")}>
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCurrentView("profile")}>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCurrentView("settings")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
