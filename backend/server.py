@@ -1414,9 +1414,17 @@ Respond in a friendly, professional tone. Keep responses concise but informative
         except Exception as e:
             logger.error(f"Error parsing portfolio suggestion: {e}")
     
+    # Detect if user wants to update existing context
+    update_keywords = ['change', 'update', 'modify', 'correct', 'actually', 'instead']
+    is_context_update = any(keyword in user_message.lower() for keyword in update_keywords)
+    
     # Extract and update user context from conversation
     try:
         await extract_and_update_context(user.id, user_message, ai_response)
+        
+        # If this was a context update, acknowledge it
+        if is_context_update:
+            logger.info(f"Context update detected for user {user.id}")
     except Exception as e:
         logger.error(f"Error extracting context: {e}")
     
