@@ -90,9 +90,29 @@ class UserContext(BaseModel):
     investment_mode: Optional[str] = None  # 'sip', 'adhoc', 'both'
     existing_investments: Optional[Dict[str, Any]] = Field(default_factory=dict)
     
-    # Liquidity & Goals
+    # Liquidity & Goals - Comprehensive goal tracking
     liquidity_requirements: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
-    # Each item: {"goal": "house", "when": "2025", "amount": 50000}
+    # Each item structure:
+    # {
+    #   "goal_id": "unique_id",
+    #   "goal_name": "Buy a house",
+    #   "goal_type": "house_purchase",  # house_purchase, vacation, wedding, education, retirement, business, emergency_fund, vehicle, healthcare, other
+    #   "description": "3 bedroom house in suburbs",
+    #   "target_amount": 250000,  # Total cost
+    #   "amount_saved": 50000,  # Amount already saved
+    #   "amount_needed": 200000,  # Remaining amount needed
+    #   "target_date": "2026-12-31",  # When they need the money
+    #   "timeline_years": 3,  # Years until target date
+    #   "priority": "high",  # high, medium, low
+    #   "is_flexible": false,  # Can this timeline be adjusted?
+    #   "monthly_allocation": 5000,  # How much they plan to save monthly
+    #   "funding_strategy": "sip",  # sip, lump_sum, mixed
+    #   "risk_appetite_for_goal": "moderate",  # Risk tolerance specific to this goal
+    #   "notes": "First home purchase, need for down payment",
+    #   "progress_percentage": 20,  # (amount_saved / target_amount) * 100
+    #   "created_at": "2024-01-01",
+    #   "updated_at": "2024-01-15"
+    # }
     
     # Risk & Returns
     risk_tolerance: Optional[str] = None  # 'conservative', 'moderate', 'aggressive', 'very_aggressive'
