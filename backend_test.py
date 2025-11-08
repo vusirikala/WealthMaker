@@ -65,6 +65,14 @@ db.user_sessions.insertOne({{
   expires_at: new Date(Date.now() + 7*24*60*60*1000),
   created_at: new Date()
 }});
+db.user_context.insertOne({{
+  user_id: userId,
+  tracked_symbols: [],
+  risk_tolerance: "medium",
+  roi_expectations: 10,
+  created_at: new Date(),
+  updated_at: new Date()
+}});
 print('Setup complete');
 '''
             
