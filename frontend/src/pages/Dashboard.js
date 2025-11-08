@@ -23,6 +23,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 export default function Dashboard({ user, setIsAuthenticated }) {
+  const [currentView, setCurrentView] = useState("dashboard"); // dashboard, profile, settings
   const [activeTab, setActiveTab] = useState("chat");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingContext, setCheckingContext] = useState(true);
