@@ -267,8 +267,8 @@ print('Setup complete');
         if success and isinstance(data, dict):
             self.validate_asset_structure(data)
         
-        # Test batch assets request
-        batch_request = {"symbols": ["AAPL", "MSFT"]}
+        # Test batch assets request (expects list directly, not dict)
+        batch_request = ["AAPL", "MSFT"]
         status, data = self.make_request('POST', 'data/assets/batch', batch_request)
         success = status == 200 and 'data' in data
         self.log_test(
