@@ -1006,6 +1006,12 @@ async def get_chat_messages(user: User = Depends(require_auth)):
 async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
     user_message = chat_request.message
     
+    # Get chat history FIRST to check if this is first message
+    chat_history = await db.chat_messages.find(
+        {"user_id": user.id},
+        {"_id": 0}
+    ).sort("timestamp", 1).to_list(100)
+    
     # Save user message
     user_msg_doc = {
         "id": str(uuid.uuid4()),
