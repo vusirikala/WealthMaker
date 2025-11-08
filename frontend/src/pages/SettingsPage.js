@@ -61,11 +61,23 @@ export default function SettingsPage() {
 
   const handleDeleteAccount = async () => {
     try {
-      // Implementation would call delete endpoint
-      toast.success("Account deletion request submitted");
+      const response = await fetch(`${BACKEND_URL}/api/auth/account`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        toast.success("Account deleted successfully");
+        // Redirect to landing page after short delay
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
+      } else {
+        throw new Error("Failed to delete account");
+      }
     } catch (error) {
       console.error("Error deleting account:", error);
-      toast.error("Failed to delete account");
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 
