@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function OnboardingForm({ onComplete }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [totalSteps, setTotalSteps] = useState(4);
+  const [totalSteps, setTotalSteps] = useState(5);
   const [formData, setFormData] = useState({
     portfolio_type: "",
     // Personal fields
