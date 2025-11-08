@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function OnboardingForm({ onComplete }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [totalSteps, setTotalSteps] = useState(5);
+  const [totalSteps, setTotalSteps] = useState(8);
   const [formData, setFormData] = useState({
     portfolio_type: "",
     // Personal fields
@@ -33,6 +33,19 @@ export default function OnboardingForm({ onComplete }) {
     risk_tolerance: "",
     roi_expectations: "",
     financial_goals: [],
+    // Sector preferences
+    sectors: {
+      stocks: false,
+      bonds: false,
+      crypto: false,
+      real_estate: false,
+      commodities: false,
+      forex: false,
+    },
+    // Investment strategies
+    strategies: [],
+    // Goal details (will be populated after goals are entered)
+    goal_details: [],
   });
 
   const handleInputChange = (field, value) => {
@@ -44,18 +57,22 @@ export default function OnboardingForm({ onComplete }) {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
       
-      // Parse financial goals
-      const goalsText = formData.financial_goals.trim();
-      let liquidity_requirements = [];
-      if (goalsText) {
-        const goalLines = goalsText.split('\n').filter(line => line.trim());
-        liquidity_requirements = goalLines.map(goal => ({
-          goal_id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          goal_name: goal.trim(),
-          goal_type: "other",
-          priority: "medium",
-        }));
-      }
+      // Parse goals from textarea
+      const goalsText = typeof formData.financial_goals === 'string' ? formData.financial_goals : '';
+      const goalsList = goalsText.split('\n').filter(g => g.trim()).map((g, index) => ({
+        goal_id: `goal-${Date.now()}-${index}`,
+        goal_name: g.trim(),
+        goal_type: "other",
+        priority: "medium",
+      }));
+
+      // Prepare sector preferences
+      const selectedSectors = Object.keys(formData.sectors).reduce((acc, key) => {
+        if (formData.sectors[key]) {
+          acc[key] = { allowed: true };
+        }
+        return acc;
+      }, {});
 
       // Prepare context data based on portfolio type
       const contextData = {
@@ -64,7 +81,9 @@ export default function OnboardingForm({ onComplete }) {
         roi_expectations: formData.roi_expectations ? parseFloat(formData.roi_expectations) : null,
         monthly_investment: formData.monthly_investment ? parseFloat(formData.monthly_investment) : null,
         investment_mode: formData.monthly_investment ? "sip" : "adhoc",
-        liquidity_requirements: formData.financial_goals.length > 0 ? formData.financial_goals : null,
+        liquidity_requirements: goalsList.length > 0 ? goalsList : null,
+        sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
+        investment_strategy: formData.strategies.length > 0 ? formData.strategies : null,
       };
 
       // Add personal-specific fields
@@ -218,8 +237,8 @@ export default function OnboardingForm({ onComplete }) {
       <Button
         onClick={() => {
           setStep(2);
-          // Update total steps based on portfolio type
-          setTotalSteps(5);
+          // All users go through 8 steps now
+          setTotalSteps(8);
         }}
         disabled={!formData.portfolio_type}
         className="w-full h-12 text-base font-semibold bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
@@ -826,6 +845,258 @@ export default function OnboardingForm({ onComplete }) {
             onClick={() => setStep(4)} 
             variant="outline" 
             className="flex-1 h-12 border-2 hover:bg-gray-50"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </Button>
+          <Button
+            onClick={() => setStep(6)}
+            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            Continue
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Step 6: Sector Preferences
+  const renderStep6 = () => {
+    const handleSectorToggle = (sector) => {
+      setFormData((prev) => ({
+        ...prev,
+        sectors: {
+          ...prev.sectors,
+          [sector]: !prev.sectors[sector],
+        },
+      }));
+    };
+
+    const sectors = [
+      { id: "stocks", label: "Stocks & Equities", emoji: "📈", description: "Individual company shares and equity funds" },
+      { id: "bonds", label: "Bonds & Fixed Income", emoji: "💰", description: "Government and corporate bonds" },
+      { id: "crypto", label: "Cryptocurrency", emoji: "₿", description: "Bitcoin, Ethereum, and other digital assets" },
+      { id: "real_estate", label: "Real Estate", emoji: "🏢", description: "REITs and property investments" },
+      { id: "commodities", label: "Commodities", emoji: "🥇", description: "Gold, oil, and other physical assets" },
+      { id: "forex", label: "Foreign Exchange", emoji: "💱", description: "Currency trading and forex markets" },
+    ];
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+            <TrendingUp className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+            Investment Sectors
+          </h3>
+          <p className="text-gray-600">
+            Which sectors are you comfortable investing in?
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {sectors.map((sector) => (
+            <div
+              key={sector.id}
+              onClick={() => handleSectorToggle(sector.id)}
+              className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                formData.sectors[sector.id]
+                  ? "border-cyan-500 bg-cyan-50"
+                  : "border-gray-200 hover:border-cyan-300"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
+                  formData.sectors[sector.id] ? "bg-cyan-100" : "bg-gray-100"
+                }`}>
+                  {sector.emoji}
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">{sector.label}</div>
+                  <div className="text-sm text-gray-600">{sector.description}</div>
+                </div>
+                {formData.sectors[sector.id] && (
+                  <CheckCircle2 className="w-6 h-6 text-cyan-600" />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => setStep(5)} 
+            variant="outline" 
+            className="flex-1 h-12 border-2 hover:bg-gray-50"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </Button>
+          <Button 
+            onClick={() => setStep(7)}
+            disabled={!Object.values(formData.sectors).some(v => v)}
+            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            Continue
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Step 7: Investment Strategies
+  const renderStep7 = () => {
+    const handleStrategyToggle = (strategy) => {
+      setFormData((prev) => {
+        const strategies = prev.strategies.includes(strategy)
+          ? prev.strategies.filter((s) => s !== strategy)
+          : [...prev.strategies, strategy];
+        return { ...prev, strategies };
+      });
+    };
+
+    const strategies = [
+      { id: "value_investing", label: "Value Investing", description: "Buy undervalued stocks for long-term growth" },
+      { id: "growth_investing", label: "Growth Investing", description: "Invest in high-growth potential companies" },
+      { id: "income_investing", label: "Income/Dividend Investing", description: "Focus on dividend-paying stocks and bonds" },
+      { id: "index_funds", label: "Index Fund Investing", description: "Passive investing through market index funds" },
+      { id: "dollar_cost_averaging", label: "Dollar-Cost Averaging", description: "Invest fixed amounts regularly over time" },
+      { id: "buy_and_hold", label: "Buy and Hold", description: "Long-term holding strategy" },
+    ];
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+            <Target className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+            Investment Strategies
+          </h3>
+          <p className="text-gray-600">
+            Which investment strategies appeal to you?
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {strategies.map((strategy) => (
+            <div
+              key={strategy.id}
+              onClick={() => handleStrategyToggle(strategy.id)}
+              className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                formData.strategies.includes(strategy.id)
+                  ? "border-emerald-500 bg-emerald-50"
+                  : "border-gray-200 hover:border-emerald-300"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                  formData.strategies.includes(strategy.id) ? "bg-emerald-100" : "bg-gray-100"
+                }`}>
+                  {formData.strategies.includes(strategy.id) ? (
+                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                  ) : (
+                    <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">{strategy.label}</div>
+                  <div className="text-sm text-gray-600">{strategy.description}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs text-blue-800">
+            💡 Select all strategies that interest you. Our AI advisor will help refine your approach.
+          </p>
+        </div>
+
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => setStep(6)} 
+            variant="outline" 
+            className="flex-1 h-12 border-2 hover:bg-gray-50"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </Button>
+          <Button 
+            onClick={() => setStep(8)}
+            disabled={formData.strategies.length === 0}
+            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            Continue
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Step 8: Goal Details - Ask more about each goal
+  const renderStep8 = () => {
+    const goals = formData.financial_goals
+      .split('\n')
+      .filter((g) => g.trim())
+      .map((g, i) => g.trim());
+
+    if (goals.length === 0) {
+      return (
+        <div className="text-center p-8">
+          <p className="text-gray-600">No goals entered. Please go back and add your goals.</p>
+          <Button onClick={() => setStep(5)} className="mt-4">
+            Go Back
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+            <Target className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+            Great! Let's finalize
+          </h3>
+          <p className="text-gray-600">
+            We'll dive deeper into your goals in our conversation
+          </p>
+        </div>
+
+        <div className="p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
+          <p className="text-sm font-semibold text-gray-700 mb-3">Your Goals:</p>
+          <ul className="space-y-2">
+            {goals.map((goal, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <CheckCircle2 className="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{goal}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800 font-medium mb-2">What happens next?</p>
+          <ul className="text-xs text-blue-700 space-y-1 ml-4">
+            <li>• Our AI advisor will ask detailed questions about each goal</li>
+            <li>• We'll determine target amounts, timelines, and priorities</li>
+            <li>• You'll get personalized portfolio recommendations</li>
+          </ul>
+        </div>
+
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => setStep(7)} 
+            variant="outline" 
+            className="flex-1 h-12 border-2 hover:bg-gray-50"
             disabled={loading}
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
@@ -864,15 +1135,17 @@ export default function OnboardingForm({ onComplete }) {
                 WealthMaker
               </CardTitle>
               <CardDescription className="text-base mt-1">
-                Step {step} of 5
+                Step {step} of {totalSteps}
               </CardDescription>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-emerald-100 rounded-full">
-              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / 5) * 100)}% Complete</span>
+              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / totalSteps) * 100)}% Complete</span>
             </div>
           </div>
           <div className="flex gap-2">
-            {[1, 2, 3, 4, 5].map((s) => (
+            {[...Array(totalSteps)].map((_, index) => {
+              const s = index + 1;
+              return (
               <div
                 key={s}
                 className={`h-2 flex-1 rounded-full transition-all duration-500 ${
@@ -883,15 +1156,19 @@ export default function OnboardingForm({ onComplete }) {
                     : "bg-gray-200"
                 }`}
               />
-            ))}
+            );
+            })}
           </div>
         </CardHeader>
         <CardContent className="pb-8">
           {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
+          {step === 2 && (formData.portfolio_type === "personal" ? renderPersonalStep2() : renderInstitutionalStep2())}
           {step === 3 && renderStep3()}
           {step === 4 && renderStep4()}
           {step === 5 && renderStep5()}
+          {step === 6 && renderStep6()}
+          {step === 7 && renderStep7()}
+          {step === 8 && renderStep8()}
         </CardContent>
       </Card>
     </div>
