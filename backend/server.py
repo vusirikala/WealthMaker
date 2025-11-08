@@ -352,6 +352,30 @@ async def logout(response: Response, user: User = Depends(require_auth)):
     
     return {"success": True}
 
+@api_router.delete("/auth/account")
+async def delete_account(response: Response, user: User = Depends(require_auth)):
+    """
+    Delete user account and all associated data
+    WARNING: This action is irreversible
+    """
+    try:
+        # Delete all user data from all collections
+        await db.user_sessions.delete_many({"user_id": user.id})
+        await db.user_context.delete_many({"user_id": user.id})
+        await db.portfolios.delete_many({"user_id": user.id})
+        await db.chat_messages.delete_many({"user_id": user.id})
+        await db.portfolio_suggestions.delete_many({"user_id": user.id})
+        
+        # Clear cookie
+        response.delete_cookie("session_token", path="/")
+        
+        logger.info(f"Account deleted for user: {user.email}")
+        
+        return {"success": True, "message": "Account deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting account: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete account")
+
 # User Context routes
 @api_router.get("/context")
 async def get_user_context(user: User = Depends(require_auth)):
