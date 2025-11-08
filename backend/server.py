@@ -62,6 +62,64 @@ class ChatMessage(BaseModel):
     message: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class UserContext(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id")
+    user_id: str
+    
+    # Basic Type
+    portfolio_type: Optional[str] = None  # 'personal' or 'institutional'
+    making_for: Optional[str] = None  # 'self' or 'someone_else'
+    
+    # Personal Information (for personal portfolios)
+    age: Optional[int] = None
+    retirement_age: Optional[int] = None
+    retirement_plans: Optional[str] = None
+    
+    # Institution Information (for institutional portfolios)
+    institution_name: Optional[str] = None
+    institution_sector: Optional[str] = None
+    annual_revenue: Optional[float] = None
+    annual_profit: Optional[float] = None
+    
+    # Financial Information
+    net_worth: Optional[float] = None
+    annual_income: Optional[float] = None
+    monthly_investment: Optional[float] = None
+    annual_investment: Optional[float] = None
+    investment_mode: Optional[str] = None  # 'sip', 'adhoc', 'both'
+    existing_investments: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    
+    # Liquidity & Goals
+    liquidity_requirements: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    # Each item: {"goal": "house", "when": "2025", "amount": 50000}
+    
+    # Risk & Returns
+    risk_tolerance: Optional[str] = None  # 'conservative', 'moderate', 'aggressive', 'very_aggressive'
+    risk_details: Optional[str] = None  # Detailed risk description
+    roi_expectations: Optional[float] = None
+    
+    # Investment Preferences
+    investment_style: Optional[str] = None  # 'active', 'passive', 'hybrid'
+    activity_level: Optional[str] = None  # How often they want to rebalance
+    diversification_preference: Optional[str] = None  # 'highly_diversified', 'moderately_diversified', 'concentrated'
+    
+    # Investment Strategy
+    investment_strategy: Optional[List[str]] = Field(default_factory=list)
+    # ['value_investing', 'growth_investing', 'income_investing', 'index_funds', 
+    #  'buy_and_hold', 'dollar_cost_averaging', 'momentum_investing', etc.]
+    
+    # Sector Preferences
+    sector_preferences: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    # {"stocks": {"allowed": true, "sectors": ["tech", "healthcare"]},
+    #  "crypto": {"allowed": false}, 
+    #  "bonds": {"allowed": true}, etc.}
+    
+    # Metadata
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    last_conversation_at: Optional[datetime] = None
+
 class Portfolio(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id")
