@@ -707,7 +707,7 @@ AI response: {ai_response}
 Extract the following if mentioned:
 {{
   "portfolio_type": "personal or institutional (null if not mentioned)",
-  "age": number or null,
+  "date_of_birth": "YYYY-MM-DD format or null",
   "retirement_age": number or null,
   "net_worth": number or null,
   "annual_income": number or null,
