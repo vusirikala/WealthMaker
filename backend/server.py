@@ -637,9 +637,25 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         context_info += f"\n- Investment Strategy: {', '.join(user_context['investment_strategy'])}"
     
     if user_context.get('liquidity_requirements'):
-        context_info += "\n- Liquidity Requirements:"
+        context_info += "\n\n- FINANCIAL GOALS & LIQUIDITY NEEDS:"
         for req in user_context['liquidity_requirements']:
-            context_info += f"\n  * {req.get('goal', 'Goal')}: {req.get('when', 'TBD')} (${req.get('amount', 0):,.0f})"
+            goal_name = req.get('goal_name', req.get('goal', 'Goal'))
+            target_amount = req.get('target_amount', req.get('amount', 0))
+            amount_saved = req.get('amount_saved', 0)
+            amount_needed = req.get('amount_needed', target_amount - amount_saved)
+            target_date = req.get('target_date', req.get('when', 'TBD'))
+            priority = req.get('priority', 'medium')
+            progress = req.get('progress_percentage', 0)
+            
+            context_info += f"\n  * {goal_name} ({priority} priority)"
+            context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
+            context_info += f"\n    - Saved: ${amount_saved:,.0f} ({progress:.1f}%)"
+            context_info += f"\n    - Still Needed: ${amount_needed:,.0f}"
+            
+            if req.get('monthly_allocation'):
+                context_info += f"\n    - Monthly Allocation: ${req['monthly_allocation']:,.0f}"
+            if req.get('description'):
+                context_info += f"\n    - Details: {req['description']}"
     
     if user_context.get('sector_preferences'):
         context_info += "\n- Sector Preferences:"
