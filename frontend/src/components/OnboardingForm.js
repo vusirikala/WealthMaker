@@ -843,7 +843,7 @@ export default function OnboardingForm({ onComplete }) {
                 WealthMaker
               </CardTitle>
               <CardDescription className="text-base mt-1">
-                Step {step} of 4
+                Step {step} of 5
               </CardDescription>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-emerald-100 rounded-full">
