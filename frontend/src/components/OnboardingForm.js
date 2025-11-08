@@ -216,13 +216,327 @@ export default function OnboardingForm({ onComplete }) {
       </div>
 
       <Button
-        onClick={() => setStep(2)}
+        onClick={() => {
+          setStep(2);
+          // Update total steps based on portfolio type
+          setTotalSteps(formData.portfolio_type === "personal" ? 6 : 5);
+        }}
         disabled={!formData.portfolio_type}
         className="w-full h-12 text-base font-semibold bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
       >
         Continue
         <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
+    </div>
+  );
+
+  // Step 2a: Personal Details (only for personal portfolios)
+  const renderPersonalStep2 = () => (
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+          <User className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+          Personal Information
+        </h3>
+        <p className="text-gray-600">
+          Tell us about your financial situation
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="net_worth" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-cyan-600" />
+            Approximate Net Worth
+          </Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <Input
+              id="net_worth"
+              type="number"
+              placeholder="500,000"
+              value={formData.net_worth}
+              onChange={(e) => handleInputChange("net_worth", e.target.value)}
+              className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+            />
+          </div>
+          <p className="text-xs text-gray-500">Total assets minus debts</p>
+        </div>
+
+        <div>
+          <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+            Home Ownership
+          </Label>
+          <RadioGroup
+            value={formData.home_ownership}
+            onValueChange={(value) => handleInputChange("home_ownership", value)}
+            className="grid grid-cols-1 gap-3"
+          >
+            <div
+              className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                formData.home_ownership === "own"
+                  ? "border-cyan-500 bg-cyan-50"
+                  : "border-gray-200 hover:border-cyan-300"
+              }`}
+            >
+              <RadioGroupItem value="own" id="own" className="sr-only" />
+              <Label htmlFor="own" className="cursor-pointer flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-2xl ${
+                  formData.home_ownership === "own" ? "bg-cyan-100" : "bg-gray-100"
+                }`}>
+                  🏠
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Own a Home</div>
+                  <div className="text-sm text-gray-600">I own my primary residence</div>
+                </div>
+                {formData.home_ownership === "own" && (
+                  <CheckCircle2 className="w-5 h-5 text-cyan-600" />
+                )}
+              </Label>
+            </div>
+
+            <div
+              className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                formData.home_ownership === "rent"
+                  ? "border-cyan-500 bg-cyan-50"
+                  : "border-gray-200 hover:border-cyan-300"
+              }`}
+            >
+              <RadioGroupItem value="rent" id="rent" className="sr-only" />
+              <Label htmlFor="rent" className="cursor-pointer flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-2xl ${
+                  formData.home_ownership === "rent" ? "bg-cyan-100" : "bg-gray-100"
+                }`}>
+                  🏢
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Rent</div>
+                  <div className="text-sm text-gray-600">I rent my primary residence</div>
+                </div>
+                {formData.home_ownership === "rent" && (
+                  <CheckCircle2 className="w-5 h-5 text-cyan-600" />
+                )}
+              </Label>
+            </div>
+
+            <div
+              className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                formData.home_ownership === "other"
+                  ? "border-cyan-500 bg-cyan-50"
+                  : "border-gray-200 hover:border-cyan-300"
+              }`}
+            >
+              <RadioGroupItem value="other" id="other-home" className="sr-only" />
+              <Label htmlFor="other-home" className="cursor-pointer flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-2xl ${
+                  formData.home_ownership === "other" ? "bg-cyan-100" : "bg-gray-100"
+                }`}>
+                  🏘️
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900">Other</div>
+                  <div className="text-sm text-gray-600">Living with family or other arrangement</div>
+                </div>
+                {formData.home_ownership === "other" && (
+                  <CheckCircle2 className="w-5 h-5 text-cyan-600" />
+                )}
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {formData.home_ownership === "own" && (
+          <div className="space-y-4 p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
+            <p className="text-sm font-semibold text-gray-700">Home Details</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="house_price" className="text-sm text-gray-700">
+                  Estimated Home Value
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <Input
+                    id="house_price"
+                    type="number"
+                    placeholder="400,000"
+                    value={formData.house_price}
+                    onChange={(e) => handleInputChange("house_price", e.target.value)}
+                    className="pl-8 h-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mortgage_amount" className="text-sm text-gray-700">
+                  Outstanding Mortgage
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <Input
+                    id="mortgage_amount"
+                    type="number"
+                    placeholder="300,000"
+                    value={formData.mortgage_amount}
+                    onChange={(e) => handleInputChange("mortgage_amount", e.target.value)}
+                    className="pl-8 h-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="mortgage_monthly" className="text-sm text-gray-700">
+                  Monthly Mortgage Payment
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <Input
+                    id="mortgage_monthly"
+                    type="number"
+                    placeholder="2,500"
+                    value={formData.mortgage_monthly}
+                    onChange={(e) => handleInputChange("mortgage_monthly", e.target.value)}
+                    className="pl-8 h-10"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3">
+        <Button 
+          onClick={() => setStep(1)} 
+          variant="outline" 
+          className="flex-1 h-12 border-2 hover:bg-gray-50"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </Button>
+        <Button 
+          onClick={() => setStep(3)} 
+          className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+        >
+          Continue
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+      </div>
+    </div>
+  );
+
+  // Step 2b: Institutional Details (only for institutional portfolios)
+  const renderInstitutionalStep2 = () => (
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+          <Building2 className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+          Organization Details
+        </h3>
+        <p className="text-gray-600">
+          Tell us about your institution
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="institution_name" className="text-sm font-semibold text-gray-700">
+            Institution Name
+          </Label>
+          <Input
+            id="institution_name"
+            type="text"
+            placeholder="e.g., Acme Investment Fund"
+            value={formData.institution_name}
+            onChange={(e) => handleInputChange("institution_name", e.target.value)}
+            className="h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="institution_sector" className="text-sm font-semibold text-gray-700">
+            Primary Sector/Industry
+          </Label>
+          <Input
+            id="institution_sector"
+            type="text"
+            placeholder="e.g., Technology, Healthcare, Finance"
+            value={formData.institution_sector}
+            onChange={(e) => handleInputChange("institution_sector", e.target.value)}
+            className="h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="annual_revenue" className="text-sm font-semibold text-gray-700">
+              Annual Revenue
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+              <Input
+                id="annual_revenue"
+                type="number"
+                placeholder="10,000,000"
+                value={formData.annual_revenue}
+                onChange={(e) => handleInputChange("annual_revenue", e.target.value)}
+                className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="annual_profit" className="text-sm font-semibold text-gray-700">
+              Annual Profit
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+              <Input
+                id="annual_profit"
+                type="number"
+                placeholder="2,000,000"
+                value={formData.annual_profit}
+                onChange={(e) => handleInputChange("annual_profit", e.target.value)}
+                className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="number_of_employees" className="text-sm font-semibold text-gray-700">
+            Number of Employees
+          </Label>
+          <Input
+            id="number_of_employees"
+            type="number"
+            placeholder="e.g., 50"
+            value={formData.number_of_employees}
+            onChange={(e) => handleInputChange("number_of_employees", e.target.value)}
+            className="h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-3">
+        <Button 
+          onClick={() => setStep(1)} 
+          variant="outline" 
+          className="flex-1 h-12 border-2 hover:bg-gray-50"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </Button>
+        <Button 
+          onClick={() => setStep(3)} 
+          className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+        >
+          Continue
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+      </div>
     </div>
   );
 
