@@ -1345,16 +1345,32 @@ Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allo
 Respond in a friendly, professional tone. Keep responses concise but informative."""
     
     try:
-        # Initialize LLM chat
-        chat = LlmChat(
-            api_key=os.environ.get('OPENAI_API_KEY'),
-            session_id=f"portfolio_chat_{user.id}",
-            system_message=system_message
-        ).with_model("openai", "gpt-5")
-        
-        # Send message
-        llm_message = UserMessage(text=user_message)
-        ai_response = await chat.send_message(llm_message)
+        # Special handling for first message or if smart question needed
+        if smart_question and len(chat_history) == 0:
+            # First interaction - use smart greeting
+            ai_response = smart_question
+        elif smart_question and not context_analysis['is_ready_for_portfolio'] and len(user_message.lower().split()) < 5:
+            # Short user response and still gathering info - guide with smart question
+            # But first, let AI process the user's answer
+            chat = LlmChat(
+                api_key=os.environ.get('OPENAI_API_KEY'),
+                session_id=f"portfolio_chat_{user.id}",
+                system_message=system_message
+            ).with_model("openai", "gpt-5")
+            
+            llm_message = UserMessage(text=user_message)
+            ai_response = await chat.send_message(llm_message)
+        else:
+            # Normal conversation flow
+            chat = LlmChat(
+                api_key=os.environ.get('OPENAI_API_KEY'),
+                session_id=f"portfolio_chat_{user.id}",
+                system_message=system_message
+            ).with_model("openai", "gpt-5")
+            
+            # Send message
+            llm_message = UserMessage(text=user_message)
+            ai_response = await chat.send_message(llm_message)
         
     except Exception as e:
         logger.error(f"LLM error: {e}")
