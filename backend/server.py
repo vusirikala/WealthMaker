@@ -1154,7 +1154,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     # Analyze context completeness
     context_analysis = analyze_context_completeness(user_context)
     
-    context_info += f"\n\n=== INFORMATION GATHERING STATUS ==="
+    context_info += "\n\n=== INFORMATION GATHERING STATUS ==="
     context_info += f"\n- Profile Completeness: {context_analysis['completeness_percentage']}%"
     context_info += f"\n- Ready for Portfolio Creation: {'YES' if context_analysis['is_ready_for_portfolio'] else 'NO - More information needed'}"
     
