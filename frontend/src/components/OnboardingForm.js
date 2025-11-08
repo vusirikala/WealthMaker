@@ -193,47 +193,74 @@ export default function OnboardingForm({ onComplete }) {
   );
 
   const renderStep2 = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Financial Details</h3>
-        <p className="text-sm text-gray-600">
-          This helps us understand your investment capacity.
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+          <DollarSign className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+          Financial Details
+        </h3>
+        <p className="text-gray-600">
+          Help us understand your investment capacity
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="annual_income">Annual Income ($)</Label>
-          <Input
-            id="annual_income"
-            type="number"
-            placeholder="e.g., 120000"
-            value={formData.annual_income}
-            onChange={(e) => handleInputChange("annual_income", e.target.value)}
-            className="mt-2"
-          />
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="annual_income" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-cyan-600" />
+            Annual Income
+          </Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <Input
+              id="annual_income"
+              type="number"
+              placeholder="120,000"
+              value={formData.annual_income}
+              onChange={(e) => handleInputChange("annual_income", e.target.value)}
+              className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+            />
+          </div>
+          <p className="text-xs text-gray-500">Your approximate yearly income</p>
         </div>
 
-        <div>
-          <Label htmlFor="monthly_investment">Monthly Investment Amount ($)</Label>
-          <Input
-            id="monthly_investment"
-            type="number"
-            placeholder="e.g., 5000"
-            value={formData.monthly_investment}
-            onChange={(e) => handleInputChange("monthly_investment", e.target.value)}
-            className="mt-2"
-          />
-          <p className="text-xs text-gray-500 mt-1">How much can you invest each month?</p>
+        <div className="space-y-2">
+          <Label htmlFor="monthly_investment" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-emerald-600" />
+            Monthly Investment Amount
+          </Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <Input
+              id="monthly_investment"
+              type="number"
+              placeholder="5,000"
+              value={formData.monthly_investment}
+              onChange={(e) => handleInputChange("monthly_investment", e.target.value)}
+              className="pl-8 h-12 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+            />
+          </div>
+          <p className="text-xs text-gray-500">How much you plan to invest each month</p>
         </div>
       </div>
 
       <div className="flex gap-3">
-        <Button onClick={() => setStep(1)} variant="outline" className="flex-1">
+        <Button 
+          onClick={() => setStep(1)} 
+          variant="outline" 
+          className="flex-1 h-12 border-2 hover:bg-gray-50"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
           Back
         </Button>
-        <Button onClick={() => setStep(3)} className="flex-1">
+        <Button 
+          onClick={() => setStep(3)} 
+          className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+        >
           Continue
+          <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
       </div>
     </div>
