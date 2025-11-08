@@ -761,45 +761,65 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
-  const renderStep5 = () => (
-    <div className="space-y-8">
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
-          <Target className="w-8 h-8 text-white" />
-        </div>
-        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
-          Your Financial Goals
-        </h3>
-        <p className="text-gray-600">
-          What are you investing for?
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
-          <Label htmlFor="financial_goals" className="text-sm font-semibold text-gray-700 mb-2 block">
-            List Your Goals (One per line)
-          </Label>
-          <Textarea
-            id="financial_goals"
-            placeholder="Examples:
+  const renderStep5 = () => {
+    const isPersonal = formData.portfolio_type === "personal";
+    
+    const personalPlaceholder = `Examples:
 • Retirement at age 60
 • Buy a house in 5 years
 • Children's college education
 • Build emergency fund
-• Start a business"
-            value={formData.financial_goals}
-            onChange={(e) => handleInputChange("financial_goals", e.target.value)}
-            className="mt-2 min-h-[180px] border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-          />
-          <div className="mt-3 p-3 bg-white rounded-lg border border-cyan-200">
-            <p className="text-xs text-gray-600 flex items-start gap-2">
-              <span className="text-cyan-600 mt-0.5">💡</span>
-              <span>Don't worry about details now. We'll refine each goal through our conversation.</span>
-            </p>
+• Save for wedding
+• Start a business
+• Plan a vacation`;
+
+    const institutionalPlaceholder = `Examples:
+• Capital preservation and growth
+• Meet pension fund liabilities
+• Generate stable returns for beneficiaries
+• Diversify asset allocation
+• Hedge against market volatility
+• Fund expansion and acquisitions
+• Maintain liquidity for operational needs`;
+
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+            <Target className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+            {isPersonal ? "Your Financial Goals" : "Investment Objectives"}
+          </h3>
+          <p className="text-gray-600">
+            {isPersonal ? "What are you investing for?" : "What are your organization's investment goals?"}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
+            <Label htmlFor="financial_goals" className="text-sm font-semibold text-gray-700 mb-2 block">
+              {isPersonal ? "List Your Goals (One per line)" : "List Your Investment Objectives (One per line)"}
+            </Label>
+            <Textarea
+              id="financial_goals"
+              placeholder={isPersonal ? personalPlaceholder : institutionalPlaceholder}
+              value={formData.financial_goals}
+              onChange={(e) => handleInputChange("financial_goals", e.target.value)}
+              className="mt-2 min-h-[180px] border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500 resize-none"
+            />
+            <div className="mt-3 p-3 bg-white rounded-lg border border-cyan-200">
+              <p className="text-xs text-gray-600 flex items-start gap-2">
+                <span className="text-cyan-600 mt-0.5">💡</span>
+                <span>
+                  {isPersonal 
+                    ? "Don't worry about details now. We'll refine each goal through our conversation."
+                    : "We'll gather more specific details about each objective in our conversation."}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="flex gap-3">
         <Button 
