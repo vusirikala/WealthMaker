@@ -269,10 +269,6 @@ async def process_session(request: Request, response: Response):
 
 @api_router.post("/auth/logout")
 async def logout(response: Response, user: User = Depends(require_auth)):
-    session_token = None
-    # Get from cookie or header
-    # (handled by get_current_user)
-    
     # Delete all sessions for user
     await db.user_sessions.delete_many({"user_id": user.id})
     
