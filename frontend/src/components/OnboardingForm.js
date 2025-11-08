@@ -70,6 +70,23 @@ export default function OnboardingForm({ onComplete }) {
         }));
       }
 
+      // Parse goals from textarea
+      const goalsText = typeof formData.financial_goals === 'string' ? formData.financial_goals : '';
+      const goalsList = goalsText.split('\n').filter(g => g.trim()).map((g, index) => ({
+        goal_id: `goal-${Date.now()}-${index}`,
+        goal_name: g.trim(),
+        goal_type: "other",
+        priority: "medium",
+      }));
+
+      // Prepare sector preferences
+      const selectedSectors = Object.keys(formData.sectors).reduce((acc, key) => {
+        if (formData.sectors[key]) {
+          acc[key] = { allowed: true };
+        }
+        return acc;
+      }, {});
+
       // Prepare context data based on portfolio type
       const contextData = {
         portfolio_type: formData.portfolio_type,
@@ -77,7 +94,9 @@ export default function OnboardingForm({ onComplete }) {
         roi_expectations: formData.roi_expectations ? parseFloat(formData.roi_expectations) : null,
         monthly_investment: formData.monthly_investment ? parseFloat(formData.monthly_investment) : null,
         investment_mode: formData.monthly_investment ? "sip" : "adhoc",
-        liquidity_requirements: formData.financial_goals.length > 0 ? formData.financial_goals : null,
+        liquidity_requirements: goalsList.length > 0 ? goalsList : null,
+        sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
+        investment_strategy: formData.strategies.length > 0 ? formData.strategies : null,
       };
 
       // Add personal-specific fields
