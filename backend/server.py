@@ -1194,18 +1194,51 @@ INITIAL ASSESSMENT:
 - Based on their answer, tailor subsequent questions accordingly
 """
     
+    # Determine conversation mode based on context completeness
+    conversation_mode = ""
+    if not context_analysis['is_ready_for_portfolio']:
+        conversation_mode = """
+=== CURRENT MODE: INFORMATION GATHERING ===
+
+You are in INFORMATION GATHERING mode. Your primary task is to collect essential information before making any portfolio recommendations.
+
+RULES FOR THIS MODE:
+1. DO NOT suggest any portfolio allocations yet - you don't have enough information
+2. Ask ONE focused question at a time to gather missing information
+3. Be conversational and friendly, not robotic
+4. Acknowledge user's answers before asking the next question
+5. Explain briefly WHY you need each piece of information
+6. Adapt your questions based on their previous answers
+7. If user asks about portfolios, explain you need more information first
+
+YOUR NEXT QUESTION SHOULD BE ABOUT: {context_analysis['next_question']['field'] if context_analysis['next_question'] else 'general financial situation'}
+"""
+    else:
+        conversation_mode = """
+=== CURRENT MODE: ADVISORY MODE ===
+
+You have sufficient information! You can now:
+1. Provide specific portfolio recommendations
+2. Answer questions about investment strategies
+3. Suggest portfolio adjustments
+4. Offer detailed financial advice
+
+You may still ask clarifying questions, but you have enough to create an initial portfolio.
+"""
+    
     # Create system message
     system_message = f"""You are an expert financial advisor helping users build and manage their investment portfolio.{context_info}
+
+{conversation_mode}
 
 {portfolio_type_guidance}
 
 Your role:
 1. Understand user's investment preferences and continuously build their context/memory
 2. Extract and remember key information about their financial situation, goals, and preferences
-3. Recommend portfolio allocations across different asset classes (stocks, bonds, crypto, indexes)
-4. Suggest specific tickers and allocation percentages
+3. Ask smart, contextual questions based on what information is missing
+4. ONLY recommend portfolios when you have sufficient information (Ready for Portfolio Creation: YES)
 5. Explain your recommendations in clear, simple terms
-6. ONLY suggest portfolio updates when you have specific recommendations
 
 KEY INFORMATION TO GATHER (if not already known):
 - Portfolio type (personal vs institutional)
