@@ -84,48 +84,99 @@ export default function OnboardingForm({ onComplete }) {
   };
 
   const renderStep1 = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Let's Get Started</h3>
-        <p className="text-sm text-gray-600 mb-6">
-          Tell us a bit about yourself so we can create a personalized investment strategy.
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+          <User className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+          Welcome to WealthMaker
+        </h3>
+        <p className="text-gray-600">
+          Let's create your personalized investment strategy
         </p>
       </div>
 
       <div className="space-y-4">
-        <div>
-          <Label className="text-base mb-3 block">Who is this portfolio for?</Label>
-          <RadioGroup
-            value={formData.portfolio_type}
-            onValueChange={(value) => handleInputChange("portfolio_type", value)}
+        <Label className="text-base font-semibold text-gray-700 mb-3 block">
+          Who is this portfolio for?
+        </Label>
+        <RadioGroup
+          value={formData.portfolio_type}
+          onValueChange={(value) => handleInputChange("portfolio_type", value)}
+          className="grid grid-cols-1 gap-4"
+        >
+          <div
+            className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+              formData.portfolio_type === "personal"
+                ? "border-cyan-500 bg-cyan-50 shadow-md"
+                : "border-gray-200 hover:border-cyan-300"
+            }`}
           >
-            <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-              <RadioGroupItem value="personal" id="personal" />
-              <Label htmlFor="personal" className="cursor-pointer flex-1">
-                <div className="font-medium">Personal</div>
-                <div className="text-sm text-gray-500">Building wealth for myself or family</div>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-              <RadioGroupItem value="institutional" id="institutional" />
-              <Label htmlFor="institutional" className="cursor-pointer flex-1">
-                <div className="font-medium">Institutional</div>
-                <div className="text-sm text-gray-500">Managing funds for an organization</div>
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
+            <RadioGroupItem value="personal" id="personal" className="sr-only" />
+            <Label htmlFor="personal" className="cursor-pointer flex items-start gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                formData.portfolio_type === "personal" 
+                  ? "bg-gradient-to-br from-cyan-500 to-emerald-500 text-white" 
+                  : "bg-gray-100 text-gray-400"
+              }`}>
+                <User className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 mb-1 text-lg">Personal Portfolio</div>
+                <div className="text-sm text-gray-600">
+                  Building wealth for yourself or your family's future
+                </div>
+              </div>
+              {formData.portfolio_type === "personal" && (
+                <CheckCircle2 className="w-6 h-6 text-cyan-600 absolute top-4 right-4" />
+              )}
+            </Label>
+          </div>
+
+          <div
+            className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+              formData.portfolio_type === "institutional"
+                ? "border-cyan-500 bg-cyan-50 shadow-md"
+                : "border-gray-200 hover:border-cyan-300"
+            }`}
+          >
+            <RadioGroupItem value="institutional" id="institutional" className="sr-only" />
+            <Label htmlFor="institutional" className="cursor-pointer flex items-start gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                formData.portfolio_type === "institutional" 
+                  ? "bg-gradient-to-br from-cyan-500 to-emerald-500 text-white" 
+                  : "bg-gray-100 text-gray-400"
+              }`}>
+                <Building2 className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 mb-1 text-lg">Institutional Portfolio</div>
+                <div className="text-sm text-gray-600">
+                  Managing investments for an organization or fund
+                </div>
+              </div>
+              {formData.portfolio_type === "institutional" && (
+                <CheckCircle2 className="w-6 h-6 text-cyan-600 absolute top-4 right-4" />
+              )}
+            </Label>
+          </div>
+        </RadioGroup>
 
         {formData.portfolio_type === "personal" && (
-          <div>
-            <Label htmlFor="date_of_birth">Date of Birth</Label>
+          <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
+            <Label htmlFor="date_of_birth" className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-cyan-600" />
+              Date of Birth
+            </Label>
             <Input
               id="date_of_birth"
               type="date"
               value={formData.date_of_birth}
               onChange={(e) => handleInputChange("date_of_birth", e.target.value)}
-              className="mt-2"
+              className="mt-2 border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500"
             />
+            <p className="text-xs text-gray-600 mt-2">This helps us understand your investment timeline</p>
           </div>
         )}
       </div>
@@ -133,9 +184,10 @@ export default function OnboardingForm({ onComplete }) {
       <Button
         onClick={() => setStep(2)}
         disabled={!formData.portfolio_type}
-        className="w-full"
+        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
       >
         Continue
+        <ArrowRight className="w-5 h-5 ml-2" />
       </Button>
     </div>
   );
