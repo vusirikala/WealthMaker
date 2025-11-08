@@ -903,6 +903,39 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     if user_context.get('existing_investments'):
         context_info += f"\n- Existing Investments: {user_context['existing_investments']}"
     
+    # Display existing portfolios
+    if user_context.get('existing_portfolios'):
+        context_info += "\n\n- EXISTING PORTFOLIOS:"
+        for portfolio in user_context['existing_portfolios']:
+            portfolio_name = portfolio.get('portfolio_name', 'Portfolio')
+            goal_name = portfolio.get('goal_name', 'General')
+            total_value = portfolio.get('total_value', 0)
+            cost_basis = portfolio.get('cost_basis', 0)
+            gain_loss = portfolio.get('unrealized_gain_loss', 0)
+            gain_loss_pct = portfolio.get('unrealized_gain_loss_percentage', 0)
+            account_type = portfolio.get('account_type', 'N/A')
+            
+            context_info += f"\n  * {portfolio_name} (for {goal_name})"
+            context_info += f"\n    - Account Type: {account_type}"
+            context_info += f"\n    - Current Value: ${total_value:,.2f}"
+            context_info += f"\n    - Cost Basis: ${cost_basis:,.2f}"
+            context_info += f"\n    - Gain/Loss: ${gain_loss:,.2f} ({gain_loss_pct:.2f}%)"
+            
+            if portfolio.get('allocation_summary'):
+                context_info += "\n    - Allocation: "
+                alloc_str = ", ".join([f"{k}: {v:.1f}%" for k, v in portfolio['allocation_summary'].items()])
+                context_info += alloc_str
+            
+            if portfolio.get('holdings'):
+                context_info += f"\n    - Holdings: {len(portfolio['holdings'])} assets"
+                # Show top 3 holdings
+                top_holdings = sorted(portfolio['holdings'], key=lambda x: x.get('total_value', 0), reverse=True)[:3]
+                for holding in top_holdings:
+                    ticker = holding.get('ticker', 'N/A')
+                    value = holding.get('total_value', 0)
+                    alloc_pct = holding.get('allocation_percentage', 0)
+                    context_info += f"\n      - {ticker}: ${value:,.2f} ({alloc_pct:.1f}%)"
+    
     # Get current portfolio
     portfolio_doc = await db.portfolios.find_one({"user_id": user.id})
     if portfolio_doc:
