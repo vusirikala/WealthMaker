@@ -851,7 +851,7 @@ export default function OnboardingForm({ onComplete }) {
             </div>
           </div>
           <div className="flex gap-2">
-            {[1, 2, 3, 4].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <div
                 key={s}
                 className={`h-2 flex-1 rounded-full transition-all duration-500 ${
