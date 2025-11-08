@@ -354,14 +354,140 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         {"_id": 0}
     ).sort("timestamp", 1).to_list(100)
     
+    # Get user context
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    if not user_context:
+        # Create default context
+        user_context = {
+            "_id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "portfolio_type": None,
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        await db.user_context.insert_one(user_context)
+    
+    # Build context string
+    context_info = "\n\n=== USER CONTEXT & MEMORY ==="
+    
+    if user_context.get('portfolio_type'):
+        context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
+    
+    if user_context['portfolio_type'] == 'personal':
+        if user_context.get('age'):
+            context_info += f"\n- Age: {user_context['age']}"
+        if user_context.get('retirement_age'):
+            context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
+        if user_context.get('retirement_plans'):
+            context_info += f"\n- Retirement Plans: {user_context['retirement_plans']}"
+    elif user_context['portfolio_type'] == 'institutional':
+        if user_context.get('institution_name'):
+            context_info += f"\n- Institution: {user_context['institution_name']}"
+        if user_context.get('institution_sector'):
+            context_info += f"\n- Sector: {user_context['institution_sector']}"
+        if user_context.get('annual_revenue'):
+            context_info += f"\n- Annual Revenue: ${user_context['annual_revenue']:,.2f}"
+    
+    if user_context.get('net_worth'):
+        context_info += f"\n- Net Worth: ${user_context['net_worth']:,.2f}"
+    if user_context.get('annual_income'):
+        context_info += f"\n- Annual Income: ${user_context['annual_income']:,.2f}"
+    if user_context.get('monthly_investment'):
+        context_info += f"\n- Monthly Investment: ${user_context['monthly_investment']:,.2f}"
+    if user_context.get('investment_mode'):
+        context_info += f"\n- Investment Mode: {user_context['investment_mode']}"
+    
+    if user_context.get('risk_tolerance'):
+        context_info += f"\n- Risk Tolerance: {user_context['risk_tolerance']}"
+        if user_context.get('risk_details'):
+            context_info += f" ({user_context['risk_details']})"
+    if user_context.get('roi_expectations'):
+        context_info += f"\n- ROI Expectations: {user_context['roi_expectations']}%"
+    
+    if user_context.get('investment_style'):
+        context_info += f"\n- Investment Style: {user_context['investment_style']}"
+    if user_context.get('activity_level'):
+        context_info += f"\n- Activity Level: {user_context['activity_level']}"
+    if user_context.get('diversification_preference'):
+        context_info += f"\n- Diversification: {user_context['diversification_preference']}"
+    
+    if user_context.get('investment_strategy'):
+        context_info += f"\n- Investment Strategy: {', '.join(user_context['investment_strategy'])}"
+    
+    if user_context.get('liquidity_requirements'):
+        context_info += "\n- Liquidity Requirements:"
+        for req in user_context['liquidity_requirements']:
+            context_info += f"\n  * {req.get('goal', 'Goal')}: {req.get('when', 'TBD')} (${req.get('amount', 0):,.0f})"
+    
+    if user_context.get('sector_preferences'):
+        context_info += "\n- Sector Preferences:"
+        for sector, prefs in user_context['sector_preferences'].items():
+            if prefs.get('allowed'):
+                sectors = prefs.get('sectors', [])
+                context_info += f"\n  * {sector.capitalize()}: {', '.join(sectors) if sectors else 'All'}"
+    
+    if user_context.get('existing_investments'):
+        context_info += f"\n- Existing Investments: {user_context['existing_investments']}"
+    
     # Get current portfolio
     portfolio_doc = await db.portfolios.find_one({"user_id": user.id})
-    portfolio_context = ""
     if portfolio_doc:
-        portfolio_context = f"\n\nCurrent Portfolio:\n- Risk Tolerance: {portfolio_doc.get('risk_tolerance', 'Not set')}\n- ROI Expectations: {portfolio_doc.get('roi_expectations', 'Not set')}%\n- Allocations: {len(portfolio_doc.get('allocations', []))} assets"
+        context_info += f"\n\nCurrent Portfolio:\n- Risk Tolerance: {portfolio_doc.get('risk_tolerance', 'Not set')}\n- ROI Expectations: {portfolio_doc.get('roi_expectations', 'Not set')}%\n- Allocations: {len(portfolio_doc.get('allocations', []))} assets"
+    
+    # Determine if personal or institutional guidance needed
+    portfolio_type_guidance = ""
+    if user_context.get('portfolio_type') == 'personal':
+        portfolio_type_guidance = """
+PERSONAL PORTFOLIO GUIDANCE:
+- Ask about personal financial goals (retirement, buying a home, children's education, etc.)
+- Consider age, retirement plans, and life events
+- Focus on long-term wealth building and tax efficiency
+- Ask about family situation and dependents
+"""
+    elif user_context.get('portfolio_type') == 'institutional':
+        portfolio_type_guidance = """
+INSTITUTIONAL PORTFOLIO GUIDANCE:
+- Ask about institutional goals (capital preservation, growth, income generation)
+- Consider regulatory requirements and compliance
+- Focus on portfolio size, liquidity needs, and risk management
+- Ask about investment committee requirements and reporting needs
+"""
+    else:
+        portfolio_type_guidance = """
+INITIAL ASSESSMENT:
+- First, determine if this is a personal or institutional portfolio
+- Ask: "Are you creating this portfolio for yourself personally, or for an institution/organization?"
+- Based on their answer, tailor subsequent questions accordingly
+"""
     
     # Create system message
-    system_message = f"""You are an expert financial advisor helping users build and manage their investment portfolio. 
+    system_message = f"""You are an expert financial advisor helping users build and manage their investment portfolio.{context_info}
+
+{portfolio_type_guidance}
+
+Your role:
+1. Understand user's investment preferences and continuously build their context/memory
+2. Extract and remember key information about their financial situation, goals, and preferences
+3. Recommend portfolio allocations across different asset classes (stocks, bonds, crypto, indexes)
+4. Suggest specific tickers and allocation percentages
+5. Explain your recommendations in clear, simple terms
+6. ONLY suggest portfolio updates when you have specific recommendations
+
+KEY INFORMATION TO GATHER (if not already known):
+- Portfolio type (personal vs institutional)
+- Age and retirement plans (for personal) or company details (for institutional)
+- Net worth and income
+- Investment amount (monthly/annual) and mode (SIP vs ad-hoc)
+- Liquidity needs and future financial goals
+- Risk tolerance (detailed understanding, not just a number)
+- ROI expectations
+- Investment style and activity preference
+- Existing investments
+- Sector preferences and restrictions
+- Investment strategy preferences
+- Diversification preference
+
+When recommending portfolios: 
 
 Your role:
 1. Understand user's investment preferences (risk tolerance, ROI expectations, retirement goals, investment horizon)
