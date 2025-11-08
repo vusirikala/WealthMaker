@@ -1,18 +1,35 @@
-"""
-WealthMaker Backend - Modular FastAPI Application
-Main application file that imports and registers all route modules
-"""
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
 from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from dotenv import load_dotenv
+from pydantic import BaseModel, Field, ConfigDict
+from typing import List, Optional, Dict, Any
+import uuid
+from datetime import datetime, timezone, timedelta
+import finnhub
+import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Load environment variables
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
+
+# Finnhub setup
+finnhub_client = finnhub.Client(api_key=os.environ.get('FINNHUB_API_KEY', ''))
+
+# Create the main app without a prefix
+app = FastAPI()
+
+# Create a router with the /api prefix
+api_router = APIRouter(prefix="/api")
 
 # Configure logging
 logging.basicConfig(
@@ -334,30 +351,6 @@ async def logout(response: Response, user: User = Depends(require_auth)):
     response.delete_cookie("session_token", path="/")
     
     return {"success": True}
-
-@api_router.delete("/auth/account")
-async def delete_account(response: Response, user: User = Depends(require_auth)):
-    """
-    Delete user account and all associated data
-    WARNING: This action is irreversible
-    """
-    try:
-        # Delete all user data from all collections
-        await db.user_sessions.delete_many({"user_id": user.id})
-        await db.user_context.delete_many({"user_id": user.id})
-        await db.portfolios.delete_many({"user_id": user.id})
-        await db.chat_messages.delete_many({"user_id": user.id})
-        await db.portfolio_suggestions.delete_many({"user_id": user.id})
-        
-        # Clear cookie
-        response.delete_cookie("session_token", path="/")
-        
-        logger.info(f"Account deleted for user: {user.email}")
-        
-        return {"success": True, "message": "Account deleted successfully"}
-    except Exception as e:
-        logger.error(f"Error deleting account: {e}")
-        raise HTTPException(status_code=500, detail="Failed to delete account")
 
 # User Context routes
 @api_router.get("/context")
@@ -787,7 +780,7 @@ Return ONLY valid JSON, no other text."""
             api_key=os.environ.get('OPENAI_API_KEY'),
             session_id=f"context_extraction_{user_id}_{uuid.uuid4()}",
             system_message="You are a data extraction assistant. Extract financial information from conversations and return it as valid JSON."
-        ).with_model("openai", "gpt-4o")
+        ).with_model("openai", "gpt-5")
         
         extraction_response = await chat.send_message(UserMessage(text=extraction_prompt))
         
@@ -1384,7 +1377,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4o")
+            ).with_model("openai", "gpt-5")
             
             llm_message = UserMessage(text=user_message)
             ai_response = await chat.send_message(llm_message)
@@ -1394,7 +1387,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4o")
+            ).with_model("openai", "gpt-5")
             
             # Send message
             llm_message = UserMessage(text=user_message)
@@ -1602,21 +1595,73 @@ async def accept_portfolio(request: AcceptPortfolioRequest, user: User = Depends
         logger.error(f"Error accepting portfolio: {e}")
         raise HTTPException(status_code=500, detail="Failed to update portfolio")
 
-# Import and include all route modules
-from routes import auth, context, goals, portfolios, chat, news
+@api_router.get("/portfolio")
+async def get_portfolio(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    if not portfolio:
+        # Create default portfolio
+        portfolio_doc = {
+            "_id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "risk_tolerance": "medium",
+            "roi_expectations": 10.0,
+            "preferences": {},
+            "allocations": get_default_allocations("medium"),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        await db.portfolios.insert_one(portfolio_doc)
+        portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    # Convert dates
+    if isinstance(portfolio.get('created_at'), str):
+        portfolio['created_at'] = datetime.fromisoformat(portfolio['created_at'])
+    if isinstance(portfolio.get('updated_at'), str):
+        portfolio['updated_at'] = datetime.fromisoformat(portfolio['updated_at'])
+    
+    return portfolio
 
-# Register all routers
-api_router.include_router(auth.router)
-api_router.include_router(context.router)
-api_router.include_router(goals.router)
-api_router.include_router(portfolios.router)
-api_router.include_router(chat.router)
-api_router.include_router(news.router)
+# News routes
+@api_router.get("/news")
+async def get_portfolio_news(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id})
+    
+    if not portfolio or not portfolio.get('allocations'):
+        return []
+    
+    # Get unique tickers
+    tickers = list(set([alloc['ticker'] for alloc in portfolio['allocations'] if alloc['asset_type'] == 'Stocks']))
+    
+    all_news = []
+    try:
+        for ticker in tickers[:5]:  # Limit to 5 stocks to avoid rate limits
+            try:
+                news = finnhub_client.company_news(ticker, _from="2025-01-01", to="2025-12-31")
+                for item in news[:3]:  # Top 3 news per stock
+                    all_news.append({
+                        "ticker": ticker,
+                        "headline": item.get('headline', ''),
+                        "summary": item.get('summary', ''),
+                        "url": item.get('url', ''),
+                        "image": item.get('image', ''),
+                        "source": item.get('source', ''),
+                        "datetime": datetime.fromtimestamp(item.get('datetime', 0), tz=timezone.utc) if item.get('datetime') else None
+                    })
+            except Exception as e:
+                logger.error(f"Error fetching news for {ticker}: {e}")
+                continue
+    except Exception as e:
+        logger.error(f"Finnhub error: {e}")
+    
+    # Sort by datetime
+    all_news.sort(key=lambda x: x['datetime'] if x['datetime'] else datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+    
+    return all_news[:20]  # Return top 20 news items
 
-# Include the API router in the main app
+# Include the router in the main app
 app.include_router(api_router)
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
@@ -1625,27 +1670,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    """Root endpoint"""
-    return {"message": "WealthMaker API", "version": "1.0.0", "status": "active"}
-
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy"}
-
-
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    """Close database connections on shutdown"""
-    from utils.database import client
     client.close()
-    logger.info("Database connection closed")
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
