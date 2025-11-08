@@ -28,7 +28,7 @@ app = FastAPI(title="WealthMaker API", version="1.0.0")
 api_router = APIRouter(prefix="/api")
 
 # Import and include all route modules
-from routes import auth, context, goals, portfolios, chat, news
+from routes import auth, context, goals, portfolios, chat, news, data
 
 # Register all routers
 api_router.include_router(auth.router)
@@ -37,6 +37,7 @@ api_router.include_router(goals.router)
 api_router.include_router(portfolios.router)
 api_router.include_router(chat.router)
 api_router.include_router(news.router)
+api_router.include_router(data.router)
 
 # Include the API router in the main app
 app.include_router(api_router)
