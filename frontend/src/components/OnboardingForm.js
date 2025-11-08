@@ -821,36 +821,37 @@ export default function OnboardingForm({ onComplete }) {
           </div>
         </div>
 
-      <div className="flex gap-3">
-        <Button 
-          onClick={() => setStep(4)} 
-          variant="outline" 
-          className="flex-1 h-12 border-2 hover:bg-gray-50"
-          disabled={loading}
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Setting up...
-            </>
-          ) : (
-            <>
-              Complete Setup
-              <CheckCircle2 className="w-5 h-5 ml-2" />
-            </>
-          )}
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => setStep(4)} 
+            variant="outline" 
+            className="flex-1 h-12 border-2 hover:bg-gray-50"
+            disabled={loading}
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Setting up...
+              </>
+            ) : (
+              <>
+                Complete Setup
+                <CheckCircle2 className="w-5 h-5 ml-2" />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-cyan-50 via-white to-emerald-50">
