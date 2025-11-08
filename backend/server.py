@@ -363,7 +363,26 @@ Extract the following if mentioned:
   "activity_level": "string description (null if not mentioned)",
   "diversification_preference": "highly_diversified, moderately_diversified, or concentrated (null if not mentioned)",
   "investment_strategy": ["array", "of", "strategies"] or null,
-  "liquidity_requirements": [{{"goal": "string", "when": "string", "amount": number}}] or null,
+  "liquidity_requirements": [
+    {{
+      "goal_id": "unique_string_id",
+      "goal_name": "string (e.g., 'Buy a house')",
+      "goal_type": "house_purchase|vacation|wedding|education|retirement|business|emergency_fund|vehicle|healthcare|other",
+      "description": "detailed description",
+      "target_amount": number (total cost),
+      "amount_saved": number (already saved),
+      "amount_needed": number (remaining needed),
+      "target_date": "YYYY-MM-DD",
+      "timeline_years": number,
+      "priority": "high|medium|low",
+      "is_flexible": boolean,
+      "monthly_allocation": number,
+      "funding_strategy": "sip|lump_sum|mixed",
+      "risk_appetite_for_goal": "conservative|moderate|aggressive",
+      "notes": "any additional notes",
+      "progress_percentage": number (0-100)
+    }}
+  ] or null,
   "sector_preferences": {{"stocks": {{"allowed": true, "sectors": ["tech", "healthcare"]}}, "crypto": {{"allowed": false}}}} or null,
   "institution_name": "string or null",
   "institution_sector": "string or null",
