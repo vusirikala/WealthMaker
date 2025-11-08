@@ -1146,10 +1146,27 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
                     alloc_pct = holding.get('allocation_percentage', 0)
                     context_info += f"\n      - {ticker}: ${value:,.2f} ({alloc_pct:.1f}%)"
     
+    # Analyze context completeness
+    context_analysis = analyze_context_completeness(user_context)
+    
+    context_info += f"\n\n=== INFORMATION GATHERING STATUS ==="
+    context_info += f"\n- Profile Completeness: {context_analysis['completeness_percentage']}%"
+    context_info += f"\n- Ready for Portfolio Creation: {'YES' if context_analysis['is_ready_for_portfolio'] else 'NO - More information needed'}"
+    
+    if context_analysis['missing_critical']:
+        context_info += f"\n- CRITICAL Missing Info: {len(context_analysis['missing_critical'])} fields"
+    if context_analysis['missing_high']:
+        context_info += f"\n- HIGH Priority Missing: {len(context_analysis['missing_high'])} fields"
+    if context_analysis['missing_medium']:
+        context_info += f"\n- OPTIONAL Missing: {len(context_analysis['missing_medium'])} fields"
+    
     # Get current portfolio
     portfolio_doc = await db.portfolios.find_one({"user_id": user.id})
     if portfolio_doc:
         context_info += f"\n\nCurrent Portfolio:\n- Risk Tolerance: {portfolio_doc.get('risk_tolerance', 'Not set')}\n- ROI Expectations: {portfolio_doc.get('roi_expectations', 'Not set')}%\n- Allocations: {len(portfolio_doc.get('allocations', []))} assets"
+    
+    # Check if we should ask a smart question
+    smart_question = await generate_smart_question(user.id, user_context, chat_history)
     
     # Determine if personal or institutional guidance needed
     portfolio_type_guidance = ""
