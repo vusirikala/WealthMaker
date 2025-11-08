@@ -78,14 +78,41 @@ export default function PortfolioTab() {
 
   const loadPortfolio = async () => {
     try {
-      // Add cache busting to ensure fresh data
+      // Try loading "My Portfolio" first (new endpoint)
+      const myPortfolioResponse = await fetch(`${API}/portfolios/my-portfolio?t=${Date.now()}`, {
+        credentials: "include",
+        cache: "no-store"
+      });
+      
+      if (myPortfolioResponse.ok) {
+        const myPortfolioData = await myPortfolioResponse.json();
+        if (myPortfolioData.portfolio) {
+          console.log("My Portfolio loaded:", myPortfolioData);
+          // Transform to match expected format
+          const transformedPortfolio = {
+            risk_tolerance: myPortfolioData.portfolio.risk_tolerance || "medium",
+            roi_expectations: myPortfolioData.portfolio.roi_expectations || 10,
+            allocations: myPortfolioData.portfolio.holdings?.map(h => ({
+              ticker: h.symbol,
+              asset_type: h.asset_type || "stock",
+              allocation: h.allocation_percentage || 0,
+              sector: h.sector || "Unknown"
+            })) || []
+          };
+          setPortfolio(transformedPortfolio);
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      // Fall back to AI-generated portfolio
       const response = await fetch(`${API}/portfolio?t=${Date.now()}`, {
         credentials: "include",
         cache: "no-store"
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Portfolio loaded:", data);
+        console.log("AI Portfolio loaded:", data);
         setPortfolio(data);
       }
     } catch (error) {
