@@ -756,7 +756,7 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
-  const renderStep4 = () => (
+  const renderStep5 = () => (
     <div className="space-y-8">
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
