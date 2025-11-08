@@ -602,7 +602,7 @@ IMPORTANT INSTRUCTIONS:
 
 3. For general questions, portfolio discussions, or clarifications, respond normally WITHOUT the portfolio suggestion marker and WITHOUT asking about updates.
 
-Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allocation percentages when making recommendations.{portfolio_context}
+Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allocation percentages when making recommendations.
 
 Respond in a friendly, professional tone. Keep responses concise but informative."""
     
