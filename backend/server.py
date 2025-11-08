@@ -742,7 +742,28 @@ Extract the following if mentioned:
   "annual_profit": number or null,
   "retirement_plans": "string or null",
   "making_for": "self or someone_else (null if not mentioned)",
-  "existing_investments": {{"description": "string"}} or null
+  "existing_investments": {{"description": "string"}} or null,
+  "existing_portfolios": [
+    {{
+      "portfolio_id": "unique_id",
+      "portfolio_name": "string (e.g., 'Retirement 401k')",
+      "goal_name": "string (linked goal)",
+      "total_value": number,
+      "cost_basis": number,
+      "account_type": "401k|IRA|Roth_IRA|brokerage|crypto_wallet|savings|other",
+      "account_provider": "string (e.g., 'Vanguard')",
+      "holdings": [
+        {{
+          "ticker": "string",
+          "asset_name": "string",
+          "asset_type": "stock|bond|crypto|etf|mutual_fund|index_fund|reit|commodity|cash",
+          "quantity": number,
+          "current_price": number,
+          "total_value": number
+        }}
+      ]
+    }}
+  ] or null
 }}
 
 Return ONLY valid JSON, no other text."""
