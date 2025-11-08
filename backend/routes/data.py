@@ -12,28 +12,25 @@ router = APIRouter(prefix="/data", tags=["data"])
 logger = logging.getLogger(__name__)
 
 
-@router.get("/historical/{symbol}")
-async def get_historical_data(
+@router.get("/asset/{symbol}")
+async def get_asset_data(
     symbol: str,
-    force_refresh: bool = Query(False, description="Force refresh data from source"),
     user: User = Depends(require_auth)
 ):
     """
-    Get comprehensive historical data for a stock (3 years)
+    Get complete asset data from shared database
     
     Returns:
-    - Company information
-    - 3-year price history and metrics
-    - Earnings history
-    - Analyst ratings
-    - Fundamental ratios
+    - Company information (fundamentals)
+    - Historical data (3 years)
+    - Live data (current prices, news, events)
     """
     symbol = symbol.upper()
     
-    data = await historical_data_service.get_stock_data(symbol, force_refresh)
+    data = await shared_assets_service.get_single_asset(symbol)
     
     if not data:
-        raise HTTPException(status_code=404, detail=f"Could not fetch data for symbol {symbol}")
+        raise HTTPException(status_code=404, detail=f"Asset {symbol} not found in database. Admin needs to add it.")
     
     return data
 
