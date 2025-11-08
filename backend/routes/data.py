@@ -61,19 +61,20 @@ async def get_assets_batch(
 
 
 @router.get("/search")
-async def search_stocks(
+async def search_assets(
     q: str = Query(..., min_length=1, description="Search query (symbol or company name)"),
     user: User = Depends(require_auth)
 ):
     """
-    Search for stocks by symbol or company name
+    Search for assets in shared database by symbol or company name
     
-    Returns list of matching stocks with basic information
+    Returns list of matching assets with basic information
     """
-    results = await historical_data_service.search_stock(q)
+    results = await shared_assets_service.search_assets(q)
     
     return {
         "query": q,
+        "count": len(results),
         "results": results
     }
 
