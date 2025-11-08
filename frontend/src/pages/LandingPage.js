@@ -42,7 +42,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
         setIsAuthenticated(true);
         
         window.history.replaceState({}, document.title, "/");
-        toast.success("Welcome to SmartFolio!");
+        toast.success("Welcome to WealthMaker!");
         
         console.log("Navigating to dashboard...");
         setTimeout(() => {
