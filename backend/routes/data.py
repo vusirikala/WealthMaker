@@ -194,3 +194,97 @@ async def remove_tracked_stock(
         "symbol": symbol,
         "message": f"Stopped tracking {symbol}"
     }
+
+
+
+# ============= LIVE DATA ENDPOINTS =============
+
+@router.get("/live/{symbol}")
+async def get_live_data(
+    symbol: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Get real-time live data for a stock
+    
+    Returns:
+    - Current price, change, volume
+    - Intraday high/low
+    - Today's news
+    - Upcoming events
+    """
+    symbol = symbol.upper()
+    
+    # Get live quote
+    quote = await live_data_service.get_live_quote(symbol)
+    if not quote:
+        raise HTTPException(status_code=404, detail=f"Could not fetch live data for {symbol}")
+    
+    # Get today's news
+    news = await live_data_service.get_todays_news(symbol, limit=5)
+    
+    # Get upcoming events
+    events = await live_data_service.get_upcoming_events(symbol)
+    
+    return {
+        "quote": quote,
+        "recent_news": news,
+        "upcoming_events": events
+    }
+
+
+@router.post("/live/portfolio")
+async def get_portfolio_live_data(
+    symbols: List[str],
+    user: User = Depends(require_auth)
+):
+    """
+    Get live data for all stocks in a portfolio
+    
+    Returns aggregated:
+    - Live quotes for all symbols
+    - Recent news across all stocks
+    - Upcoming events
+    - Market context (S&P 500, NASDAQ, VIX)
+    """
+    symbols = [s.upper() for s in symbols]
+    
+    data = await live_data_service.get_portfolio_live_data(symbols)
+    
+    return data
+
+
+@router.get("/market/context")
+async def get_market_context(user: User = Depends(require_auth)):
+    """
+    Get overall market context
+    
+    Returns:
+    - S&P 500 performance
+    - NASDAQ performance
+    - VIX (volatility index)
+    - Overall market sentiment
+    """
+    context = await live_data_service.get_market_context()
+    
+    return context
+
+
+@router.get("/news/{symbol}")
+async def get_stock_news(
+    symbol: str,
+    limit: int = Query(10, ge=1, le=50, description="Number of news items to return"),
+    user: User = Depends(require_auth)
+):
+    """
+    Get recent news for a specific stock
+    """
+    symbol = symbol.upper()
+    
+    news = await live_data_service.get_todays_news(symbol, limit=limit)
+    
+    return {
+        "symbol": symbol,
+        "count": len(news),
+        "news": news
+    }
