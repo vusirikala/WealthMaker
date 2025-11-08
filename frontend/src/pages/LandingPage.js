@@ -148,7 +148,7 @@ export default function LandingPage({ setIsAuthenticated, setUser }) {
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-sm">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">SmartFolio</span>
+            <span className="text-2xl font-bold text-gray-900">WealthMaker</span>
           </div>
           <Button
             onClick={handleLoginClick}
