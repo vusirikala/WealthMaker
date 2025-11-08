@@ -780,7 +780,7 @@ Return ONLY valid JSON, no other text."""
             api_key=os.environ.get('OPENAI_API_KEY'),
             session_id=f"context_extraction_{user_id}_{uuid.uuid4()}",
             system_message="You are a data extraction assistant. Extract financial information from conversations and return it as valid JSON."
-        ).with_model("openai", "gpt-4-turbo")
+        ).with_model("openai", "gpt-4o")
         
         extraction_response = await chat.send_message(UserMessage(text=extraction_prompt))
         
@@ -1377,7 +1377,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4-turbo")
+            ).with_model("openai", "gpt-4o")
             
             llm_message = UserMessage(text=user_message)
             ai_response = await chat.send_message(llm_message)
@@ -1387,7 +1387,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4-turbo")
+            ).with_model("openai", "gpt-4o")
             
             # Send message
             llm_message = UserMessage(text=user_message)
