@@ -743,7 +743,7 @@ export default function OnboardingForm({ onComplete }) {
 
       <div className="flex gap-3">
         <Button 
-          onClick={() => setStep(2)} 
+          onClick={() => setStep(3)} 
           variant="outline" 
           className="flex-1 h-12 border-2 hover:bg-gray-50"
         >
