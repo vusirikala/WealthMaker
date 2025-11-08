@@ -870,6 +870,7 @@ export default function OnboardingForm({ onComplete }) {
           {step === 2 && renderStep2()}
           {step === 3 && renderStep3()}
           {step === 4 && renderStep4()}
+          {step === 5 && renderStep5()}
         </CardContent>
       </Card>
     </div>
