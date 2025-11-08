@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,6 +6,7 @@ import { LogOut, MessageSquare, PieChart, Newspaper, TrendingUp, Sparkles } from
 import ChatTab from "@/components/ChatTab";
 import PortfolioTab from "@/components/PortfolioTab";
 import NewsTab from "@/components/NewsTab";
+import OnboardingForm from "@/components/OnboardingForm";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -13,6 +14,44 @@ const API = `${BACKEND_URL}/api`;
 
 export default function Dashboard({ user, setIsAuthenticated }) {
   const [activeTab, setActiveTab] = useState("chat");
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [checkingContext, setCheckingContext] = useState(true);
+  const [userContext, setUserContext] = useState(null);
+
+  // Check if user needs onboarding
+  useEffect(() => {
+    checkUserContext();
+  }, []);
+
+  const checkUserContext = async () => {
+    try {
+      const response = await fetch(`${API}/context`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const context = await response.json();
+        setUserContext(context);
+        
+        // Show onboarding if critical fields are missing
+        const needsOnboarding = !context.portfolio_type || 
+                                !context.risk_tolerance || 
+                                (!context.monthly_investment && !context.annual_investment);
+        
+        setShowOnboarding(needsOnboarding);
+      }
+    } catch (error) {
+      console.error("Error checking context:", error);
+    } finally {
+      setCheckingContext(false);
+    }
+  };
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    checkUserContext(); // Refresh context
+    toast.success("Great! Now let's chat to refine your portfolio.");
+  };
 
   const handleLogout = async () => {
     try {
