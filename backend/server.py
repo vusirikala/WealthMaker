@@ -967,7 +967,19 @@ async def generate_smart_question(user_id: str, user_context: Dict[str, Any], ch
     
     # If this is first message (no chat history), start with greeting
     if len(chat_history) == 0:
-        return """Welcome to WealthMaker! I'm your AI financial advisor, and I'm here to help you build a personalized investment portfolio.
+        # Check if user has basic info from onboarding form
+        has_basic_info = user_context.get('portfolio_type') and user_context.get('risk_tolerance')
+        
+        if has_basic_info:
+            # User completed onboarding form
+            return f"""Welcome to WealthMaker! I'm your AI financial advisor.
+
+I see you've provided some initial information - great start! You're {user_context.get('age', 'N/A')} years old, looking for a {user_context.get('risk_tolerance', 'moderate')} risk portfolio with a target return of {user_context.get('roi_expectations', 'N/A')}%.
+
+Let me ask a few more questions to create the perfect portfolio for you. {analysis['next_question']['question'] if analysis['next_question'] else "How can I help you with your investment goals today?"}"""
+        else:
+            # User skipped or hasn't done onboarding
+            return """Welcome to WealthMaker! I'm your AI financial advisor, and I'm here to help you build a personalized investment portfolio.
 
 To create the best portfolio for you, I'll need to understand your financial situation and goals. Let's start with a few questions.
 
