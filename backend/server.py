@@ -72,7 +72,7 @@ class UserContext(BaseModel):
     making_for: Optional[str] = None  # 'self' or 'someone_else'
     
     # Personal Information (for personal portfolios)
-    age: Optional[int] = None
+    date_of_birth: Optional[str] = None  # YYYY-MM-DD format
     retirement_age: Optional[int] = None
     retirement_plans: Optional[str] = None
     
