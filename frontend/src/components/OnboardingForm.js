@@ -118,13 +118,12 @@ export default function OnboardingForm({ onComplete }) {
 
         {formData.portfolio_type === "personal" && (
           <div>
-            <Label htmlFor="age">Your Age</Label>
+            <Label htmlFor="date_of_birth">Date of Birth</Label>
             <Input
-              id="age"
-              type="number"
-              placeholder="e.g., 35"
-              value={formData.age}
-              onChange={(e) => handleInputChange("age", e.target.value)}
+              id="date_of_birth"
+              type="date"
+              value={formData.date_of_birth}
+              onChange={(e) => handleInputChange("date_of_birth", e.target.value)}
               className="mt-2"
             />
           </div>
