@@ -159,46 +159,50 @@ export default function Dashboard({ user, setIsAuthenticated }) {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-white border border-gray-200 w-full sm:w-auto grid grid-cols-3 mb-8 p-1 rounded-xl shadow-sm">
-            <TabsTrigger
-              value="chat"
-              data-testid="tab-chat"
-              className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
-            >
-              <MessageSquare className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Chat</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="portfolio"
-              data-testid="tab-portfolio"
-              className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
-            >
-              <PieChart className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Portfolio</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="news"
-              data-testid="tab-news"
-              className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
-            >
-              <Newspaper className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">News</span>
-            </TabsTrigger>
-          </TabsList>
+        {currentView === "profile" && <ProfilePage />}
+        {currentView === "settings" && <SettingsPage />}
+        {currentView === "dashboard" && (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-white border border-gray-200 w-full sm:w-auto grid grid-cols-3 mb-8 p-1 rounded-xl shadow-sm">
+              <TabsTrigger
+                value="chat"
+                data-testid="tab-chat"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Chat</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="portfolio"
+                data-testid="tab-portfolio"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
+              >
+                <PieChart className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Portfolio</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="news"
+                data-testid="tab-news"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
+              >
+                <Newspaper className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">News</span>
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="chat" className="mt-0">
-            <ChatTab />
-          </TabsContent>
+            <TabsContent value="chat" className="mt-0">
+              <ChatTab />
+            </TabsContent>
 
-          <TabsContent value="portfolio" className="mt-0">
-            <PortfolioTab />
-          </TabsContent>
+            <TabsContent value="portfolio" className="mt-0">
+              <PortfolioTab />
+            </TabsContent>
 
-          <TabsContent value="news" className="mt-0">
-            <NewsTab />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="news" className="mt-0">
+              <NewsTab />
+            </TabsContent>
+          </Tabs>
+        )}
       </main>
     </div>
   );
