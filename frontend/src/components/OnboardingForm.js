@@ -5,7 +5,7 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Loader2 } from "lucide-react";
+import { Loader2, Building2, User, DollarSign, Target, TrendingUp, Calendar, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function OnboardingForm({ onComplete }) {
