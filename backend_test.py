@@ -162,6 +162,198 @@ print('Setup complete');
             data
         )
 
+    def test_admin_endpoints(self):
+        """Test admin endpoints for shared assets database management"""
+        print("\n🔧 Testing Admin Endpoints...")
+        
+        # Test database stats (should work before initialization)
+        status, data = self.make_request('GET', 'admin/database-stats')
+        success = status == 200 and 'total_assets' in data
+        self.log_test(
+            "GET /admin/database-stats", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+        
+        # Store initial stats for comparison
+        initial_stats = data if success else {}
+        
+        # Test initialize database with small set of symbols
+        test_symbols = ["AAPL", "MSFT", "GOOGL", "BTC-USD", "GC=F"]
+        status, data = self.make_request('POST', 'admin/initialize-database', test_symbols)
+        success = status == 200 and ('processing' in data.get('status', '') or 'already initialized' in data.get('message', ''))
+        self.log_test(
+            "POST /admin/initialize-database", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+        
+        # Wait for initialization to process
+        if success and 'processing' in data.get('status', ''):
+            print("⏳ Waiting 30 seconds for database initialization...")
+            time.sleep(30)
+            
+            # Check stats again after initialization
+            status, data = self.make_request('GET', 'admin/database-stats')
+            success = status == 200 and data.get('total_assets', 0) > 0
+            self.log_test(
+                "GET /admin/database-stats (after init)", 
+                success,
+                f"Status: {status}, Assets: {data.get('total_assets', 0)}" if not success else "",
+                data
+            )
+        
+        # Test list assets
+        status, data = self.make_request('GET', 'admin/list-assets')
+        success = status == 200 and 'assets' in data
+        self.log_test(
+            "GET /admin/list-assets", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"asset_count": len(data.get('assets', [])) if isinstance(data, dict) else 0}
+        )
+        
+        # Test add single asset
+        status, data = self.make_request('POST', 'admin/add-asset?symbol=TSLA')
+        success = status == 200 and ('processing' in data.get('status', '') or 'already exists' in data.get('message', ''))
+        self.log_test(
+            "POST /admin/add-asset (TSLA)", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+        
+        # Test update live data
+        status, data = self.make_request('POST', 'admin/update-live-data')
+        success = status == 200 and 'processing' in data.get('status', '')
+        self.log_test(
+            "POST /admin/update-live-data", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+
+    def test_data_endpoints(self):
+        """Test user data endpoints for querying shared database"""
+        print("\n📊 Testing Data Endpoints...")
+        
+        # Test search assets
+        status, data = self.make_request('GET', 'data/search?q=AAPL')
+        success = status == 200 and 'results' in data
+        self.log_test(
+            "GET /data/search?q=AAPL", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"result_count": len(data.get('results', [])) if isinstance(data, dict) else 0}
+        )
+        
+        # Test get single asset (AAPL should be initialized)
+        status, data = self.make_request('GET', 'data/asset/AAPL')
+        success = status == 200 and 'symbol' in data and 'fundamentals' in data and 'historical' in data and 'live' in data
+        self.log_test(
+            "GET /data/asset/AAPL", 
+            success,
+            f"Status: {status}" if not success else "",
+            {
+                "has_fundamentals": 'fundamentals' in data if isinstance(data, dict) else False,
+                "has_historical": 'historical' in data if isinstance(data, dict) else False,
+                "has_live": 'live' in data if isinstance(data, dict) else False
+            }
+        )
+        
+        # Validate asset data structure if successful
+        if success and isinstance(data, dict):
+            self.validate_asset_structure(data)
+        
+        # Test batch assets request
+        batch_request = {"symbols": ["AAPL", "MSFT"]}
+        status, data = self.make_request('POST', 'data/assets/batch', batch_request)
+        success = status == 200 and 'data' in data
+        self.log_test(
+            "POST /data/assets/batch", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"assets_returned": len(data.get('data', {})) if isinstance(data, dict) else 0}
+        )
+        
+        # Test track asset
+        status, data = self.make_request('POST', 'data/track?symbol=AAPL')
+        success = status == 200 and data.get('success') == True
+        self.log_test(
+            "POST /data/track?symbol=AAPL", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+        
+        # Test get tracked assets
+        status, data = self.make_request('GET', 'data/tracked')
+        success = status == 200 and 'symbols' in data
+        self.log_test(
+            "GET /data/tracked", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"tracked_count": len(data.get('symbols', [])) if isinstance(data, dict) else 0}
+        )
+        
+        # Test untrack asset
+        status, data = self.make_request('DELETE', 'data/track/AAPL')
+        success = status == 200 and data.get('success') == True
+        self.log_test(
+            "DELETE /data/track/AAPL", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+
+    def validate_asset_structure(self, asset_data: Dict[str, Any]):
+        """Validate that asset data contains expected structure"""
+        print("\n🔍 Validating Asset Data Structure...")
+        
+        required_fields = ['symbol', 'name', 'assetType']
+        for field in required_fields:
+            success = field in asset_data
+            self.log_test(
+                f"Asset has {field}", 
+                success,
+                f"Missing required field: {field}" if not success else ""
+            )
+        
+        # Validate fundamentals section
+        fundamentals = asset_data.get('fundamentals', {})
+        fundamental_fields = ['sector', 'industry', 'description', 'marketCap']
+        for field in fundamental_fields:
+            success = field in fundamentals
+            self.log_test(
+                f"Fundamentals has {field}", 
+                success,
+                f"Missing fundamental field: {field}" if not success else ""
+            )
+        
+        # Validate historical section
+        historical = asset_data.get('historical', {})
+        historical_fields = ['earnings', 'priceHistory', 'majorEvents', 'patterns']
+        for field in historical_fields:
+            success = field in historical
+            self.log_test(
+                f"Historical has {field}", 
+                success,
+                f"Missing historical field: {field}" if not success else ""
+            )
+        
+        # Validate live section
+        live = asset_data.get('live', {})
+        live_fields = ['currentPrice', 'recentNews', 'analystRatings', 'upcomingEvents']
+        for field in live_fields:
+            success = field in live
+            self.log_test(
+                f"Live has {field}", 
+                success,
+                f"Missing live field: {field}" if not success else ""
+            )
+
     def test_chat_endpoints(self):
         """Test chat functionality"""
         print("\n💬 Testing Chat Endpoints...")
