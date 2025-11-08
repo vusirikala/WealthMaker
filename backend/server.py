@@ -940,7 +940,6 @@ def analyze_context_completeness(user_context: Dict[str, Any]) -> Dict[str, Any]
     # Calculate completeness score
     total_critical = len([f for f in missing_fields if f['importance'] == 'critical'])
     total_high = len([f for f in missing_fields if f['importance'] == 'high'])
-    total_medium = len(optional_missing)
     
     # Ready for portfolio if no critical fields missing and at most 2 high priority missing
     is_ready_for_portfolio = total_critical == 0 and total_high <= 2
