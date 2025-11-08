@@ -15,6 +15,7 @@ import ChatTab from "@/components/ChatTab";
 import PortfolioTab from "@/components/PortfolioTab";
 import NewsTab from "@/components/NewsTab";
 import OnboardingForm from "@/components/OnboardingForm";
+import AddStockModal from "@/components/AddStockModal";
 import ProfilePage from "./ProfilePage";
 import SettingsPage from "./SettingsPage";
 import { toast } from "sonner";
