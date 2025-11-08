@@ -67,6 +67,29 @@ export default function Dashboard({ user, setIsAuthenticated }) {
     }
   };
 
+  // Show loading while checking context
+  if (checkingContext) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center animate-pulse">
+            <TrendingUp className="w-8 h-8 text-white" />
+          </div>
+          <p className="text-gray-600">Loading your portfolio...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show onboarding if needed
+  if (showOnboarding) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-emerald-50">
+        <OnboardingForm onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50" data-testid="dashboard">
       {/* Header */}
