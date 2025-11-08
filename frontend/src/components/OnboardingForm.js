@@ -68,6 +68,7 @@ export default function OnboardingForm({ onComplete }) {
           "Content-Type": "application/json",
         },
         credentials: "include",
+        body: JSON.stringify(contextData),
       });
 
       if (!response.ok) throw new Error("Failed to save profile");
