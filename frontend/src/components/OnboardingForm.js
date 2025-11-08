@@ -540,39 +540,42 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
-  const renderStep2 = () => (
+  // Step 3: Financial/Investment Details (common for both)
+  const renderStep3 = () => (
     <div className="space-y-8">
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
           <DollarSign className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
-          Financial Details
+          Investment Capacity
         </h3>
         <p className="text-gray-600">
-          Help us understand your investment capacity
+          How much are you planning to invest?
         </p>
       </div>
 
       <div className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="annual_income" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-cyan-600" />
-            Annual Income
-          </Label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
-            <Input
-              id="annual_income"
-              type="number"
-              placeholder="120,000"
-              value={formData.annual_income}
-              onChange={(e) => handleInputChange("annual_income", e.target.value)}
-              className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
-            />
+        {formData.portfolio_type === "personal" && (
+          <div className="space-y-2">
+            <Label htmlFor="annual_income" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-cyan-600" />
+              Annual Income
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+              <Input
+                id="annual_income"
+                type="number"
+                placeholder="120,000"
+                value={formData.annual_income}
+                onChange={(e) => handleInputChange("annual_income", e.target.value)}
+                className="pl-8 h-12 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+            <p className="text-xs text-gray-500">Your approximate yearly income</p>
           </div>
-          <p className="text-xs text-gray-500">Your approximate yearly income</p>
-        </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="monthly_investment" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
@@ -596,7 +599,7 @@ export default function OnboardingForm({ onComplete }) {
 
       <div className="flex gap-3">
         <Button 
-          onClick={() => setStep(1)} 
+          onClick={() => setStep(2)} 
           variant="outline" 
           className="flex-1 h-12 border-2 hover:bg-gray-50"
         >
@@ -604,7 +607,7 @@ export default function OnboardingForm({ onComplete }) {
           Back
         </Button>
         <Button 
-          onClick={() => setStep(3)} 
+          onClick={() => setStep(4)} 
           className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           Continue
