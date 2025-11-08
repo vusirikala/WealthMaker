@@ -230,6 +230,11 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
+  // Step 2: Conditional rendering based on portfolio type
+  const renderStep2 = () => {
+    return formData.portfolio_type === "personal" ? renderPersonalStep2() : renderInstitutionalStep2();
+  };
+
   // Step 2a: Personal Details (only for personal portfolios)
   const renderPersonalStep2 = () => (
     <div className="space-y-8">
