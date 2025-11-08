@@ -2,11 +2,21 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, MessageSquare, PieChart, Newspaper, TrendingUp, Sparkles } from "lucide-react";
+import { LogOut, MessageSquare, PieChart, Newspaper, TrendingUp, Sparkles, User, Settings } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ChatTab from "@/components/ChatTab";
 import PortfolioTab from "@/components/PortfolioTab";
 import NewsTab from "@/components/NewsTab";
 import OnboardingForm from "@/components/OnboardingForm";
+import ProfilePage from "./ProfilePage";
+import SettingsPage from "./SettingsPage";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
