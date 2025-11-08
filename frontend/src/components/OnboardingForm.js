@@ -1148,15 +1148,17 @@ export default function OnboardingForm({ onComplete }) {
                 WealthMaker
               </CardTitle>
               <CardDescription className="text-base mt-1">
-                Step {step} of 5
+                Step {step} of {totalSteps}
               </CardDescription>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-emerald-100 rounded-full">
-              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / 5) * 100)}% Complete</span>
+              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / totalSteps) * 100)}% Complete</span>
             </div>
           </div>
           <div className="flex gap-2">
-            {[1, 2, 3, 4, 5].map((s) => (
+            {[...Array(totalSteps)].map((_, index) => {
+              const s = index + 1;
+              return (
               <div
                 key={s}
                 className={`h-2 flex-1 rounded-full transition-all duration-500 ${
