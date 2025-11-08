@@ -695,6 +695,12 @@ async def extract_and_update_context(user_id: str, user_message: str, ai_respons
     extraction_prompt = f"""Based on the following conversation, extract any relevant financial information about the user.
 Return ONLY a JSON object with the extracted information. Use null for any information not mentioned.
 
+IMPORTANT: 
+- Extract NEW information or UPDATES to existing information
+- If user says "change", "update", "actually", "correct", they are modifying previous information
+- Numbers can be written as "$50,000", "50k", "50000" - extract the numeric value
+- Percentages can be "10%", "ten percent" - extract the numeric value
+
 User message: {user_message}
 AI response: {ai_response}
 
