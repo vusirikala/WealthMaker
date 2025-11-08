@@ -1169,15 +1169,19 @@ export default function OnboardingForm({ onComplete }) {
                     : "bg-gray-200"
                 }`}
               />
-            ))}
+            );
+            })}
           </div>
         </CardHeader>
         <CardContent className="pb-8">
           {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
+          {step === 2 && (formData.portfolio_type === "personal" ? renderPersonalStep2() : renderInstitutionalStep2())}
           {step === 3 && renderStep3()}
           {step === 4 && renderStep4()}
           {step === 5 && renderStep5()}
+          {step === 6 && renderStep6()}
+          {step === 7 && renderStep7()}
+          {step === 8 && renderStep8()}
         </CardContent>
       </Card>
     </div>
