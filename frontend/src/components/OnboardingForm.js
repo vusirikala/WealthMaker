@@ -11,14 +11,28 @@ import { toast } from "sonner";
 export default function OnboardingForm({ onComplete }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [totalSteps, setTotalSteps] = useState(4);
   const [formData, setFormData] = useState({
     portfolio_type: "",
+    // Personal fields
     date_of_birth: "",
     annual_income: "",
+    net_worth: "",
+    home_ownership: "", // own, rent, other
+    house_price: "",
+    mortgage_amount: "",
+    mortgage_monthly: "",
+    // Institutional fields
+    institution_name: "",
+    institution_sector: "",
+    annual_revenue: "",
+    annual_profit: "",
+    number_of_employees: "",
+    // Common fields
     monthly_investment: "",
     risk_tolerance: "",
     roi_expectations: "",
-    financial_goals: "",
+    financial_goals: [],
   });
 
   const handleInputChange = (field, value) => {
