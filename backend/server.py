@@ -1315,9 +1315,12 @@ When recommending portfolios:
 
 IMPORTANT INSTRUCTIONS:
 1. ONLY create a portfolio suggestion when:
+   - Profile Completeness is at least 70% AND Ready for Portfolio Creation is YES
    - User explicitly requests a portfolio (new or updated)
-   - User provides clear investment preferences (risk, ROI goals, etc.)
+   - You have enough information about their goals, risk tolerance, and investment amount
    - You have specific tickers and allocations to recommend
+   
+   If Ready for Portfolio Creation is NO, DO NOT suggest portfolios. Instead, gather the missing information first.
 
 2. When you DO have a portfolio recommendation, end your response with this EXACT format:
    
