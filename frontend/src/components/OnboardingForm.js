@@ -57,17 +57,37 @@ export default function OnboardingForm({ onComplete }) {
         }));
       }
 
-      // Prepare context data
+      // Prepare context data based on portfolio type
       const contextData = {
         portfolio_type: formData.portfolio_type,
-        date_of_birth: formData.date_of_birth || null,
-        annual_income: formData.annual_income ? parseFloat(formData.annual_income) : null,
-        monthly_investment: formData.monthly_investment ? parseFloat(formData.monthly_investment) : null,
         risk_tolerance: formData.risk_tolerance,
         roi_expectations: formData.roi_expectations ? parseFloat(formData.roi_expectations) : null,
-        liquidity_requirements: liquidity_requirements.length > 0 ? liquidity_requirements : null,
+        monthly_investment: formData.monthly_investment ? parseFloat(formData.monthly_investment) : null,
         investment_mode: formData.monthly_investment ? "sip" : "adhoc",
+        liquidity_requirements: formData.financial_goals.length > 0 ? formData.financial_goals : null,
       };
+
+      // Add personal-specific fields
+      if (formData.portfolio_type === "personal") {
+        contextData.date_of_birth = formData.date_of_birth || null;
+        contextData.annual_income = formData.annual_income ? parseFloat(formData.annual_income) : null;
+        contextData.net_worth = formData.net_worth ? parseFloat(formData.net_worth) : null;
+        contextData.home_ownership = formData.home_ownership || null;
+        if (formData.home_ownership === "own") {
+          contextData.house_price = formData.house_price ? parseFloat(formData.house_price) : null;
+          contextData.mortgage_amount = formData.mortgage_amount ? parseFloat(formData.mortgage_amount) : null;
+          contextData.mortgage_monthly = formData.mortgage_monthly ? parseFloat(formData.mortgage_monthly) : null;
+        }
+      }
+
+      // Add institutional-specific fields
+      if (formData.portfolio_type === "institutional") {
+        contextData.institution_name = formData.institution_name || null;
+        contextData.institution_sector = formData.institution_sector || null;
+        contextData.annual_revenue = formData.annual_revenue ? parseFloat(formData.annual_revenue) : null;
+        contextData.annual_profit = formData.annual_profit ? parseFloat(formData.annual_profit) : null;
+        contextData.number_of_employees = formData.number_of_employees ? parseInt(formData.number_of_employees) : null;
+      }
 
       // Remove null values
       Object.keys(contextData).forEach(key => {
