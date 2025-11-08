@@ -215,6 +215,16 @@ export default function Dashboard({ user, setIsAuthenticated }) {
           </Tabs>
         )}
       </main>
+
+      {/* Add Stock Modal */}
+      <AddStockModal
+        isOpen={showAddStockModal}
+        onClose={() => setShowAddStockModal(false)}
+        onSuccess={() => {
+          // Trigger portfolio refresh if on portfolio tab
+          window.dispatchEvent(new Event('portfolioUpdated'));
+        }}
+      />
     </div>
   );
 }
