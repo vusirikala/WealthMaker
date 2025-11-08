@@ -429,6 +429,33 @@ print('Setup complete');
             {"news_count": len(data) if isinstance(data, list) else 0}
         )
 
+    def test_authentication_requirements(self):
+        """Test that endpoints require authentication"""
+        print("\n🔐 Testing Authentication Requirements...")
+        
+        # Test admin endpoints without auth
+        endpoints_to_test = [
+            ('GET', 'admin/database-stats'),
+            ('POST', 'admin/initialize-database'),
+            ('GET', 'admin/list-assets'),
+            ('POST', 'admin/update-live-data'),
+            ('GET', 'data/search?q=AAPL'),
+            ('GET', 'data/asset/AAPL'),
+            ('POST', 'data/assets/batch'),
+            ('GET', 'data/tracked'),
+            ('POST', 'data/track?symbol=AAPL')
+        ]
+        
+        for method, endpoint in endpoints_to_test:
+            status, data = self.make_request(method, endpoint, use_auth=False)
+            success = status == 401
+            self.log_test(
+                f"{method} /{endpoint} (no auth)", 
+                success,
+                f"Expected 401, got {status}" if not success else "",
+                data
+            )
+
     def test_error_handling(self):
         """Test error handling"""
         print("\n🚨 Testing Error Handling...")
@@ -443,13 +470,23 @@ print('Setup complete');
             data
         )
         
-        # Test malformed chat request
-        status, data = self.make_request('POST', 'chat/send', {"invalid": "data"})
+        # Test malformed batch request
+        status, data = self.make_request('POST', 'data/assets/batch', {"invalid": "data"})
         success = status in [400, 422]  # Bad request or validation error
         self.log_test(
-            "POST /chat/send (malformed)", 
+            "POST /data/assets/batch (malformed)", 
             success,
             f"Expected 400/422, got {status}" if not success else "",
+            data
+        )
+        
+        # Test non-existent asset
+        status, data = self.make_request('GET', 'data/asset/NONEXISTENT')
+        success = status == 404
+        self.log_test(
+            "GET /data/asset/NONEXISTENT", 
+            success,
+            f"Expected 404, got {status}" if not success else "",
             data
         )
 
