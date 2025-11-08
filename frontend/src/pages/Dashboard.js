@@ -58,9 +58,21 @@ export default function Dashboard({ user, setIsAuthenticated }) {
     }
   };
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = async () => {
     setShowOnboarding(false);
-    checkUserContext(); // Refresh context
+    // Refresh context without re-checking if onboarding is needed
+    try {
+      const response = await fetch(`${API}/context`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const context = await response.json();
+        setUserContext(context);
+      }
+    } catch (error) {
+      console.error("Error refreshing context:", error);
+    }
     toast.success("Great! Now let's chat to refine your portfolio.");
   };
 
