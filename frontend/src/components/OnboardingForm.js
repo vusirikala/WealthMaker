@@ -13,7 +13,7 @@ export default function OnboardingForm({ onComplete }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     portfolio_type: "",
-    age: "",
+    date_of_birth: "",
     annual_income: "",
     monthly_investment: "",
     risk_tolerance: "",
