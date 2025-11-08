@@ -224,17 +224,51 @@ export default function SettingsPage() {
                 Delete Account
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="max-w-md">
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete Account?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                    <Trash2 className="w-6 h-6 text-red-600" />
+                  </div>
+                  <AlertDialogTitle className="text-xl">Delete Account?</AlertDialogTitle>
+                </div>
+                <AlertDialogDescription className="space-y-4 pt-2">
+                  <p className="text-base font-semibold text-red-600">
+                    ⚠️ This action is irreversible and cannot be undone.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Deleting your account will permanently remove:
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-2 pl-5">
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Your profile and personal information</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>All portfolio data and recommendations</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>Chat history and financial goals</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">•</span>
+                      <span>All saved preferences and settings</span>
+                    </li>
+                  </ul>
+                  <p className="text-sm text-gray-700 font-medium pt-2">
+                    Are you absolutely sure you want to proceed?
+                  </p>
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">
-                  Yes, Delete My Account
+              <AlertDialogFooter className="gap-2 sm:gap-2">
+                <AlertDialogCancel className="flex-1">Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleDeleteAccount} 
+                  className="flex-1 bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                >
+                  Yes, Delete Everything
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
