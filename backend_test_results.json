@@ -1,23 +1,302 @@
 {
-  "timestamp": "2025-11-03T05:01:16.231799+00:00",
-  "total_tests": 10,
-  "passed_tests": 9,
-  "success_rate": 90.0,
+  "timestamp": "2025-11-08T23:34:42.561628+00:00",
+  "total_tests": 47,
+  "passed_tests": 43,
+  "success_rate": 91.48936170212765,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762146042",
-        "email": "test.user.1762146042@example.com",
-        "name": "Test User 1762146042",
+        "_id": "test-user-1762644838",
+        "email": "test.user.1762644838@example.com",
+        "name": "Test User 1762644838",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-03T05:00:43.037000"
+        "created_at": "2025-11-08T23:34:04.146000"
       }
     },
     {
       "test": "GET /auth/me (unauthenticated)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "GET /admin/database-stats",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "total_assets": 0,
+        "by_type": {
+          "stocks": 0,
+          "crypto": 0,
+          "commodities": 0
+        },
+        "last_updated": null,
+        "status": "needs_initialization"
+      }
+    },
+    {
+      "test": "POST /admin/initialize-database",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "Database initialization started",
+        "status": "processing",
+        "note": "This will take 5-10 minutes. Check /admin/database-stats for progress"
+      }
+    },
+    {
+      "test": "GET /admin/database-stats (after init)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "total_assets": 5,
+        "by_type": {
+          "stocks": 3,
+          "crypto": 1,
+          "commodities": 1
+        },
+        "last_updated": "2025-11-08T23:34:07.844719+00:00",
+        "status": "active"
+      }
+    },
+    {
+      "test": "GET /admin/list-assets",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "asset_count": 5
+      }
+    },
+    {
+      "test": "POST /admin/add-asset (TSLA)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "Adding TSLA to shared database",
+        "status": "processing"
+      }
+    },
+    {
+      "test": "POST /admin/update-live-data",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "Live data update started",
+        "status": "processing",
+        "note": "Updates running in background. Check /admin/database-stats for completion"
+      }
+    },
+    {
+      "test": "GET /data/search?q=AAPL",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "result_count": 1
+      }
+    },
+    {
+      "test": "GET /data/asset/AAPL",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_fundamentals": true,
+        "has_historical": true,
+        "has_live": true
+      }
+    },
+    {
+      "test": "Asset has symbol",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Asset has name",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Asset has assetType",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has sector",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has industry",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has description",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has marketCap",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has earnings",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has priceHistory",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has majorEvents",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has patterns",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has currentPrice",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has recentNews",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has analystRatings",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has upcomingEvents",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "POST /data/assets/batch",
+      "success": false,
+      "details": "Status: 422",
+      "response_data": {
+        "assets_returned": 0
+      }
+    },
+    {
+      "test": "POST /data/track?symbol=AAPL",
+      "success": false,
+      "details": "Status: 404",
+      "response_data": {
+        "detail": "User context not found"
+      }
+    },
+    {
+      "test": "GET /data/tracked",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "tracked_count": 0
+      }
+    },
+    {
+      "test": "DELETE /data/track/AAPL",
+      "success": false,
+      "details": "Status: 404",
+      "response_data": {
+        "detail": "User context not found"
+      }
+    },
+    {
+      "test": "GET /admin/database-stats (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "POST /admin/initialize-database (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "GET /admin/list-assets (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "POST /admin/update-live-data (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "GET /data/search?q=AAPL (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "GET /data/asset/AAPL (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "POST /data/assets/batch (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "GET /data/tracked (no auth)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
+    },
+    {
+      "test": "POST /data/track?symbol=AAPL (no auth)",
       "success": true,
       "details": "",
       "response_data": {
@@ -34,10 +313,10 @@
     },
     {
       "test": "POST /chat/send",
-      "success": false,
-      "details": "Status: 408",
+      "success": true,
+      "details": "",
       "response_data": {
-        "has_response": false
+        "has_response": true
       }
     },
     {
@@ -50,12 +329,12 @@
     },
     {
       "test": "GET /portfolio",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 404",
       "response_data": {
-        "risk_tolerance": "medium",
-        "roi_expectations": 10.0,
-        "allocation_count": 6
+        "risk_tolerance": null,
+        "roi_expectations": null,
+        "allocation_count": 0
       }
     },
     {
@@ -63,7 +342,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "news_count": 9
+        "news_count": 0
       }
     },
     {
@@ -75,24 +354,31 @@
       }
     },
     {
-      "test": "POST /chat/send (malformed)",
+      "test": "POST /data/assets/batch (malformed)",
       "success": true,
       "details": "",
       "response_data": {
         "detail": [
           {
-            "type": "missing",
+            "type": "list_type",
             "loc": [
-              "body",
-              "message"
+              "body"
             ],
-            "msg": "Field required",
+            "msg": "Input should be a valid list",
             "input": {
               "invalid": "data"
             },
-            "url": "https://errors.pydantic.dev/2.12/v/missing"
+            "url": "https://errors.pydantic.dev/2.12/v/list_type"
           }
         ]
+      }
+    },
+    {
+      "test": "GET /data/asset/NONEXISTENT",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Asset NONEXISTENT not found in database. Admin needs to add it."
       }
     },
     {
