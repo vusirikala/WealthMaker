@@ -583,6 +583,12 @@ Respond in a friendly, professional tone. Keep responses concise but informative
         except Exception as e:
             logger.error(f"Error parsing portfolio suggestion: {e}")
     
+    # Extract and update user context from conversation
+    try:
+        await extract_and_update_context(user.id, user_message, ai_response)
+    except Exception as e:
+        logger.error(f"Error extracting context: {e}")
+    
     # Save AI response (clean version)
     ai_msg_doc = {
         "id": str(uuid.uuid4()),
