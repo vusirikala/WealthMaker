@@ -527,7 +527,7 @@ print('Setup complete');
 
 def main():
     """Main test execution"""
-    tester = SmartFolioAPITester()
+    tester = WealthMakerAPITester()
     success = tester.run_all_tests()
     
     # Save detailed results
