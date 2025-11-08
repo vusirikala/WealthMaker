@@ -57,19 +57,6 @@ export default function OnboardingForm({ onComplete }) {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
       
-      // Parse financial goals
-      const goalsText = formData.financial_goals.trim();
-      let liquidity_requirements = [];
-      if (goalsText) {
-        const goalLines = goalsText.split('\n').filter(line => line.trim());
-        liquidity_requirements = goalLines.map(goal => ({
-          goal_id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          goal_name: goal.trim(),
-          goal_type: "other",
-          priority: "medium",
-        }));
-      }
-
       // Parse goals from textarea
       const goalsText = typeof formData.financial_goals === 'string' ? formData.financial_goals : '';
       const goalsList = goalsText.split('\n').filter(g => g.trim()).map((g, index) => ({
