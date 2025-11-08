@@ -90,6 +90,61 @@ class UserContext(BaseModel):
     investment_mode: Optional[str] = None  # 'sip', 'adhoc', 'both'
     existing_investments: Optional[Dict[str, Any]] = Field(default_factory=dict)
     
+    # Existing Portfolio - Goal-based portfolio tracking
+    existing_portfolios: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    # Each portfolio item structure:
+    # {
+    #   "portfolio_id": "unique_id",
+    #   "portfolio_name": "Retirement Fund",
+    #   "goal_id": "linked_goal_id",  # Links to liquidity_requirements
+    #   "goal_name": "Retirement",  # For quick reference
+    #   "total_value": 150000,  # Current total value
+    #   "cost_basis": 120000,  # Original investment amount
+    #   "unrealized_gain_loss": 30000,  # Current gain/loss
+    #   "unrealized_gain_loss_percentage": 25.0,  # % gain/loss
+    #   "account_type": "401k|IRA|Roth_IRA|brokerage|crypto_wallet|savings|other",
+    #   "account_provider": "Vanguard, Fidelity, Coinbase, etc.",
+    #   "is_tax_advantaged": true,  # Tax-advantaged account?
+    #   "holdings": [
+    #     {
+    #       "asset_id": "unique_asset_id",
+    #       "asset_name": "Apple Inc.",
+    #       "ticker": "AAPL",
+    #       "asset_type": "stock|bond|crypto|etf|mutual_fund|index_fund|reit|commodity|cash",
+    #       "sector": "Technology",
+    #       "quantity": 100,
+    #       "purchase_price": 150.00,
+    #       "current_price": 180.00,
+    #       "total_value": 18000,
+    #       "cost_basis": 15000,
+    #       "unrealized_gain_loss": 3000,
+    #       "unrealized_gain_loss_percentage": 20.0,
+    #       "allocation_percentage": 12.0,  # % of total portfolio
+    #       "purchase_date": "2023-01-15",
+    #       "notes": "Long-term hold"
+    #     }
+    #   ],
+    #   "allocation_summary": {
+    #     "stocks": 60.0,
+    #     "bonds": 30.0,
+    #     "cash": 10.0
+    #   },
+    #   "sector_allocation": {
+    #     "technology": 25.0,
+    #     "healthcare": 15.0,
+    #     "finance": 20.0
+    #   },
+    #   "performance_metrics": {
+    #     "ytd_return": 8.5,
+    #     "one_year_return": 12.3,
+    #     "three_year_return": 15.7,
+    #     "inception_return": 25.0
+    #   },
+    #   "last_rebalanced": "2024-01-01",
+    #   "last_updated": "2024-01-15",
+    #   "notes": "Conservative allocation for near-term goal"
+    # }
+    
     # Liquidity & Goals - Comprehensive goal tracking
     liquidity_requirements: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
     # Each item structure:
