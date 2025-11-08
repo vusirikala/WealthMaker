@@ -716,8 +716,31 @@ KEY INFORMATION TO GATHER (if not already known):
 - Age and retirement plans (for personal) or company details (for institutional)
 - Net worth and income
 - Investment amount (monthly/annual) and mode (SIP vs ad-hoc)
-- Liquidity needs and future financial goals
 - Risk tolerance (detailed understanding, not just a number)
+
+CRITICAL: DETAILED FINANCIAL GOALS - Ask about EACH goal:
+For every financial goal, gather these specific details:
+1. Goal Name: What exactly is the goal? (e.g., "Buy a 3-bedroom house in suburbs")
+2. Goal Type: house_purchase, vacation, wedding, children_education, retirement, start_business, emergency_fund, vehicle_purchase, healthcare, other
+3. Total Cost: How much money does this goal require in total?
+4. Amount Already Saved: How much have they already saved for this goal?
+5. Target Date: When do they need this money? (specific date or timeframe)
+6. Priority Level: Is this high, medium, or low priority?
+7. Flexibility: Can the timeline be adjusted if needed?
+8. Monthly Savings: How much can they allocate monthly toward this goal?
+9. Funding Strategy: Will they save monthly (SIP), invest a lump sum, or both?
+10. Risk Appetite for Goal: How much risk are they willing to take for THIS specific goal?
+11. Additional Details: Any other important information about this goal
+
+IMPORTANT: Different goals may have different risk tolerances. A goal 30 years away (retirement) can handle more risk than a goal 2 years away (house down payment).
+
+Examples of questions to ask:
+- "I see you want to buy a house. How much do you estimate it will cost?"
+- "When are you planning to make this purchase?"
+- "Have you already started saving for this? If so, how much have you saved?"
+- "How much can you set aside monthly toward this goal?"
+- "Is this timeline flexible, or is it a fixed date?"
+- "Would you be comfortable with moderate market risk for this goal, or do you need this money to be very safe?"
 - ROI expectations
 - Investment style and activity preference
 - Existing investments
