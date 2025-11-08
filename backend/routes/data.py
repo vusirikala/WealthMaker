@@ -6,6 +6,7 @@ from typing import List, Optional
 from models.user import User
 from utils.dependencies import require_auth
 from services.historical_data import historical_data_service
+from services.live_data import live_data_service
 import logging
 
 router = APIRouter(prefix="/data", tags=["data"])
