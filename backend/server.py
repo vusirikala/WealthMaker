@@ -1059,8 +1059,12 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
     
     if user_context['portfolio_type'] == 'personal':
-        if user_context.get('age'):
-            context_info += f"\n- Age: {user_context['age']}"
+        if user_context.get('date_of_birth'):
+            # Calculate age from date of birth
+            from dateutil.relativedelta import relativedelta
+            dob = datetime.fromisoformat(user_context['date_of_birth'].replace('Z', '+00:00'))
+            age = relativedelta(datetime.now(timezone.utc), dob).years
+            context_info += f"\n- Age: {age} (DOB: {user_context['date_of_birth'][:10]})"
         if user_context.get('retirement_age'):
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
