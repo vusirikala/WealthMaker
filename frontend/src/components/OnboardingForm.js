@@ -405,48 +405,70 @@ export default function OnboardingForm({ onComplete }) {
   );
 
   const renderStep4 = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Your Financial Goals</h3>
-        <p className="text-sm text-gray-600">
-          What are you investing for? (One goal per line)
+    <div className="space-y-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 mb-4 shadow-lg">
+          <Target className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+          Your Financial Goals
+        </h3>
+        <p className="text-gray-600">
+          What are you investing for?
         </p>
       </div>
 
-      <div>
-        <Label htmlFor="financial_goals">Goals</Label>
-        <Textarea
-          id="financial_goals"
-          placeholder="Example:
-Retirement
-Buy a house
-Children's education
-Emergency fund"
-          value={formData.financial_goals}
-          onChange={(e) => handleInputChange("financial_goals", e.target.value)}
-          className="mt-2 min-h-[150px]"
-        />
-        <p className="text-xs text-gray-500 mt-1">
-          Don't worry, we'll gather more details about each goal in our conversation.
-        </p>
+      <div className="space-y-4">
+        <div className="p-4 bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-xl border border-cyan-200">
+          <Label htmlFor="financial_goals" className="text-sm font-semibold text-gray-700 mb-2 block">
+            List Your Goals (One per line)
+          </Label>
+          <Textarea
+            id="financial_goals"
+            placeholder="Examples:
+• Retirement at age 60
+• Buy a house in 5 years
+• Children's college education
+• Build emergency fund
+• Start a business"
+            value={formData.financial_goals}
+            onChange={(e) => handleInputChange("financial_goals", e.target.value)}
+            className="mt-2 min-h-[180px] border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500 resize-none"
+          />
+          <div className="mt-3 p-3 bg-white rounded-lg border border-cyan-200">
+            <p className="text-xs text-gray-600 flex items-start gap-2">
+              <span className="text-cyan-600 mt-0.5">💡</span>
+              <span>Don't worry about details now. We'll refine each goal through our conversation.</span>
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="flex gap-3">
-        <Button onClick={() => setStep(3)} variant="outline" className="flex-1">
+        <Button 
+          onClick={() => setStep(3)} 
+          variant="outline" 
+          className="flex-1 h-12 border-2 hover:bg-gray-50"
+          disabled={loading}
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
           Back
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="flex-1"
+          className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Setting up...
             </>
           ) : (
-            "Complete Setup"
+            <>
+              Complete Setup
+              <CheckCircle2 className="w-5 h-5 ml-2" />
+            </>
           )}
         </Button>
       </div>
@@ -454,25 +476,39 @@ Emergency fund"
   );
 
   return (
-    <div className="min-h-[600px] flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Welcome to WealthMaker</CardTitle>
-          <CardDescription>
-            Step {step} of 4 - Quick setup to get started
-          </CardDescription>
-          <div className="flex gap-2 mt-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-cyan-50 via-white to-emerald-50">
+      <Card className="w-full max-w-3xl shadow-2xl border-0 overflow-hidden">
+        <div className="h-2 bg-gradient-to-r from-cyan-500 via-emerald-500 to-cyan-500" />
+        <CardHeader className="pb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">
+                WealthMaker
+              </CardTitle>
+              <CardDescription className="text-base mt-1">
+                Step {step} of 4
+              </CardDescription>
+            </div>
+            <div className="px-4 py-2 bg-gradient-to-r from-cyan-100 to-emerald-100 rounded-full">
+              <span className="text-sm font-semibold text-cyan-700">{Math.round((step / 4) * 100)}% Complete</span>
+            </div>
+          </div>
+          <div className="flex gap-2">
             {[1, 2, 3, 4].map((s) => (
               <div
                 key={s}
-                className={`h-2 flex-1 rounded-full ${
-                  s <= step ? "bg-cyan-500" : "bg-gray-200"
+                className={`h-2 flex-1 rounded-full transition-all duration-500 ${
+                  s < step 
+                    ? "bg-gradient-to-r from-cyan-500 to-emerald-500" 
+                    : s === step 
+                    ? "bg-gradient-to-r from-cyan-400 to-emerald-400 animate-pulse" 
+                    : "bg-gray-200"
                 }`}
               />
             ))}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-8">
           {step === 1 && renderStep1()}
           {step === 2 && renderStep2()}
           {step === 3 && renderStep3()}
