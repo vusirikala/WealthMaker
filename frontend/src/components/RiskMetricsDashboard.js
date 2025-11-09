@@ -105,7 +105,10 @@ export default function RiskMetricsDashboard({ portfolioId }) {
         <div className={`bg-gradient-to-br from-${getBetaColor()}-50 to-${getBetaColor()}-100 rounded-lg p-4`}>
           <div className="flex items-center gap-2 mb-2">
             <Activity className={`w-5 h-5 text-${getBetaColor()}-600`} />
-            <span className="text-sm font-semibold text-gray-700">Beta</span>
+            <span className="text-sm font-semibold text-gray-700 flex items-center">
+              Beta
+              <InfoTooltip text="Measures how much your portfolio moves compared to the overall market (S&P 500). Beta = 1 means it moves with the market. Beta > 1 means more volatile. Beta < 1 means less volatile." />
+            </span>
           </div>
           <div className={`text-2xl font-bold text-${getBetaColor()}-700`}>
             {beta !== null ? beta.toFixed(2) : 'N/A'}
@@ -119,7 +122,10 @@ export default function RiskMetricsDashboard({ portfolioId }) {
         <div className={`bg-gradient-to-br from-${getSharpeColor()}-50 to-${getSharpeColor()}-100 rounded-lg p-4`}>
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className={`w-5 h-5 text-${getSharpeColor()}-600`} />
-            <span className="text-sm font-semibold text-gray-700">Sharpe Ratio</span>
+            <span className="text-sm font-semibold text-gray-700 flex items-center">
+              Sharpe Ratio
+              <InfoTooltip text="Measures risk-adjusted returns. It shows how much return you get for the risk taken. Higher is better. > 1 is good, > 2 is excellent, > 3 is outstanding. Below 1 means you're not being well-compensated for the risk." />
+            </span>
           </div>
           <div className={`text-2xl font-bold text-${getSharpeColor()}-700`}>
             {sharpe_ratio !== null ? sharpe_ratio.toFixed(2) : 'N/A'}
@@ -133,7 +139,10 @@ export default function RiskMetricsDashboard({ portfolioId }) {
         <div className={`bg-gradient-to-br from-${getVolatilityColor()}-50 to-${getVolatilityColor()}-100 rounded-lg p-4`}>
           <div className="flex items-center gap-2 mb-2">
             <BarChart3 className={`w-5 h-5 text-${getVolatilityColor()}-600`} />
-            <span className="text-sm font-semibold text-gray-700">Volatility</span>
+            <span className="text-sm font-semibold text-gray-700 flex items-center">
+              Volatility
+              <InfoTooltip text="Annualized standard deviation showing how much your portfolio value fluctuates. < 15% is low (stable), 15-25% is moderate, > 25% is high (more swings). Lower volatility means steadier returns." />
+            </span>
           </div>
           <div className={`text-2xl font-bold text-${getVolatilityColor()}-700`}>
             {volatility !== null ? `${volatility.toFixed(1)}%` : 'N/A'}
@@ -147,7 +156,10 @@ export default function RiskMetricsDashboard({ portfolioId }) {
         <div className={`bg-gradient-to-br from-${getDrawdownColor()}-50 to-${getDrawdownColor()}-100 rounded-lg p-4`}>
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className={`w-5 h-5 text-${getDrawdownColor()}-600`} />
-            <span className="text-sm font-semibold text-gray-700">Max Drawdown</span>
+            <span className="text-sm font-semibold text-gray-700 flex items-center">
+              Max Drawdown
+              <InfoTooltip text="The largest peak-to-trough decline in portfolio value. Shows the worst-case loss you would have experienced. For example, -15% means at one point your portfolio was down 15% from its highest point." />
+            </span>
           </div>
           <div className={`text-2xl font-bold text-${getDrawdownColor()}-700`}>
             {max_drawdown !== null ? `${max_drawdown.toFixed(1)}%` : 'N/A'}
