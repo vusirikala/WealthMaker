@@ -208,6 +208,18 @@ frontend:
         agent: "testing"
         comment: "COMPREHENSIVE TESTING COMPLETE: ✅ Tested complete end-to-end portfolio accept and load flow as requested in review. ✅ Step 1: Created test user and portfolio suggestion in portfolio_suggestions collection with suggestion_id. ✅ Step 2: POST /api/portfolio/accept successfully accepts portfolio with risk_tolerance=moderate, roi_expectations=12, and 4 allocations (AAPL, GOOGL, MSFT, BND). ✅ Step 3: GET /api/portfolio (legacy endpoint frontend calls) returns 200 response with complete portfolio data. ✅ Step 4: Data integrity verified - _id properly serialized as string (ObjectId fix working), all portfolio fields present (risk_tolerance, roi_expectations, allocations), allocations array intact with correct ticker symbols and allocation percentages. ✅ Step 5: Error case tested - GET /api/portfolio returns proper response when no portfolio exists. ✅ 13/13 tests passed (100% success rate). The EXACT flow frontend uses (Accept via /api/portfolio/accept → Load via /api/portfolio) is fully functional and production-ready."
 
+  - task: "Auto-initialize missing stocks in stock detail modal"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/data.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed 'Failed to load stock details' error. Updated GET /api/data/asset/{symbol} endpoint to auto-initialize missing stocks instead of throwing 404 error. When user clicks on any ticker in portfolio, if the stock doesn't exist in shared_assets database, it will be automatically fetched and initialized. Backend restarted."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
