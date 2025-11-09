@@ -50,7 +50,12 @@ export default function ChatTab({ portfolioId = null }) {
 
   const loadChatHistory = async () => {
     try {
-      const response = await fetch(`${API}/chat/messages`, {
+      // Add portfolio_id as query parameter if available
+      const url = portfolioId 
+        ? `${API}/chat/messages?portfolio_id=${portfolioId}`
+        : `${API}/chat/messages`;
+      
+      const response = await fetch(url, {
         credentials: "include",
       });
       if (response.ok) {
