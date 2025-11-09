@@ -9,6 +9,7 @@ import EditPortfolioInfoModal from "./EditPortfolioInfoModal";
 import DeletePortfolioModal from "./DeletePortfolioModal";
 import ExportPortfolioModal from "./ExportPortfolioModal";
 import StockDetailModal from "./StockDetailModal";
+import PortfolioPerformanceChart from "./PortfolioPerformanceChart";
 import {
   DropdownMenu,
   DropdownMenuContent,
