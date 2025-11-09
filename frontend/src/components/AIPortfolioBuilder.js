@@ -120,6 +120,81 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  const sectorInfo = [
+    {
+      id: "stocks",
+      label: "Stocks & Equities",
+      emoji: "📈",
+      description: "Ownership shares in publicly traded companies",
+      details: "Stocks represent ownership stakes in companies, offering growth potential through capital appreciation and dividend income. Historically, stocks have provided the highest long-term returns among major asset classes, averaging 10% annually over the past century. However, they also experience significant short-term volatility.",
+      risk: "Medium to High",
+      riskFactors: "Market volatility, company-specific risks, economic downturns can cause 30-50% losses, requires diversification",
+      roiExpectation: "8-12% annually (long-term average)",
+      volatility: "High (can swing 20-40% annually)",
+      bestFor: "Long-term investors with 5+ year horizons"
+    },
+    {
+      id: "bonds",
+      label: "Bonds & Fixed Income",
+      emoji: "💰",
+      description: "Debt securities with regular interest payments",
+      details: "Bonds are loans to governments or corporations that pay fixed interest (coupon) at regular intervals. They provide predictable income and are less volatile than stocks. Bond prices move inversely with interest rates - when rates rise, bond values fall. Government bonds are safer, corporate bonds offer higher yields but more risk.",
+      risk: "Low to Medium",
+      riskFactors: "Interest rate risk, inflation can erode returns, credit default risk for corporate bonds, limited growth potential",
+      roiExpectation: "3-6% annually",
+      volatility: "Low to Medium (5-15% annual swings)",
+      bestFor: "Conservative investors, income seekers, portfolio stability"
+    },
+    {
+      id: "crypto",
+      label: "Cryptocurrency",
+      emoji: "₿",
+      description: "Digital assets and blockchain-based currencies",
+      details: "Cryptocurrencies like Bitcoin and Ethereum are decentralized digital currencies operating on blockchain technology. They offer potential for massive gains but with extreme volatility. Not backed by governments or physical assets, value is driven by adoption, technology developments, and speculation. Still a relatively new and evolving asset class.",
+      risk: "Very High",
+      riskFactors: "Extreme volatility (50%+ swings common), regulatory uncertainty, security risks, potential for total loss, liquidity issues",
+      roiExpectation: "Highly variable (-50% to +300% annually)",
+      volatility: "Extreme (50-100%+ annual swings)",
+      bestFor: "Risk-tolerant investors, small portfolio allocation (5-10% max)"
+    },
+    {
+      id: "real_estate",
+      label: "Real Estate & REITs",
+      emoji: "🏢",
+      description: "Property investments and Real Estate Investment Trusts",
+      details: "Real estate includes physical properties or REITs (Real Estate Investment Trusts) that own income-generating properties like apartments, offices, or shopping centers. Provides diversification, inflation protection, and regular income through rent. REITs offer liquidity and lower capital requirements than direct property ownership.",
+      risk: "Medium",
+      riskFactors: "Interest rate sensitivity, market cycles, property-specific risks, liquidity constraints for direct ownership, management complexity",
+      roiExpectation: "6-10% annually (appreciation + income)",
+      volatility: "Medium (10-25% annual swings for REITs)",
+      bestFor: "Diversification seekers, income investors, inflation hedgers"
+    },
+    {
+      id: "commodities",
+      label: "Commodities & Precious Metals",
+      emoji: "🥇",
+      description: "Physical goods like gold, oil, and agricultural products",
+      details: "Commodities include precious metals (gold, silver), energy (oil, natural gas), and agricultural products (wheat, corn). Gold is traditionally viewed as a 'safe haven' during economic uncertainty and inflation hedge. Commodities have low correlation with stocks and bonds, providing portfolio diversification. Can be accessed through ETFs, futures, or physical ownership.",
+      risk: "Medium to High",
+      riskFactors: "Price volatility driven by supply/demand, geopolitical events, no inherent income generation, storage costs for physical assets",
+      roiExpectation: "3-8% annually (varies widely by commodity)",
+      volatility: "High (20-40% annual swings)",
+      bestFor: "Portfolio diversification, inflation protection, experienced investors"
+    },
+    {
+      id: "forex",
+      label: "Foreign Exchange (Forex)",
+      emoji: "💱",
+      description: "Currency trading and exchange rate speculation",
+      details: "Forex involves trading currencies against each other (e.g., USD/EUR). It's the world's largest financial market with 24/7 trading. Typically uses high leverage (10:1 to 100:1), magnifying both gains and losses. Requires understanding of macroeconomics, central bank policies, and geopolitical events. Not recommended for most retail investors due to complexity and risk.",
+      risk: "Very High",
+      riskFactors: "Extreme leverage amplifies losses, requires constant monitoring, complex market dynamics, high transaction costs, 90%+ of retail traders lose money",
+      roiExpectation: "Highly variable (most lose money)",
+      volatility: "Very High with leverage",
+      bestFor: "Professional traders only, not recommended for most investors"
+    }
+  ];
+
   const strategies = [
     {
       id: "value_investing",
