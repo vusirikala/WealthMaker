@@ -244,8 +244,21 @@ metadata:
   test_sequence: 1
   run_ui: false
 
+  - task: "Multi-Portfolio Management System"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/portfolio_management.py, /app/frontend/src/components/MultiPortfolioDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented comprehensive multi-portfolio management system. Backend: Created new portfolio_management routes with endpoints for list, create, update, delete, invest, and update allocations. Added UserPortfolio model supporting multiple portfolios per user with manual/AI types. Frontend: Created PortfolioSidebar for navigation, AddPortfolioModal for type selection, ManualPortfolioBuilder for creating portfolios, PortfolioView for displaying portfolio details with investment capability, MultiPortfolioDashboard component integrating all features. Added new 'Portfolios' tab to Dashboard. Investment feature calculates shares based on allocations and current prices. All services restarted successfully."
+
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Multi-Portfolio Management System"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
