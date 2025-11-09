@@ -92,16 +92,23 @@ export default function PortfolioTab() {
         const myPortfolioData = await myPortfolioResponse.json();
         if (myPortfolioData.portfolio) {
           console.log("My Portfolio loaded:", myPortfolioData);
+          
+          // Filter out holdings with 0 quantity
+          const activeHoldings = myPortfolioData.portfolio.holdings?.filter(h => h.quantity > 0) || [];
+          
           // Transform to match expected format
           const transformedPortfolio = {
             risk_tolerance: myPortfolioData.portfolio.risk_tolerance || "medium",
             roi_expectations: myPortfolioData.portfolio.roi_expectations || 10,
-            allocations: myPortfolioData.portfolio.holdings?.map(h => ({
+            allocations: activeHoldings.map(h => ({
               ticker: h.symbol,
               asset_type: h.asset_type || "stock",
               allocation: h.allocation_percentage || 0,
-              sector: h.sector || "Unknown"
-            })) || []
+              sector: h.sector || "Unknown",
+              // Store full holding data for modal
+              holdingData: h
+            })),
+            fullHoldings: activeHoldings // Store full holdings for reference
           };
           setPortfolio(transformedPortfolio);
           setIsLoading(false);
