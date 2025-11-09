@@ -606,22 +606,17 @@ async def generate_portfolio(
     }
     strategy_str = ", ".join([strategy_names_map.get(s, s) for s in investment_strategies]) if investment_strategies else "Not specified"
     
-    # Calculate exact dollar amounts per sector
-    sector_amounts = {}
-    total_pct = 0
-    
+    # Calculate exact requirements per sector
+    sector_requirements = {}
     if sector_allocation:
         for sector, data in sector_allocation.items():
             if data.get('enabled', False):
                 pct = data.get('allocation', 0)
-                total_pct += pct
-                if investment_amount > 0:
-                    sector_amounts[sector] = (pct, investment_amount * pct / 100)
-                else:
-                    sector_amounts[sector] = (pct, 0)
+                if pct > 0:
+                    sector_requirements[sector] = pct
     
-    # Build comprehensive prompt for AI with EXACT calculations
-    prompt = f"""You are an expert portfolio manager. Generate a specific stock/ETF portfolio allocation that EXACTLY matches the user's sector percentages.
+    # Build CLEAR and FOCUSED prompt
+    prompt = f"""You are a portfolio allocation expert. Create a portfolio that EXACTLY matches these sector percentages.
 
 USER'S PORTFOLIO PROFILE:
 - Name: {portfolio_name}
