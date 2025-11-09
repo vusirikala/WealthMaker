@@ -250,7 +250,7 @@ export default function NewsTab() {
                       )}
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
-                      {item.headline}
+                      {item.headline || item.title}
                     </h3>
                   </div>
                 </div>
