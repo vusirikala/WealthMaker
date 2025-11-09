@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ChatTab from "@/components/ChatTab";
 import PortfolioTab from "@/components/PortfolioTab";
+import WatchlistTab from "@/components/WatchlistTab";
 import NewsTab from "@/components/NewsTab";
 import OnboardingForm from "@/components/OnboardingForm";
 import AddStockModal from "@/components/AddStockModal";
