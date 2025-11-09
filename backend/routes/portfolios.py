@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime, timezone
 from typing import Dict, Any
 import uuid
+import logging
 from models.user import User
 from models.portfolio import Portfolio
 from models.chat import AcceptPortfolioRequest
