@@ -224,7 +224,7 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
       {/* Chart */}
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={time_series} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart data={merged_time_series} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="date"
@@ -240,12 +240,27 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
               domain={['auto', 'auto']}
             />
             <Tooltip content={<CustomTooltip />} />
+            <Legend 
+              wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+              iconType="line"
+            />
             <ReferenceLine y={0} stroke="#6b7280" strokeDasharray="3 3" />
             <Line
               type="monotone"
-              dataKey="return_percentage"
-              stroke={isPositive ? '#10b981' : '#ef4444'}
+              dataKey="portfolio_return"
+              name="Your Portfolio"
+              stroke="#0891b2"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 6 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="sp500_return"
+              name="S&P 500"
+              stroke="#3b82f6"
               strokeWidth={2}
+              strokeDasharray="5 5"
               dot={false}
               activeDot={{ r: 6 }}
             />
