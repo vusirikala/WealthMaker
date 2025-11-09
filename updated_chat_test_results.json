@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-09T00:20:00.897518+00:00",
+  "timestamp": "2025-11-09T00:20:34.154417+00:00",
   "test_type": "updated_chat_auto_initiation",
   "total_tests": 16,
   "passed_tests": 9,
@@ -112,7 +112,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "context_fields_count": 8
+        "context_fields_count": 7
       }
     },
     {
