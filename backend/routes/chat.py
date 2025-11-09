@@ -805,10 +805,15 @@ CRITICAL REQUIREMENTS:
 - Sector percentages MUST sum to exactly 100
 - Reasoning MUST reference the user's specific goal and all key parameters
 - Recommend 2-3 strategies that match risk tolerance, time horizon, AND monitoring frequency
+- Strategy selection MUST respect monitoring frequency constraints:
+  * Quarterly/Annually monitoring → CANNOT recommend momentum_investing
+  * Daily/Weekly monitoring → CAN recommend any strategy
+  * Monthly → Can recommend all except momentum_investing (unless very active goal)
 - Be realistic: Don't promise 20% returns with low risk or conservative allocations
 - Forex should be 0% unless user explicitly mentions currency trading experience
 - Crypto should be 0-10% max, higher only for high/very high risk tolerance
-- Provide specific, actionable reasoning tied to the user's situation"""
+- Provide specific, actionable reasoning tied to the user's situation
+- strategy_reasoning must explain the logical connection between strategies and user's monitoring capability"""
 
         # Call LLM
         llm = LlmChat(
