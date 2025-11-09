@@ -111,7 +111,13 @@ export default function ChatTab() {
           }));
         }
       } else {
-        const errorData = await response.json().catch(() => ({}));
+        let errorData = {};
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // If JSON parsing fails, use empty object
+          console.error("Could not parse error response as JSON:", e);
+        }
         console.error("Failed to send message:", response.status, errorData);
         toast.error(`Failed to send message: ${errorData.detail || response.statusText}`);
       }
