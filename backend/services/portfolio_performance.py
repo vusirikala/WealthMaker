@@ -173,7 +173,7 @@ def calculate_portfolio_historical_returns(
     df = pd.DataFrame(ticker_data)
     
     # Forward fill missing data
-    df = df.fillna(method='ffill')
+    df = df.ffill()
     
     # Calculate portfolio value over time (starting at 100)
     portfolio_values = pd.Series(0, index=df.index)
