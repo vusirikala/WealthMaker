@@ -90,8 +90,12 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     # Add portfolio_id if provided
     if portfolio_id:
         user_msg_doc["portfolio_id"] = portfolio_id
+        logger.info(f"Saving user message WITH portfolio_id: {portfolio_id}")
+    else:
+        logger.info("Saving user message WITHOUT portfolio_id (global chat)")
     
     await db.chat_messages.insert_one(user_msg_doc)
+    logger.info(f"User message saved to database")
     
     # Get user context
     user_context = await db.user_context.find_one({"user_id": user.id})
