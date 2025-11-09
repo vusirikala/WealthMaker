@@ -686,3 +686,168 @@ IMPORTANT: Return ONLY valid JSON, no additional text."""
             }
         }
 
+
+
+@router.post("/portfolio-recommendations")
+async def get_portfolio_recommendations(
+    request: dict,
+    user: User = Depends(require_auth)
+):
+    """
+    Get AI-powered recommendations for investment sectors and strategies
+    based on user's portfolio preferences
+    """
+    try:
+        # Extract parameters
+        goal = request.get("goal", "")
+        risk_tolerance = request.get("risk_tolerance", "medium")
+        roi_expectations = request.get("roi_expectations", 10)
+        time_horizon = request.get("time_horizon", "5-10")
+        investment_amount = request.get("investment_amount", 0)
+        monitoring_frequency = request.get("monitoring_frequency", "monthly")
+        
+        # Build prompt for LLM
+        prompt = f"""You are a financial advisor. Based on the following portfolio parameters, provide recommendations for:
+1. Investment sector allocation (stocks, bonds, crypto, real_estate, commodities, forex)
+2. Investment strategies that align with the user's profile
+
+Portfolio Parameters:
+- Goal: {goal}
+- Risk Tolerance: {risk_tolerance}
+- Expected Annual Return: {roi_expectations}%
+- Time Horizon: {time_horizon} years
+- Investment Amount: ${investment_amount}
+- Monitoring Frequency: {monitoring_frequency}
+
+Provide your response in the following JSON format:
+{{
+  "sector_allocation": {{
+    "stocks": <percentage 0-100>,
+    "bonds": <percentage 0-100>,
+    "crypto": <percentage 0-100>,
+    "real_estate": <percentage 0-100>,
+    "commodities": <percentage 0-100>,
+    "forex": <percentage 0-100>
+  }},
+  "recommended_strategies": [
+    "strategy_id_1",
+    "strategy_id_2"
+  ],
+  "reasoning": "Brief explanation of why these allocations and strategies fit the user's profile"
+}}
+
+Available strategy IDs: value_investing, growth_investing, income_investing, index_funds, dollar_cost_averaging, momentum_investing
+
+Important: 
+- Sector allocation percentages must sum to 100
+- Recommend 2-3 strategies that align with the risk tolerance and goals
+- If risk is low, favor bonds and dividend strategies
+- If risk is high, favor stocks, crypto, and growth strategies
+- Consider time horizon: longer horizon = more aggressive allocation
+- Match monitoring frequency to strategy complexity"""
+
+        # Call LLM
+        llm = LlmChat(
+            api_key=os.environ.get("EMERGENT_LLM_KEY"),
+            model="gpt-4o-mini"
+        )
+        
+        messages = [UserMessage(content=prompt)]
+        ai_response = llm.chat(messages=messages)
+        
+        logger.info(f"LLM recommendation response: {ai_response}")
+        
+        # Parse JSON from response
+        try:
+            # Try to extract JSON from markdown code blocks
+            if "```json" in ai_response:
+                json_str = ai_response.split("```json")[1].split("```")[0].strip()
+            elif "```" in ai_response:
+                json_str = ai_response.split("```")[1].split("```")[0].strip()
+            else:
+                json_str = ai_response.strip()
+            
+            recommendations = json.loads(json_str)
+            
+            # Validate sector allocation sums to 100
+            sector_total = sum(recommendations["sector_allocation"].values())
+            if abs(sector_total - 100) > 1:  # Allow 1% tolerance
+                # Normalize to 100
+                factor = 100 / sector_total
+                for sector in recommendations["sector_allocation"]:
+                    recommendations["sector_allocation"][sector] = round(
+                        recommendations["sector_allocation"][sector] * factor, 1
+                    )
+            
+            logger.info(f"Generated recommendations for user {user.id}")
+            
+            return {
+                "success": True,
+                "recommendations": recommendations
+            }
+            
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.error(f"Failed to parse LLM response as JSON: {e}")
+            logger.error(f"LLM Response: {ai_response}")
+            
+            # Fallback recommendations based on risk tolerance
+            if risk_tolerance == "low":
+                sector_allocation = {
+                    "stocks": 30,
+                    "bonds": 50,
+                    "crypto": 0,
+                    "real_estate": 15,
+                    "commodities": 5,
+                    "forex": 0
+                }
+                strategies = ["income_investing", "dollar_cost_averaging"]
+            elif risk_tolerance == "high":
+                sector_allocation = {
+                    "stocks": 60,
+                    "bonds": 10,
+                    "crypto": 15,
+                    "real_estate": 10,
+                    "commodities": 5,
+                    "forex": 0
+                }
+                strategies = ["growth_investing", "momentum_investing"]
+            else:  # medium
+                sector_allocation = {
+                    "stocks": 50,
+                    "bonds": 30,
+                    "crypto": 5,
+                    "real_estate": 10,
+                    "commodities": 5,
+                    "forex": 0
+                }
+                strategies = ["index_funds", "dollar_cost_averaging"]
+            
+            return {
+                "success": True,
+                "recommendations": {
+                    "sector_allocation": sector_allocation,
+                    "recommended_strategies": strategies,
+                    "reasoning": f"Based on your {risk_tolerance} risk tolerance and {time_horizon} year time horizon, this allocation balances growth with stability."
+                }
+            }
+            
+    except Exception as e:
+        logger.error(f"Error generating recommendations: {e}")
+        
+        # Return default recommendations
+        return {
+            "success": True,
+            "recommendations": {
+                "sector_allocation": {
+                    "stocks": 50,
+                    "bonds": 30,
+                    "crypto": 5,
+                    "real_estate": 10,
+                    "commodities": 5,
+                    "forex": 0
+                },
+                "recommended_strategies": ["index_funds", "dollar_cost_averaging"],
+                "reasoning": "Here's a balanced portfolio allocation suitable for most investors."
+            }
+        }
+
