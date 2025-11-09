@@ -214,9 +214,24 @@ def build_context_string(user_context):
     if user_context['portfolio_type'] == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
-            dob = datetime.fromisoformat(user_context['date_of_birth'].replace('Z', '+00:00'))
+            dob_str = user_context['date_of_birth']
+            # Handle both string dates (YYYY-MM-DD) and datetime objects
+            if isinstance(dob_str, str):
+                # Parse string date and ensure it's timezone-aware
+                if 'T' in dob_str or 'Z' in dob_str or '+' in dob_str:
+                    dob = datetime.fromisoformat(dob_str.replace('Z', '+00:00'))
+                else:
+                    # Simple date string like "1990-01-01"
+                    dob = datetime.strptime(dob_str, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+            else:
+                dob = dob_str
+            
+            # Ensure both datetimes are timezone-aware for comparison
+            if dob.tzinfo is None:
+                dob = dob.replace(tzinfo=timezone.utc)
+            
             age = relativedelta(datetime.now(timezone.utc), dob).years
-            context_info += f"\n- Age: {age} (DOB: {user_context['date_of_birth'][:10]})"
+            context_info += f"\n- Age: {age} (DOB: {str(dob)[:10]})"
         if user_context.get('retirement_age'):
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
