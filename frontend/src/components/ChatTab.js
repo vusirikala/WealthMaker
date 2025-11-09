@@ -103,13 +103,25 @@ export default function ChatTab({ portfolioId = null }) {
     setMessages((prev) => [...prev, tempUserMsg]);
 
     try {
+      // Include portfolio context if available
+      const requestBody = { message: userMessage };
+      if (portfolioContext) {
+        requestBody.portfolio_context = {
+          portfolio_id: portfolioContext.portfolio_id,
+          name: portfolioContext.name,
+          goal: portfolioContext.goal,
+          allocations: portfolioContext.allocations,
+          total_invested: portfolioContext.total_invested
+        };
+      }
+
       const response = await fetch(`${API}/chat/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
