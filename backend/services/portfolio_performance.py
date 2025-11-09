@@ -228,12 +228,23 @@ async def calculate_portfolio_historical_returns(
         start_sp500_return = sp500_returns_display.iloc[0]
         sp500_returns_display = sp500_returns_display - start_sp500_return
     
+    # Helper function to sanitize float values for JSON
+    def sanitize_float(value):
+        """Convert NaN, Infinity to None or 0"""
+        if value is None:
+            return 0
+        if isinstance(value, (int, float)):
+            if np.isnan(value) or np.isinf(value):
+                return 0
+            return round(float(value), 2)
+        return 0
+    
     # Build time series for charting
     time_series = []
     for date, return_pct in portfolio_returns_display.items():
         time_series.append({
             'date': date.strftime('%Y-%m-%d'),
-            'return_percentage': round(float(return_pct), 2)
+            'return_percentage': sanitize_float(return_pct)
         })
     
     # Calculate period returns (now this is the actual return for the selected period)
