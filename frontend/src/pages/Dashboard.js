@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import WatchlistTab from "@/components/WatchlistTab";
+import MultiWatchlistDashboard from "@/components/MultiWatchlistDashboard";
 import NewsTab from "@/components/NewsTab";
 import OnboardingForm from "@/components/OnboardingForm";
 import ProfilePage from "./ProfilePage";
