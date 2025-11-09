@@ -87,7 +87,10 @@ export default function MultiPortfolioDashboard() {
 
             {/* Chat Content */}
             <div className="flex-1 overflow-hidden">
-              <ChatTab portfolioId={selectedPortfolioId} />
+              <ChatTab 
+                key={selectedPortfolioId || 'global'} 
+                portfolioId={selectedPortfolioId} 
+              />
             </div>
           </div>
         </>
