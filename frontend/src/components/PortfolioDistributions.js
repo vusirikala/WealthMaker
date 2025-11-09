@@ -97,7 +97,10 @@ export default function PortfolioDistributions({ portfolioId }) {
       {/* Geographic Distribution */}
       {geoData.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">🌍 Geographic Distribution</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            🌍 Geographic Distribution
+            <InfoTooltip text="Shows where your investments are located geographically. Diversifying across regions reduces country-specific risks like economic downturns, policy changes, or currency fluctuations." />
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
