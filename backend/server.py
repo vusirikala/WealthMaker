@@ -1751,6 +1751,7 @@ api_router.include_router(context.router)
 api_router.include_router(goals.router)
 api_router.include_router(portfolios.router)
 api_router.include_router(portfolio_management.router)  # New multi-portfolio management
+api_router.include_router(watchlists.router)  # Multi-watchlist management
 api_router.include_router(chat.router)
 api_router.include_router(news.router)
 api_router.include_router(data.router)
