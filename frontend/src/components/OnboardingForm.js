@@ -838,7 +838,11 @@ export default function OnboardingForm({ onComplete }) {
           Back
         </Button>
         <Button 
-          onClick={() => setStep(4)} 
+          onClick={() => {
+            if (validateStep3()) {
+              setStep(4);
+            }
+          }}
           className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           Continue
