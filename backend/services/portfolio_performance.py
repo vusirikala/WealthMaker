@@ -105,7 +105,7 @@ def calculate_portfolio_historical_returns(
             logger.info(f"Fetching data for {ticker}")
             
             # Try to use cache if db is available
-            if db:
+            if db is not None:
                 try:
                     price_series = asyncio.run(get_cached_price_data(ticker, max_start_date, end_date, db))
                 except:
