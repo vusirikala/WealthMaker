@@ -164,5 +164,9 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Implemented auto-initiate chat feature. Added first_chat_initiated tracking field to UserContext model. Created /api/chat/init endpoint that generates personalized greeting message for first-time chat users. Modified frontend ChatTab to call init endpoint when no messages exist. Backend restarted successfully. Ready for testing."
+  - agent: "user"
+    message: "Initial message asks too many questions at once. Chatbot should ask one question at a time, gather information gradually, and store in user memory (context). Use this context for LLM queries."
+  - agent: "main"
+    message: "Updated initial greeting message to be simple and conversational - now asks just ONE opening question about main financial goal. System already has infrastructure for: 1) Extracting context from conversations via extract_and_update_context() function, 2) System prompt instructs AI to ask ONE question at a time, 3) Automatic detection of missing information, 4) Context is automatically included in LLM system prompts. No additional changes needed - existing backend handles gradual information gathering."
   - agent: "testing"
     message: "BACKEND TESTING COMPLETE: All chat auto-initiation backend functionality is working perfectly. ✅ Tested all 5 scenarios from review request with 21/21 tests passing (100% success rate). ✅ /api/chat/init endpoint generates comprehensive personalized greetings with financial questions. ✅ first_chat_initiated tracking works correctly. ✅ Idempotency implemented properly. ✅ Full user conversation flow functional. ✅ Fixed minor KeyError bug in chat/send endpoint. Backend is production-ready. Only frontend integration testing remains."
