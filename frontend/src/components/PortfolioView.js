@@ -32,6 +32,9 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
   const [showEditInfoModal, setShowEditInfoModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showStockDetail, setShowStockDetail] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedHolding, setSelectedHolding] = useState(null);
 
   useEffect(() => {
     if (portfolioId) {
