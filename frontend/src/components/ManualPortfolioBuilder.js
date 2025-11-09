@@ -123,6 +123,14 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     setIsSubmitting(true);
 
     try {
+      // Prepare sector preferences
+      const selectedSectors = Object.keys(sectorPreferences).reduce((acc, key) => {
+        if (sectorPreferences[key]) {
+          acc[key] = { allowed: true };
+        }
+        return acc;
+      }, {});
+
       const response = await fetch(`${API}/portfolios-v2/create`, {
         method: "POST",
         headers: {
@@ -135,6 +143,7 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           type: "manual",
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
+          sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
           allocations: validAllocations.map(a => ({
             ticker: a.ticker.toUpperCase(),
             allocation_percentage: parseFloat(a.allocation_percentage),
