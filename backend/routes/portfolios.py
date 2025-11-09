@@ -473,6 +473,122 @@ async def get_my_portfolio(user: User = Depends(require_auth)):
     
     if not my_portfolio:
         return {
+
+
+
+@router.post("/sell-stock")
+async def sell_stock(
+    symbol: str,
+    quantity: float,
+    user: User = Depends(require_auth)
+):
+    """
+    Sell/remove stock from portfolio
+    Use negative quantity to sell shares
+    
+    Args:
+        symbol: Stock ticker
+        quantity: Number of shares to sell (will be made negative)
+    """
+    # Sell is just adding with negative quantity
+    negative_quantity = -abs(quantity)
+    
+    # Get current market price for calculation
+    from services.shared_assets_db import shared_assets_service
+    asset_data = await shared_assets_service.get_single_asset(symbol.upper())
+    
+    if not asset_data:
+        raise HTTPException(status_code=404, detail=f"Stock {symbol} not found")
+    
+    current_price = asset_data.get('live', {}).get('currentPrice', {}).get('price', 0)
+    
+    # Use add_stock with negative quantity (it will remove if quantity reaches 0)
+    return await add_stock_to_portfolio(
+        symbol=symbol,
+        quantity=negative_quantity,
+        purchase_price=current_price,  # Use current price for selling
+        user=user
+    )
+
+
+@router.delete("/remove-stock/{symbol}")
+async def remove_stock_completely(
+    symbol: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Completely remove a stock from portfolio regardless of quantity
+    """
+    symbol = symbol.upper()
+    
+    context = await db.user_context.find_one({"user_id": user.id})
+    if not context:
+        raise HTTPException(status_code=404, detail="User context not found")
+    
+    existing_portfolios = context.get('existing_portfolios', [])
+    
+    # Find "My Portfolio"
+    my_portfolio = None
+    portfolio_idx = -1
+    
+    for idx, portfolio in enumerate(existing_portfolios):
+        if portfolio.get('portfolio_name') == 'My Portfolio':
+            my_portfolio = portfolio
+            portfolio_idx = idx
+            break
+    
+    if not my_portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    # Remove the holding
+    original_length = len(my_portfolio.get('holdings', []))
+    my_portfolio['holdings'] = [h for h in my_portfolio.get('holdings', []) if h.get('symbol') != symbol]
+    
+    if len(my_portfolio['holdings']) == original_length:
+        raise HTTPException(status_code=404, detail=f"{symbol} not in portfolio")
+    
+    # Recalculate portfolio totals
+    if my_portfolio['holdings']:
+        total_value = sum(h.get('total_value', 0) for h in my_portfolio['holdings'])
+        total_cost_basis = sum(h.get('cost_basis', 0) for h in my_portfolio['holdings'])
+        
+        my_portfolio['total_value'] = total_value
+        my_portfolio['cost_basis'] = total_cost_basis
+        my_portfolio['unrealized_gain_loss'] = total_value - total_cost_basis
+        my_portfolio['unrealized_gain_loss_percentage'] = round(
+            ((total_value - total_cost_basis) / total_cost_basis * 100), 2
+        ) if total_cost_basis > 0 else 0
+        
+        # Recalculate allocations
+        for holding in my_portfolio['holdings']:
+            holding['allocation_percentage'] = round(
+                (holding.get('total_value', 0) / total_value * 100), 2
+            ) if total_value > 0 else 0
+    else:
+        # Portfolio is now empty
+        my_portfolio['total_value'] = 0
+        my_portfolio['cost_basis'] = 0
+        my_portfolio['unrealized_gain_loss'] = 0
+        my_portfolio['unrealized_gain_loss_percentage'] = 0
+    
+    my_portfolio['last_updated'] = datetime.now(timezone.utc).isoformat()
+    
+    # Update in database
+    existing_portfolios[portfolio_idx] = my_portfolio
+    
+    await db.user_context.update_one(
+        {"user_id": user.id},
+        {"$set": {
+            "existing_portfolios": existing_portfolios,
+            "updated_at": datetime.now(timezone.utc)
+        }}
+    )
+    
+    return {
+        "success": True,
+        "message": f"Removed {symbol} from portfolio"
+    }
+
             "portfolio": None,
             "message": "No portfolio found. Use POST /portfolios/add-stock to add stocks."
         }
