@@ -447,6 +447,21 @@ metadata:
       - working: "NA"
         agent: "main"
         comment: "Updated StockDetailModal to show contextually relevant information based on asset type. For company stocks: shows sector, industry, market cap, employees, company description. For ETFs/Index Funds/Bond Funds: shows fund type, total assets, expense ratio, YTD return, 3-year avg return, 5-year avg return, fund description. For bond funds specifically: also shows yield. Backend updated to fetch fund-specific data from yfinance including category, totalAssets, expenseRatio, yield, ytdReturn, threeYearAverageReturn, fiveYearAverageReturn, fundFamily, fundInceptionDate. Modal now detects asset type and renders appropriate sections - no more showing irrelevant 'employees' field for funds. All services restarted successfully."
+  
+  - task: "Chat Close Button Visibility Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/MultiPortfolioDashboard.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported that the chatbot's close button is not visible despite previous attempts to make it prominent."
+      - working: "NA"
+        agent: "main"
+        comment: "Made close button highly prominent and impossible to miss. Changes: 1) Increased size from 10x10 to 12x12 pixels (20% larger), 2) Changed from rounded square to circular button (rounded-full), 3) Changed from translucent white (bg-white/90) to solid white background for maximum contrast, 4) Changed icon color from cyan (text-cyan-600) to dark gray (text-gray-900) for maximum contrast against white background, 5) Increased z-index from 50 to 100 for guaranteed top layering, 6) Added 2px border with gray default and cyan hover state for better definition, 7) Enhanced shadow with inline style (0 10px 40px rgba(0,0,0,0.3)) for 3D elevation effect, 8) Increased icon size from 6x6 to 7x7, 9) Increased stroke width from 2.5 to 3 for bolder X icon. Button now appears as a large white circle with dark X icon, elevated shadow, and clear border against the cyan-emerald gradient header background. Frontend has hot reload enabled so changes should be immediately visible."
 
 test_plan:
   current_focus:
