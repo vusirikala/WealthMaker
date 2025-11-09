@@ -347,9 +347,8 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-
-          {/* Holdings/Allocations Table */}
+        {/* Holdings/Allocations Table - Full Width */}
+        <div className="mb-6">
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               {hasHoldings ? 'Holdings' : 'Allocations'}
