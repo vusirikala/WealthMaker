@@ -605,3 +605,170 @@ async def get_portfolio_performance(
         "export_date": datetime.now(timezone.utc).isoformat()
     }
 
+
+
+@router.get("/{portfolio_id}/risk-metrics")
+async def get_portfolio_risk_metrics(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Get portfolio risk metrics:
+    - Beta (vs S&P 500)
+    - Sharpe Ratio
+    - Volatility
+    - Max Drawdown
+    """
+    from services.portfolio_analytics import PortfolioAnalytics
+    
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    allocations = portfolio.get('allocations', [])
+    if not allocations:
+        return {
+            "beta": None,
+            "sharpe_ratio": None,
+            "volatility": None,
+            "max_drawdown": None,
+            "message": "Portfolio has no allocations"
+        }
+    
+    try:
+        risk_metrics = await PortfolioAnalytics.calculate_risk_metrics(allocations, db)
+        return risk_metrics
+    except Exception as e:
+        logger.error(f"Error calculating risk metrics: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to calculate risk metrics"
+        )
+
+
+@router.get("/{portfolio_id}/correlations")
+async def get_portfolio_correlations(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Get correlation matrix between portfolio stocks
+    """
+    from services.portfolio_analytics import PortfolioAnalytics
+    
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    allocations = portfolio.get('allocations', [])
+    if len(allocations) < 2:
+        return {
+            "correlations": [],
+            "tickers": [],
+            "message": "Need at least 2 stocks for correlation analysis"
+        }
+    
+    try:
+        correlations = await PortfolioAnalytics.calculate_correlation_matrix(allocations)
+        return correlations
+    except Exception as e:
+        logger.error(f"Error calculating correlations: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to calculate correlations"
+        )
+
+
+@router.get("/{portfolio_id}/distributions")
+async def get_portfolio_distributions(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Get geographic and market cap distributions
+    """
+    from services.portfolio_analytics import PortfolioAnalytics
+    
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    allocations = portfolio.get('allocations', [])
+    if not allocations:
+        return {
+            "geography": [],
+            "market_cap": [],
+            "message": "Portfolio has no allocations"
+        }
+    
+    try:
+        distributions = await PortfolioAnalytics.calculate_distributions(allocations)
+        return distributions
+    except Exception as e:
+        logger.error(f"Error calculating distributions: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to calculate distributions"
+        )
+
+
+@router.get("/{portfolio_id}/dividends")
+async def get_portfolio_dividends(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Get dividend/income information for portfolio
+    """
+    from services.portfolio_analytics import PortfolioAnalytics
+    
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    allocations = portfolio.get('allocations', [])
+    holdings = portfolio.get('holdings', [])
+    
+    if not allocations:
+        return {
+            "total_annual_income": 0,
+            "monthly_income": 0,
+            "dividend_yield": 0,
+            "dividend_stocks": [],
+            "message": "Portfolio has no allocations"
+        }
+    
+    try:
+        dividend_info = await PortfolioAnalytics.calculate_dividend_info(allocations, holdings)
+        return dividend_info
+    except Exception as e:
+        logger.error(f"Error calculating dividend info: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to calculate dividend information"
+        )
+
