@@ -29,6 +29,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ.get('DB_NAME', 'wealthmaker')]
+
+# Finnhub setup
+finnhub_client = finnhub.Client(api_key=os.environ.get('FINNHUB_API_KEY', ''))
+
+# Create the main app and API router
+app = FastAPI()
+api_router = APIRouter(prefix="/api")
+
 # Models
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
