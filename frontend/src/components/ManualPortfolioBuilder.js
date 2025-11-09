@@ -216,6 +216,7 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
           sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
+          investment_strategy: investmentStrategies.length > 0 ? investmentStrategies : null,
           allocations: validAllocations.map(a => ({
             ticker: a.ticker.toUpperCase(),
             allocation_percentage: parseFloat(a.allocation_percentage),
