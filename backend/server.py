@@ -1044,6 +1044,83 @@ async def get_chat_messages(user: User = Depends(require_auth)):
     
     return messages
 
+@api_router.get("/chat/init")
+async def initialize_chat(user: User = Depends(require_auth)):
+    """Initialize chat with a greeting message for first-time users"""
+    
+    # Get user context to check if chat has been initiated
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    
+    # If no context or first_chat_initiated is False/None, generate initial message
+    if not user_context or not user_context.get('first_chat_initiated', False):
+        # Check if there are already messages (user might have started chatting before we added this feature)
+        existing_messages = await db.chat_messages.count_documents({"user_id": user.id})
+        
+        if existing_messages > 0:
+            # User has already chatted, don't auto-initiate
+            if user_context:
+                await db.user_context.update_one(
+                    {"user_id": user.id},
+                    {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
+                )
+            return {"message": None}
+        
+        # Generate personalized initial message
+        initial_message = f"""Hi {user.name}! 👋 Welcome to WealthMaker!
+
+I'm your AI financial advisor, and I'm here to help you build a personalized investment portfolio that aligns with your goals and preferences.
+
+To get started, I'd love to learn more about you. Could you tell me about:
+
+1. **Your Financial Goals** - What are you saving or investing for? (e.g., retirement, buying a home, children's education, building wealth, etc.)
+
+2. **Investment Timeline** - When do you need this money? Are these short-term (1-3 years), medium-term (3-10 years), or long-term (10+ years) goals?
+
+3. **Risk Comfort Level** - How comfortable are you with market fluctuations? Would you describe yourself as conservative, moderate, or aggressive with your investments?
+
+4. **Existing Investments** - Do you currently have any investments or portfolios? If so, what types of assets do you own?
+
+5. **Sector Preferences** - Are there specific industries or sectors you're interested in or want to avoid? (e.g., technology, healthcare, sustainable energy, crypto, etc.)
+
+6. **Investment Approach** - Do you prefer a hands-off passive strategy (like index funds) or a more active approach?
+
+Feel free to share as much or as little as you'd like - we can always dive deeper into any area as we go! 💼📈"""
+
+        # Save the initial message to chat history
+        ai_msg_doc = {
+            "id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "role": "assistant",
+            "message": initial_message,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        await db.chat_messages.insert_one(ai_msg_doc)
+        
+        # Mark chat as initiated in user context
+        if user_context:
+            await db.user_context.update_one(
+                {"user_id": user.id},
+                {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
+            )
+        else:
+            # Create user context if it doesn't exist
+            new_context = {
+                "_id": str(uuid.uuid4()),
+                "user_id": user.id,
+                "first_chat_initiated": True,
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            }
+            await db.user_context.insert_one(new_context)
+        
+        return {
+            "message": initial_message,
+            "timestamp": ai_msg_doc["timestamp"]
+        }
+    
+    # Chat already initiated
+    return {"message": None}
+
 @api_router.post("/chat/send", response_model=ChatResponse)
 async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
     user_message = chat_request.message
