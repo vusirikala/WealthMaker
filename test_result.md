@@ -319,9 +319,21 @@ metadata:
         agent: "main"
         comment: "Fixed account deletion to completely remove all user data. Previously, user_portfolios and users collections were not being deleted, causing old data to reappear when user re-registered. Updated DELETE /api/auth/account endpoint to delete from all collections: user_sessions, user_context, portfolios (legacy), user_portfolios (new), chat_messages, portfolio_suggestions, goals, and users table. Added detailed logging showing count of deleted records from each collection. Backend restarted successfully."
 
+  - task: "Comprehensive Portfolio Context for LLM"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/services/portfolio_context_builder.py, /app/backend/routes/chat.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented comprehensive portfolio context system for LLM conversations. Created portfolio_context_builder.py service with build_portfolio_context() function that gathers: portfolio name, purpose/goal, user demographics (age), risk tolerance, sector preferences, investment strategies, current allocations, actual holdings with performance, financial goals, liquidity needs, and recent chat history. Created build_portfolio_system_message() to format this as LLM system message. Updated chat send endpoint to detect portfolio-specific chats and build appropriate context. Portfolio context provides full visibility of portfolio state, user preferences, and conversation history to LLM for intelligent, contextual responses. Backend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Fix Complete Account Deletion"
+    - "Comprehensive Portfolio Context for LLM"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
