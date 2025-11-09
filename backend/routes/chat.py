@@ -706,20 +706,62 @@ async def get_portfolio_recommendations(
         investment_amount = request.get("investment_amount", 0)
         monitoring_frequency = request.get("monitoring_frequency", "monthly")
         
-        # Build prompt for LLM
-        prompt = f"""You are a financial advisor. Based on the following portfolio parameters, provide recommendations for:
-1. Investment sector allocation (stocks, bonds, crypto, real_estate, commodities, forex)
-2. Investment strategies that align with the user's profile
+        # Build comprehensive prompt for LLM with detailed context
+        prompt = f"""You are an expert financial advisor with deep knowledge of portfolio management, asset allocation, and investment strategies. Analyze the user's specific situation and provide highly personalized investment recommendations.
 
-Portfolio Parameters:
-- Goal: {goal}
-- Risk Tolerance: {risk_tolerance}
-- Expected Annual Return: {roi_expectations}%
+USER PROFILE:
+- Investment Goal: "{goal}"
+- Risk Tolerance: {risk_tolerance.upper()}
+- Expected Annual Return Target: {roi_expectations}%
 - Time Horizon: {time_horizon} years
-- Investment Amount: ${investment_amount}
-- Monitoring Frequency: {monitoring_frequency}
+- Initial Investment Amount: ${investment_amount:,.2f}
+- Portfolio Monitoring Frequency: {monitoring_frequency}
 
-Provide your response in the following JSON format:
+YOUR TASK:
+Provide a tailored sector allocation and strategy recommendation that directly addresses this user's specific goal and constraints.
+
+SECTOR ALLOCATION GUIDELINES:
+1. Stocks & Equities (8-12% historical average, high volatility 20-40% swings)
+   - Use for growth, long time horizons, higher risk tolerance
+   - Key consideration: Market volatility, company-specific risks
+
+2. Bonds & Fixed Income (3-6% returns, low-medium volatility 5-15% swings)
+   - Use for stability, income generation, capital preservation
+   - Key consideration: Interest rate risk, inflation protection
+
+3. Cryptocurrency (-50% to +300% annual range, extreme 50-100%+ volatility)
+   - Only for very high risk tolerance, typically 0-10% of portfolio
+   - Key consideration: Regulatory uncertainty, extreme volatility
+
+4. Real Estate & REITs (6-10% with income, medium 10-25% volatility)
+   - Good for diversification, inflation hedge, income
+   - Key consideration: Interest rate sensitivity, liquidity
+
+5. Commodities & Precious Metals (3-8% variable, high 20-40% volatility)
+   - Portfolio diversification, inflation protection
+   - Key consideration: No income generation, storage costs
+
+6. Foreign Exchange/Forex (highly variable, very high risk)
+   - Typically 0% for most investors (professional traders only)
+   - Key consideration: Extreme leverage risk, requires active management
+
+STRATEGY ALIGNMENT:
+- value_investing: Low-Medium risk, 8-15% ROI, 3-10 year horizon, requires patience
+- growth_investing: Medium-High risk, 15-30% ROI, 3-7 year horizon, for capital appreciation
+- income_investing: Low-Medium risk, 5-10% ROI + dividends, 5+ years, for steady income
+- index_funds: Low-Medium risk, 8-12% ROI, 5+ years, passive approach
+- dollar_cost_averaging: Low risk, matches underlying assets, 5+ years, reduces timing risk
+- momentum_investing: High risk, 20-50% ROI (volatile), 6mo-3yr, requires active monitoring
+
+ANALYSIS FRAMEWORK:
+1. Parse the user's goal to understand specific objective (retirement, home purchase, wealth building, etc.)
+2. Match time horizon with appropriate asset allocation (longer = more stocks, shorter = more bonds)
+3. Align risk tolerance with volatility exposure
+4. Ensure ROI expectations are realistic given the allocation
+5. Match monitoring frequency to strategy complexity (daily monitoring = more active strategies OK)
+6. Consider investment amount for diversification requirements
+
+OUTPUT FORMAT (JSON only, no markdown):
 {{
   "sector_allocation": {{
     "stocks": <percentage 0-100>,
@@ -729,22 +771,18 @@ Provide your response in the following JSON format:
     "commodities": <percentage 0-100>,
     "forex": <percentage 0-100>
   }},
-  "recommended_strategies": [
-    "strategy_id_1",
-    "strategy_id_2"
-  ],
-  "reasoning": "Brief explanation of why these allocations and strategies fit the user's profile"
+  "recommended_strategies": ["strategy_id_1", "strategy_id_2"],
+  "reasoning": "2-3 sentences explaining how this allocation specifically addresses the user's goal '{goal}', matches their {risk_tolerance} risk tolerance, targets {roi_expectations}% return over {time_horizon} years, and aligns with {monitoring_frequency} monitoring. Be specific about why each sector percentage was chosen."
 }}
 
-Available strategy IDs: value_investing, growth_investing, income_investing, index_funds, dollar_cost_averaging, momentum_investing
-
-Important: 
-- Sector allocation percentages must sum to 100
-- Recommend 2-3 strategies that align with the risk tolerance and goals
-- If risk is low, favor bonds and dividend strategies
-- If risk is high, favor stocks, crypto, and growth strategies
-- Consider time horizon: longer horizon = more aggressive allocation
-- Match monitoring frequency to strategy complexity"""
+CRITICAL REQUIREMENTS:
+- Sector percentages MUST sum to exactly 100
+- Reasoning MUST reference the user's specific goal and all key parameters
+- Recommend 2-3 strategies that match risk tolerance, time horizon, AND monitoring frequency
+- Be realistic: Don't promise 20% returns with low risk or conservative allocations
+- Forex should be 0% unless user explicitly mentions currency trading experience
+- Crypto should be 0-10% max, higher only for high/very high risk tolerance
+- Provide specific, actionable reasoning tied to the user's situation"""
 
         # Call LLM
         llm = LlmChat(
