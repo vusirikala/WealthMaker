@@ -128,7 +128,7 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
   const hasHoldings = portfolio.holdings && portfolio.holdings.length > 0;
   const hasAllocations = portfolio.allocations && portfolio.allocations.length > 0;
 
-  // Prepare chart data
+  // Prepare chart data for ticker allocation
   const chartData = hasHoldings
     ? portfolio.holdings.map((h, idx) => ({
         name: h.ticker,
@@ -142,6 +142,23 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
         color: COLORS[idx % COLORS.length]
       }))
     : [];
+
+  // Prepare asset type allocation data
+  const assetTypeData = hasAllocations ? (() => {
+    const typeMap = {};
+    portfolio.allocations.forEach(alloc => {
+      const type = alloc.asset_type || 'Unknown';
+      if (!typeMap[type]) {
+        typeMap[type] = 0;
+      }
+      typeMap[type] += alloc.allocation_percentage;
+    });
+    return Object.entries(typeMap).map(([name, value], idx) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value: parseFloat(value.toFixed(2)),
+      color: COLORS[idx % COLORS.length]
+    }));
+  })() : [];
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
