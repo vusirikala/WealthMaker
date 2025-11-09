@@ -206,6 +206,35 @@ class SharedAssetsService:
         else:
             return "stock"
     
+    def _get_fund_holdings(self, ticker, info: dict) -> List[Dict[str, Any]]:
+        """Get top holdings for ETFs and Mutual Funds"""
+        holdings = []
+        try:
+            # Try to get holdings from ticker object
+            if hasattr(ticker, 'funds_data') and ticker.funds_data:
+                funds_data = ticker.funds_data
+                if 'holdings' in funds_data:
+                    for holding in funds_data['holdings'][:10]:  # Top 10
+                        holdings.append({
+                            "symbol": holding.get('symbol', ''),
+                            "name": holding.get('holdingName', ''),
+                            "percentage": holding.get('holdingPercent', 0)
+                        })
+            
+            # Alternative: try major_holders or top_holdings from info
+            if not holdings and 'holdings' in info:
+                for holding in info['holdings'][:10]:
+                    holdings.append({
+                        "symbol": holding.get('symbol', ''),
+                        "name": holding.get('name', ''),
+                        "percentage": holding.get('percentage', 0)
+                    })
+                    
+        except Exception as e:
+            logger.warning(f"Could not fetch fund holdings: {e}")
+        
+        return holdings
+    
     def _get_earnings_history(self, ticker) -> List[Dict[str, Any]]:
         """Get earnings history (up to 12 quarters)"""
         earnings = []
