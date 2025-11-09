@@ -18,6 +18,7 @@ import NewsTab from "@/components/NewsTab";
 import OnboardingForm from "@/components/OnboardingForm";
 import ProfilePage from "./ProfilePage";
 import SettingsPage from "./SettingsPage";
+import MultiPortfolioDashboard from "@/components/MultiPortfolioDashboard";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
