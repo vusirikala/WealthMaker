@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for WealthMaker Financial App
-Tests authentication, shared assets database, admin endpoints, and data endpoints
+Focused test for WealthMaker Shared Assets Database System
+Tests only the new shared assets functionality
 """
 
 import requests
@@ -11,7 +11,7 @@ import time
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional
 
-class WealthMakerAPITester:
+class SharedAssetsAPITester:
     def __init__(self, base_url="https://dataflow-finance.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
@@ -100,7 +100,7 @@ print('Setup complete');
             print(f"❌ Setup error: {str(e)}")
             return False
 
-    def make_request(self, method: str, endpoint: str, data: Dict = None, use_auth: bool = True) -> tuple:
+    def make_request(self, method: str, endpoint: str, data: Any = None, use_auth: bool = True) -> tuple:
         """Make HTTP request with proper headers"""
         url = f"{self.api_url}/{endpoint}"
         headers = {'Content-Type': 'application/json'}
@@ -134,44 +134,6 @@ print('Setup complete');
         except Exception as e:
             return 500, {"error": str(e)}
 
-    def test_auth_endpoints(self):
-        """Test authentication endpoints"""
-        print("\n🔐 Testing Authentication Endpoints...")
-        
-        # Test /auth/me with valid token
-        status, data = self.make_request('GET', 'auth/me')
-        success = status == 200 and 'email' in data
-        self.log_test(
-            "GET /auth/me (authenticated)", 
-            success,
-            f"Status: {status}" if not success else "",
-            data
-        )
-        
-        # Test /auth/me without token
-        status, data = self.make_request('GET', 'auth/me', use_auth=False)
-        success = status == 401
-        self.log_test(
-            "GET /auth/me (unauthenticated)", 
-            success,
-            f"Expected 401, got {status}" if not success else "",
-            data
-        )
-
-    def test_logout_endpoint(self):
-        """Test logout endpoint separately to avoid invalidating session"""
-        print("\n🚪 Testing Logout Endpoint...")
-        
-        # Test logout
-        status, data = self.make_request('POST', 'auth/logout')
-        success = status == 200
-        self.log_test(
-            "POST /auth/logout", 
-            success,
-            f"Status: {status}" if not success else "",
-            data
-        )
-
     def test_admin_endpoints(self):
         """Test admin endpoints for shared assets database management"""
         print("\n🔧 Testing Admin Endpoints...")
@@ -185,9 +147,6 @@ print('Setup complete');
             f"Status: {status}" if not success else "",
             data
         )
-        
-        # Store initial stats for comparison
-        initial_stats = data if success else {}
         
         # Test initialize database with small set of symbols
         test_symbols = ["AAPL", "MSFT", "GOOGL", "BTC-USD", "GC=F"]
@@ -364,188 +323,6 @@ print('Setup complete');
                 f"Missing live field: {field}" if not success else ""
             )
 
-    def test_chat_init_new_user(self):
-        """Test chat init endpoint for new user"""
-        print("\n🆕 Testing Chat Init for New User...")
-        
-        # First, ensure no existing messages
-        status, data = self.make_request('GET', 'chat/messages')
-        initial_message_count = len(data) if isinstance(data, list) else 0
-        
-        # Test chat init endpoint
-        status, data = self.make_request('GET', 'chat/init')
-        success = status == 200 and isinstance(data, dict)
-        
-        if success and data.get('message'):
-            # Should return a greeting message
-            message = data.get('message', '')
-            has_greeting = any(word in message.lower() for word in ['welcome', 'hi', 'hello', 'greet'])
-            has_financial_questions = any(word in message.lower() for word in ['financial', 'goals', 'investment', 'risk', 'portfolio'])
-            
-            success = has_greeting and has_financial_questions and len(message) > 100
-            details = f"Message length: {len(message)}, Has greeting: {has_greeting}, Has financial questions: {has_financial_questions}"
-        else:
-            success = False
-            details = f"Status: {status}, No message returned"
-        
-        self.log_test(
-            "GET /chat/init (new user)", 
-            success,
-            details if not success else "",
-            {"message_length": len(data.get('message', '')) if isinstance(data, dict) else 0}
-        )
-        
-        # Verify message was saved to chat history
-        status, messages = self.make_request('GET', 'chat/messages')
-        new_message_count = len(messages) if isinstance(messages, list) else 0
-        success = status == 200 and new_message_count == initial_message_count + 1
-        
-        if success and isinstance(messages, list) and len(messages) > 0:
-            last_message = messages[-1]
-            success = last_message.get('role') == 'assistant' and len(last_message.get('message', '')) > 100
-        
-        self.log_test(
-            "Chat init message saved to history", 
-            success,
-            f"Messages before: {initial_message_count}, after: {new_message_count}" if not success else "",
-            {"message_count": new_message_count}
-        )
-
-    def test_chat_init_idempotency(self):
-        """Test chat init idempotency - should not create duplicate messages"""
-        print("\n🔄 Testing Chat Init Idempotency...")
-        
-        # Get current message count
-        status, messages = self.make_request('GET', 'chat/messages')
-        initial_count = len(messages) if isinstance(messages, list) else 0
-        
-        # Call chat init again
-        status, data = self.make_request('GET', 'chat/init')
-        success = status == 200 and isinstance(data, dict)
-        
-        if success:
-            # Should return null message since chat already initiated
-            success = data.get('message') is None
-            details = f"Returned message: {data.get('message')}" if not success else ""
-        else:
-            details = f"Status: {status}"
-        
-        self.log_test(
-            "GET /chat/init (idempotency)", 
-            success,
-            details if not success else "",
-            data
-        )
-        
-        # Verify no new messages were created
-        status, messages = self.make_request('GET', 'chat/messages')
-        final_count = len(messages) if isinstance(messages, list) else 0
-        success = status == 200 and final_count == initial_count
-        
-        self.log_test(
-            "No duplicate messages created", 
-            success,
-            f"Messages before: {initial_count}, after: {final_count}" if not success else "",
-            {"message_count": final_count}
-        )
-
-    def test_chat_endpoints(self):
-        """Test chat functionality"""
-        print("\n💬 Testing Chat Endpoints...")
-        
-        # Test get chat messages
-        status, data = self.make_request('GET', 'chat/messages')
-        success = status == 200 and isinstance(data, list)
-        self.log_test(
-            "GET /chat/messages", 
-            success,
-            f"Status: {status}, Type: {type(data)}" if not success else "",
-            {"message_count": len(data) if isinstance(data, list) else 0}
-        )
-        
-        # Test send message
-        test_message = {
-            "message": "I'm 35 years old, looking for a moderate risk portfolio with 10% ROI expectations. I want to invest $2000 monthly in technology stocks and some bonds for retirement planning."
-        }
-        
-        status, data = self.make_request('POST', 'chat/send', test_message)
-        success = status == 200 and 'message' in data
-        self.log_test(
-            "POST /chat/send", 
-            success,
-            f"Status: {status}" if not success else "",
-            {"has_response": 'message' in data if isinstance(data, dict) else False}
-        )
-        
-        # Wait a moment for AI processing
-        if success:
-            print("⏳ Waiting for AI response processing...")
-            time.sleep(3)
-        
-        # Test get messages again to verify persistence
-        status, data = self.make_request('GET', 'chat/messages')
-        success = status == 200 and isinstance(data, list) and len(data) >= 2
-        self.log_test(
-            "GET /chat/messages (after send)", 
-            success,
-            f"Status: {status}, Messages: {len(data) if isinstance(data, list) else 0}" if not success else "",
-            {"message_count": len(data) if isinstance(data, list) else 0}
-        )
-
-    def test_user_context_tracking(self):
-        """Test that first_chat_initiated is properly tracked"""
-        print("\n👤 Testing User Context Tracking...")
-        
-        # Get user context to check first_chat_initiated flag
-        status, data = self.make_request('GET', 'context')
-        success = status == 200 and isinstance(data, dict)
-        
-        if success:
-            first_chat_initiated = data.get('first_chat_initiated', False)
-            success = first_chat_initiated is True
-            details = f"first_chat_initiated: {first_chat_initiated}" if not success else ""
-        else:
-            details = f"Status: {status}"
-        
-        self.log_test(
-            "first_chat_initiated flag set", 
-            success,
-            details if not success else "",
-            {"first_chat_initiated": data.get('first_chat_initiated') if isinstance(data, dict) else None}
-        )
-
-    def test_portfolio_endpoints(self):
-        """Test portfolio functionality"""
-        print("\n📊 Testing Portfolio Endpoints...")
-        
-        # Test get portfolio
-        status, data = self.make_request('GET', 'portfolio')
-        success = status == 200 and 'allocations' in data
-        self.log_test(
-            "GET /portfolio", 
-            success,
-            f"Status: {status}" if not success else "",
-            {
-                "risk_tolerance": data.get('risk_tolerance') if isinstance(data, dict) else None,
-                "roi_expectations": data.get('roi_expectations') if isinstance(data, dict) else None,
-                "allocation_count": len(data.get('allocations', [])) if isinstance(data, dict) else 0
-            }
-        )
-
-    def test_news_endpoints(self):
-        """Test news functionality"""
-        print("\n📰 Testing News Endpoints...")
-        
-        # Test get news
-        status, data = self.make_request('GET', 'news')
-        success = status == 200 and isinstance(data, list)
-        self.log_test(
-            "GET /news", 
-            success,
-            f"Status: {status}, Type: {type(data)}" if not success else "",
-            {"news_count": len(data) if isinstance(data, list) else 0}
-        )
-
     def test_authentication_requirements(self):
         """Test that endpoints require authentication"""
         print("\n🔐 Testing Authentication Requirements...")
@@ -573,44 +350,10 @@ print('Setup complete');
                 data
             )
 
-    def test_error_handling(self):
-        """Test error handling"""
-        print("\n🚨 Testing Error Handling...")
-        
-        # Test invalid endpoint
-        status, data = self.make_request('GET', 'invalid/endpoint')
-        success = status == 404
-        self.log_test(
-            "GET /invalid/endpoint", 
-            success,
-            f"Expected 404, got {status}" if not success else "",
-            data
-        )
-        
-        # Test malformed batch request
-        status, data = self.make_request('POST', 'data/assets/batch', {"invalid": "data"})
-        success = status in [400, 422]  # Bad request or validation error
-        self.log_test(
-            "POST /data/assets/batch (malformed)", 
-            success,
-            f"Expected 400/422, got {status}" if not success else "",
-            data
-        )
-        
-        # Test non-existent asset
-        status, data = self.make_request('GET', 'data/asset/NONEXISTENT')
-        success = status == 404
-        self.log_test(
-            "GET /data/asset/NONEXISTENT", 
-            success,
-            f"Expected 404, got {status}" if not success else "",
-            data
-        )
-
     def run_all_tests(self):
-        """Run comprehensive test suite"""
-        print("🚀 Starting SmartFolio Backend API Tests")
-        print("=" * 50)
+        """Run comprehensive test suite for shared assets system"""
+        print("🚀 Starting WealthMaker Shared Assets Database Tests")
+        print("=" * 60)
         
         # Setup test user
         if not self.setup_test_user():
@@ -618,26 +361,12 @@ print('Setup complete');
             return False
         
         # Run test suites
-        self.test_auth_endpoints()
         self.test_admin_endpoints()
         self.test_data_endpoints()
         self.test_authentication_requirements()
         
-        # Test chat auto-initiation feature
-        self.test_chat_init_new_user()
-        self.test_chat_init_idempotency()
-        self.test_user_context_tracking()
-        
-        # Test regular chat functionality
-        self.test_chat_endpoints()
-        
-        self.test_portfolio_endpoints()
-        self.test_news_endpoints()
-        self.test_error_handling()
-        self.test_logout_endpoint()  # Test logout last to avoid session invalidation
-        
         # Print summary
-        print("\n" + "=" * 50)
+        print("\n" + "=" * 60)
         print(f"📊 Test Summary: {self.tests_passed}/{self.tests_run} tests passed")
         print(f"✅ Success Rate: {(self.tests_passed/self.tests_run*100):.1f}%")
         
@@ -652,7 +381,7 @@ print('Setup complete');
 
 def main():
     """Main test execution"""
-    tester = WealthMakerAPITester()
+    tester = SharedAssetsAPITester()
     success = tester.run_all_tests()
     
     # Save detailed results
@@ -664,10 +393,10 @@ def main():
         "test_details": tester.test_results
     }
     
-    with open('/app/backend_test_results.json', 'w') as f:
+    with open('/app/shared_assets_test_results.json', 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"\n📄 Detailed results saved to: /app/backend_test_results.json")
+    print(f"\n📄 Detailed results saved to: /app/shared_assets_test_results.json")
     
     return 0 if success else 1
 

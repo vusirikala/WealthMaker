@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Area, AreaChart, CartesianGrid } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, Zap, Calendar } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Zap, Calendar, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import StockDetailModal from "./StockDetailModal";
+import AddStockModal from "./AddStockModal";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -51,6 +53,10 @@ export default function PortfolioTab() {
   const [selectedRange, setSelectedRange] = useState('6M');
   const [performanceData, setPerformanceData] = useState([]);
   const [fullData] = useState(generatePortfolioData(730)); // Generate 2 years of data
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedHolding, setSelectedHolding] = useState(null);
+  const [showStockDetail, setShowStockDetail] = useState(false);
+  const [showAddStockModal, setShowAddStockModal] = useState(false);
 
   useEffect(() => {
     loadPortfolio();
@@ -78,14 +84,48 @@ export default function PortfolioTab() {
 
   const loadPortfolio = async () => {
     try {
-      // Add cache busting to ensure fresh data
+      // Try loading "My Portfolio" first (new endpoint)
+      const myPortfolioResponse = await fetch(`${API}/portfolios/my-portfolio?t=${Date.now()}`, {
+        credentials: "include",
+        cache: "no-store"
+      });
+      
+      if (myPortfolioResponse.ok) {
+        const myPortfolioData = await myPortfolioResponse.json();
+        if (myPortfolioData.portfolio) {
+          console.log("My Portfolio loaded:", myPortfolioData);
+          
+          // Filter out holdings with 0 quantity
+          const activeHoldings = myPortfolioData.portfolio.holdings?.filter(h => h.quantity > 0) || [];
+          
+          // Transform to match expected format
+          const transformedPortfolio = {
+            risk_tolerance: myPortfolioData.portfolio.risk_tolerance || "medium",
+            roi_expectations: myPortfolioData.portfolio.roi_expectations || 10,
+            allocations: activeHoldings.map(h => ({
+              ticker: h.symbol,
+              asset_type: h.asset_type || "stock",
+              allocation: h.allocation_percentage || 0,
+              sector: h.sector || "Unknown",
+              // Store full holding data for modal
+              holdingData: h
+            })),
+            fullHoldings: activeHoldings // Store full holdings for reference
+          };
+          setPortfolio(transformedPortfolio);
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      // Fall back to AI-generated portfolio
       const response = await fetch(`${API}/portfolio?t=${Date.now()}`, {
         credentials: "include",
         cache: "no-store"
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Portfolio loaded:", data);
+        console.log("AI Portfolio loaded:", data);
         setPortfolio(data);
       }
     } catch (error) {
@@ -167,6 +207,24 @@ export default function PortfolioTab() {
 
   return (
     <div className="space-y-6" data-testid="portfolio-tab">
+      {/* Header with Add Stock Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <TrendingUp className="w-7 h-7 text-cyan-600" />
+            My Portfolio
+          </h2>
+          <p className="text-gray-600 mt-1">Track your investments and performance</p>
+        </div>
+        <button
+          onClick={() => setShowAddStockModal(true)}
+          className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-lg transition-all shadow-md flex items-center gap-2 font-medium"
+        >
+          <Plus className="w-5 h-5" />
+          Add Stock
+        </button>
+      </div>
+
       {/* Portfolio Summary */}
       <div className="grid md:grid-cols-3 gap-6">
         <div className="clean-card p-6 card-hover fade-in-1" data-testid="risk-card">
@@ -345,8 +403,16 @@ export default function PortfolioTab() {
             </thead>
             <tbody>
               {portfolio.allocations?.map((alloc, idx) => (
-                <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 smooth-transition">
-                  <td className="py-4 px-4 font-bold text-gray-900">{alloc.ticker}</td>
+                <tr 
+                  key={idx} 
+                  onClick={() => {
+                    setSelectedStock(alloc.ticker);
+                    setSelectedHolding(alloc.holdingData || alloc); // Pass full holding data
+                    setShowStockDetail(true);
+                  }}
+                  className="border-b border-gray-100 hover:bg-cyan-50 smooth-transition cursor-pointer"
+                >
+                  <td className="py-4 px-4 font-bold text-cyan-600 hover:text-cyan-700">{alloc.ticker}</td>
                   <td className="py-4 px-4 text-gray-600">{alloc.asset_type}</td>
                   <td className="py-4 px-4 text-gray-600">{alloc.sector}</td>
                   <td className="py-4 px-4 text-right font-bold gradient-text">{alloc.allocation}%</td>
@@ -356,6 +422,28 @@ export default function PortfolioTab() {
           </table>
         </div>
       </div>
+
+      {/* Stock Detail Modal */}
+      <StockDetailModal
+        symbol={selectedStock}
+        holding={selectedHolding}
+        isOpen={showStockDetail}
+        onClose={() => {
+          setShowStockDetail(false);
+          setSelectedStock(null);
+          setSelectedHolding(null);
+        }}
+      />
+
+      {/* Add Stock Modal */}
+      <AddStockModal
+        isOpen={showAddStockModal}
+        onClose={() => setShowAddStockModal(false)}
+        onSuccess={() => {
+          loadPortfolio();
+          setShowAddStockModal(false);
+        }}
+      />
     </div>
   );
 }

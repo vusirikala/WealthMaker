@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime, timezone
 from typing import Dict, Any
 import uuid
+import logging
 from models.user import User
 from models.portfolio import Portfolio
 from models.chat import AcceptPortfolioRequest
@@ -10,6 +11,7 @@ from utils.database import db
 from utils.dependencies import require_auth
 
 router = APIRouter(prefix="/portfolios", tags=["portfolios"])
+logger = logging.getLogger(__name__)
 
 
 # Existing portfolios management
@@ -231,3 +233,396 @@ async def get_portfolio(user: User = Depends(require_auth)):
     if not portfolio:
         return None
     return portfolio
+
+
+
+# Simple portfolio management - Add stocks easily
+@router.post("/add-stock")
+async def add_stock_to_portfolio(
+    symbol: str,
+    quantity: float,
+    purchase_price: float,
+    purchase_date: str = None,
+    user: User = Depends(require_auth)
+):
+    """
+    Simple endpoint to add a stock to user's portfolio
+    
+    Args:
+        symbol: Stock ticker (e.g., AAPL, MSFT, BTC-USD)
+        quantity: Number of shares
+        purchase_price: Price per share when purchased
+        purchase_date: Date of purchase (YYYY-MM-DD) - defaults to today
+    
+    This creates/updates a "My Portfolio" in existing_portfolios
+    """
+    from services.shared_assets_db import shared_assets_service
+    
+    symbol = symbol.upper()
+    
+    # Check if stock exists in shared database, if not add it
+    asset_data = await shared_assets_service.get_single_asset(symbol)
+    if not asset_data:
+        # Auto-add this stock to shared database
+        logger.info(f"Stock {symbol} not in database, adding it now...")
+        result = await shared_assets_service.initialize_database([symbol])
+        
+        if result['initialized'] > 0:
+            # Fetch the newly added asset
+            asset_data = await shared_assets_service.get_single_asset(symbol)
+            if not asset_data:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to add {symbol} to database"
+                )
+        else:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Stock {symbol} not found. Invalid ticker symbol."
+            )
+    
+    # Get current price from asset data
+    current_price = asset_data.get('live', {}).get('currentPrice', {}).get('price', purchase_price)
+    
+    # Calculate values
+    cost_basis = quantity * purchase_price
+    total_value = quantity * current_price
+    unrealized_gain_loss = total_value - cost_basis
+    unrealized_gain_loss_pct = ((total_value - cost_basis) / cost_basis * 100) if cost_basis > 0 else 0
+    
+    # Create holding object
+    new_holding = {
+        "asset_id": str(uuid.uuid4()),
+        "symbol": symbol,
+        "asset_name": asset_data.get('name', symbol),
+        "asset_type": asset_data.get('assetType', 'stock'),
+        "sector": asset_data.get('fundamentals', {}).get('sector', 'Unknown'),
+        "quantity": quantity,
+        "purchase_price": purchase_price,
+        "current_price": current_price,
+        "total_value": total_value,
+        "cost_basis": cost_basis,
+        "unrealized_gain_loss": unrealized_gain_loss,
+        "unrealized_gain_loss_percentage": round(unrealized_gain_loss_pct, 2),
+        "allocation_percentage": 0,  # Will be calculated below
+        "purchase_date": purchase_date or datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+        "notes": ""
+    }
+    
+    # Get user's context
+    context = await db.user_context.find_one({"user_id": user.id})
+    if not context:
+        raise HTTPException(status_code=404, detail="User context not found")
+    
+    existing_portfolios = context.get('existing_portfolios', [])
+    
+    # Find or create "My Portfolio"
+    my_portfolio = None
+    portfolio_idx = -1
+    
+    for idx, portfolio in enumerate(existing_portfolios):
+        if portfolio.get('portfolio_name') == 'My Portfolio':
+            my_portfolio = portfolio
+            portfolio_idx = idx
+            break
+    
+    if not my_portfolio:
+        # Create new portfolio
+        my_portfolio = {
+            "portfolio_id": str(uuid.uuid4()),
+            "portfolio_name": "My Portfolio",
+            "goal_name": "General Investment",
+            "total_value": 0,
+            "cost_basis": 0,
+            "unrealized_gain_loss": 0,
+            "unrealized_gain_loss_percentage": 0,
+            "account_type": "brokerage",
+            "account_provider": "WealthMaker",
+            "is_tax_advantaged": False,
+            "holdings": [],
+            "allocation_summary": {},
+            "sector_allocation": {},
+            "performance_metrics": {},
+            "last_rebalanced": None,
+            "last_updated": datetime.now(timezone.utc).isoformat(),
+            "notes": "Main investment portfolio"
+        }
+        existing_portfolios.append(my_portfolio)
+        portfolio_idx = len(existing_portfolios) - 1
+    
+    # Check if symbol already exists in portfolio
+    existing_holding_idx = -1
+    for idx, holding in enumerate(my_portfolio.get('holdings', [])):
+        if holding.get('symbol') == symbol:
+            existing_holding_idx = idx
+            break
+    
+    if existing_holding_idx >= 0:
+        # Update existing holding (add to quantity)
+        old_holding = my_portfolio['holdings'][existing_holding_idx]
+        old_quantity = old_holding.get('quantity', 0)
+        old_cost_basis = old_holding.get('cost_basis', 0)
+        
+        new_quantity = old_quantity + quantity
+        new_cost_basis = old_cost_basis + cost_basis
+        new_avg_price = new_cost_basis / new_quantity if new_quantity > 0 else purchase_price
+        
+        # If quantity becomes 0 or negative, remove the holding
+        if new_quantity <= 0:
+            my_portfolio['holdings'].pop(existing_holding_idx)
+            logger.info(f"Removed {symbol} from portfolio (quantity = 0)")
+        else:
+            new_holding['quantity'] = new_quantity
+            new_holding['cost_basis'] = new_cost_basis
+            new_holding['purchase_price'] = new_avg_price  # Average price
+            new_holding['total_value'] = new_quantity * current_price
+            new_holding['unrealized_gain_loss'] = new_holding['total_value'] - new_cost_basis
+            new_holding['unrealized_gain_loss_percentage'] = round(
+                ((new_holding['total_value'] - new_cost_basis) / new_cost_basis * 100), 2
+            ) if new_cost_basis > 0 else 0
+            
+            my_portfolio['holdings'][existing_holding_idx] = new_holding
+    else:
+        # Add new holding (only if quantity > 0)
+        if quantity > 0:
+            my_portfolio['holdings'].append(new_holding)
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot add stock with 0 or negative quantity"
+            )
+    
+    # Recalculate portfolio totals
+    total_value = sum(h.get('total_value', 0) for h in my_portfolio['holdings'])
+    total_cost_basis = sum(h.get('cost_basis', 0) for h in my_portfolio['holdings'])
+    
+    my_portfolio['total_value'] = total_value
+    my_portfolio['cost_basis'] = total_cost_basis
+    my_portfolio['unrealized_gain_loss'] = total_value - total_cost_basis
+    my_portfolio['unrealized_gain_loss_percentage'] = round(
+        ((total_value - total_cost_basis) / total_cost_basis * 100), 2
+    ) if total_cost_basis > 0 else 0
+    
+    # Recalculate allocation percentages
+    for holding in my_portfolio['holdings']:
+        holding['allocation_percentage'] = round(
+            (holding.get('total_value', 0) / total_value * 100), 2
+        ) if total_value > 0 else 0
+    
+    # Recalculate allocation summary
+    allocation_summary = {}
+    for holding in my_portfolio['holdings']:
+        asset_type = holding.get('asset_type', 'other')
+        allocation_pct = holding.get('allocation_percentage', 0)
+        allocation_summary[asset_type] = allocation_summary.get(asset_type, 0) + allocation_pct
+    my_portfolio['allocation_summary'] = allocation_summary
+    
+    # Recalculate sector allocation
+    sector_allocation = {}
+    for holding in my_portfolio['holdings']:
+        sector = holding.get('sector', 'other')
+        allocation_pct = holding.get('allocation_percentage', 0)
+        sector_allocation[sector] = sector_allocation.get(sector, 0) + allocation_pct
+    my_portfolio['sector_allocation'] = sector_allocation
+    
+    my_portfolio['last_updated'] = datetime.now(timezone.utc).isoformat()
+    
+    # Update in database
+    existing_portfolios[portfolio_idx] = my_portfolio
+    
+    await db.user_context.update_one(
+        {"user_id": user.id},
+        {"$set": {
+            "existing_portfolios": existing_portfolios,
+            "updated_at": datetime.now(timezone.utc)
+        }}
+    )
+    
+    return {
+        "success": True,
+        "message": f"Added {quantity} shares of {symbol} to your portfolio",
+        "holding": new_holding,
+        "portfolio_summary": {
+            "total_value": total_value,
+            "total_gain_loss": my_portfolio['unrealized_gain_loss'],
+            "total_gain_loss_percentage": my_portfolio['unrealized_gain_loss_percentage']
+        }
+    }
+
+
+@router.get("/my-portfolio")
+async def get_my_portfolio(user: User = Depends(require_auth)):
+    """
+    Get user's main portfolio (created by add-stock endpoint)
+    Returns complete portfolio with all holdings and current values
+    """
+    from services.shared_assets_db import shared_assets_service
+    
+    context = await db.user_context.find_one({"user_id": user.id})
+    if not context:
+        return {"portfolio": None, "message": "No portfolio found"}
+    
+    existing_portfolios = context.get('existing_portfolios', [])
+    
+    # Find "My Portfolio"
+    my_portfolio = None
+    for portfolio in existing_portfolios:
+        if portfolio.get('portfolio_name') == 'My Portfolio':
+            my_portfolio = portfolio
+            break
+    
+    if not my_portfolio:
+        return {
+            "portfolio": None,
+            "message": "No portfolio found. Use POST /portfolios/add-stock to add stocks."
+        }
+    
+    # Get current prices for all holdings
+    symbols = [h.get('symbol') for h in my_portfolio.get('holdings', [])]
+    if symbols:
+        assets_data = await shared_assets_service.get_assets_data(symbols)
+        
+        # Update current prices
+        for holding in my_portfolio['holdings']:
+            symbol = holding.get('symbol')
+            if symbol in assets_data:
+                asset = assets_data[symbol]
+                current_price = asset.get('live', {}).get('currentPrice', {}).get('price', holding.get('current_price', 0))
+                holding['current_price'] = current_price
+                holding['total_value'] = holding.get('quantity', 0) * current_price
+                
+                # Recalculate gain/loss
+                cost_basis = holding.get('cost_basis', 0)
+                holding['unrealized_gain_loss'] = holding['total_value'] - cost_basis
+                holding['unrealized_gain_loss_percentage'] = round(
+                    ((holding['total_value'] - cost_basis) / cost_basis * 100), 2
+                ) if cost_basis > 0 else 0
+        
+        # Recalculate portfolio totals
+        total_value = sum(h.get('total_value', 0) for h in my_portfolio['holdings'])
+        total_cost_basis = my_portfolio.get('cost_basis', 0)
+        
+        my_portfolio['total_value'] = total_value
+        my_portfolio['unrealized_gain_loss'] = total_value - total_cost_basis
+        my_portfolio['unrealized_gain_loss_percentage'] = round(
+            ((total_value - total_cost_basis) / total_cost_basis * 100), 2
+        ) if total_cost_basis > 0 else 0
+    
+    return {
+        "portfolio": my_portfolio,
+        "assets_data": assets_data if symbols else {}
+    }
+
+
+@router.post("/sell-stock")
+async def sell_stock(
+    symbol: str,
+    quantity: float,
+    user: User = Depends(require_auth)
+):
+    """
+    Sell/remove stock from portfolio
+    Use negative quantity to sell shares
+    
+    Args:
+        symbol: Stock ticker
+        quantity: Number of shares to sell (will be made negative)
+    """
+    # Sell is just adding with negative quantity
+    negative_quantity = -abs(quantity)
+    
+    # Get current market price for calculation
+    from services.shared_assets_db import shared_assets_service
+    asset_data = await shared_assets_service.get_single_asset(symbol.upper())
+    
+    if not asset_data:
+        raise HTTPException(status_code=404, detail=f"Stock {symbol} not found")
+    
+    current_price = asset_data.get('live', {}).get('currentPrice', {}).get('price', 0)
+    
+    # Use add_stock with negative quantity (it will remove if quantity reaches 0)
+    return await add_stock_to_portfolio(
+        symbol=symbol,
+        quantity=negative_quantity,
+        purchase_price=current_price,  # Use current price for selling
+        user=user
+    )
+
+
+@router.delete("/remove-stock/{symbol}")
+async def remove_stock_completely(
+    symbol: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Completely remove a stock from portfolio regardless of quantity
+    """
+    symbol = symbol.upper()
+    
+    context = await db.user_context.find_one({"user_id": user.id})
+    if not context:
+        raise HTTPException(status_code=404, detail="User context not found")
+    
+    existing_portfolios = context.get('existing_portfolios', [])
+    
+    # Find "My Portfolio"
+    my_portfolio = None
+    portfolio_idx = -1
+    
+    for idx, portfolio in enumerate(existing_portfolios):
+        if portfolio.get('portfolio_name') == 'My Portfolio':
+            my_portfolio = portfolio
+            portfolio_idx = idx
+            break
+    
+    if not my_portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    # Remove the holding
+    original_length = len(my_portfolio.get('holdings', []))
+    my_portfolio['holdings'] = [h for h in my_portfolio.get('holdings', []) if h.get('symbol') != symbol]
+    
+    if len(my_portfolio['holdings']) == original_length:
+        raise HTTPException(status_code=404, detail=f"{symbol} not in portfolio")
+    
+    # Recalculate portfolio totals
+    if my_portfolio['holdings']:
+        total_value = sum(h.get('total_value', 0) for h in my_portfolio['holdings'])
+        total_cost_basis = sum(h.get('cost_basis', 0) for h in my_portfolio['holdings'])
+        
+        my_portfolio['total_value'] = total_value
+        my_portfolio['cost_basis'] = total_cost_basis
+        my_portfolio['unrealized_gain_loss'] = total_value - total_cost_basis
+        my_portfolio['unrealized_gain_loss_percentage'] = round(
+            ((total_value - total_cost_basis) / total_cost_basis * 100), 2
+        ) if total_cost_basis > 0 else 0
+        
+        # Recalculate allocations
+        for holding in my_portfolio['holdings']:
+            holding['allocation_percentage'] = round(
+                (holding.get('total_value', 0) / total_value * 100), 2
+            ) if total_value > 0 else 0
+    else:
+        # Portfolio is now empty
+        my_portfolio['total_value'] = 0
+        my_portfolio['cost_basis'] = 0
+        my_portfolio['unrealized_gain_loss'] = 0
+        my_portfolio['unrealized_gain_loss_percentage'] = 0
+    
+    my_portfolio['last_updated'] = datetime.now(timezone.utc).isoformat()
+    
+    # Update in database
+    existing_portfolios[portfolio_idx] = my_portfolio
+    
+    await db.user_context.update_one(
+        {"user_id": user.id},
+        {"$set": {
+            "existing_portfolios": existing_portfolios,
+            "updated_at": datetime.now(timezone.utc)
+        }}
+    )
+    
+    return {
+        "success": True,
+        "message": f"Removed {symbol} from portfolio"
+    }

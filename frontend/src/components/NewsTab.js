@@ -104,12 +104,74 @@ export default function NewsTab() {
 
   const loadNews = async () => {
     try {
-      const response = await fetch(`${API}/news`, {
+      // First, get user's portfolio to find their stocks
+      const portfolioResponse = await fetch(`${API}/portfolios/my-portfolio`, {
         credentials: "include",
       });
-      if (response.ok) {
-        const data = await response.json();
-        setNews(data);
+
+      let symbols = [];
+      if (portfolioResponse.ok) {
+        const portfolioData = await portfolioResponse.json();
+        if (portfolioData.portfolio && portfolioData.portfolio.holdings) {
+          symbols = portfolioData.portfolio.holdings.map(h => h.symbol);
+        }
+      }
+
+      // If no portfolio or fallback to AI portfolio
+      if (symbols.length === 0) {
+        const aiPortfolioResponse = await fetch(`${API}/portfolio`, {
+          credentials: "include",
+        });
+        if (aiPortfolioResponse.ok) {
+          const aiPortfolio = await aiPortfolioResponse.json();
+          if (aiPortfolio && aiPortfolio.allocations) {
+            symbols = aiPortfolio.allocations.map(a => a.ticker);
+          }
+        }
+      }
+
+      // If still no symbols, show empty state
+      if (symbols.length === 0) {
+        setNews([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch asset data for all symbols (includes news)
+      const assetsResponse = await fetch(`${API}/data/assets/batch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(symbols),
+      });
+
+      if (assetsResponse.ok) {
+        const assetsData = await assetsResponse.json();
+        
+        // Extract all news from all assets
+        const allNews = [];
+        Object.entries(assetsData.data || {}).forEach(([symbol, asset]) => {
+          if (asset.live && asset.live.recentNews) {
+            asset.live.recentNews.forEach(newsItem => {
+              allNews.push({
+                ...newsItem,
+                ticker: symbol,
+                assetName: asset.name
+              });
+            });
+          }
+        });
+
+        // Sort by timestamp (most recent first)
+        allNews.sort((a, b) => {
+          const timeA = new Date(a.timestamp || a.datetime || 0).getTime();
+          const timeB = new Date(b.timestamp || b.datetime || 0).getTime();
+          return timeB - timeA;
+        });
+
+        setNews(allNews);
       }
     } catch (error) {
       console.error("Failed to load news:", error);
@@ -146,7 +208,9 @@ export default function NewsTab() {
           <Newspaper className="w-8 h-8 text-white" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">No News Available</h3>
-        <p className="text-gray-600">Add stocks to your portfolio to see related news and market updates.</p>
+        <p className="text-gray-600">
+          Add stocks to your portfolio or watchlist to see their latest news and market updates.
+        </p>
       </div>
     );
   }
@@ -188,7 +252,7 @@ export default function NewsTab() {
                       )}
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-600 smooth-transition line-clamp-2">
-                      {item.headline}
+                      {item.headline || item.title}
                     </h3>
                   </div>
                 </div>

@@ -1,29 +1,9 @@
 {
-  "timestamp": "2025-11-09T00:18:56.447450+00:00",
-  "total_tests": 15,
-  "passed_tests": 15,
+  "timestamp": "2025-11-08T23:36:15.131023+00:00",
+  "total_tests": 35,
+  "passed_tests": 35,
   "success_rate": 100.0,
   "test_details": [
-    {
-      "test": "GET /auth/me (authenticated)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "_id": "test-user-1762647526",
-        "email": "test.user.1762647526@example.com",
-        "name": "Test User 1762647526",
-        "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T00:18:46.791000"
-      }
-    },
-    {
-      "test": "GET /auth/me (unauthenticated)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
-    },
     {
       "test": "GET /admin/database-stats",
       "success": true,
@@ -35,7 +15,7 @@
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-08T23:34:36.551351+00:00",
+        "last_updated": "2025-11-08T23:35:15.417091+00:00",
         "status": "active"
       }
     },
@@ -52,7 +32,7 @@
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-08T23:34:36.551351+00:00",
+          "last_updated": "2025-11-08T23:35:15.417091+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -255,14 +235,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-08T23:34:36.551351+00:00",
+          "lastUpdated": "2025-11-08T23:35:15.417091+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-08T23:34:36.551260+00:00",
+              "timestamp": "2025-11-08T23:35:15.416994+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -270,7 +250,7 @@
             },
             "recentNews": [],
             "analystRatings": {
-              "lastUpdated": "2025-11-08T23:34:36.551274+00:00",
+              "lastUpdated": "2025-11-08T23:35:15.417011+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -598,14 +578,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-08T23:35:14.621947+00:00",
+          "lastUpdated": "2025-11-08T23:36:13.514283+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-08T23:35:14.621808+00:00",
+              "timestamp": "2025-11-08T23:36:13.514194+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -613,7 +593,7 @@
             },
             "recentNews": [],
             "analystRatings": {
-              "lastUpdated": "2025-11-08T23:35:14.621827+00:00",
+              "lastUpdated": "2025-11-08T23:36:13.514209+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -712,129 +692,6 @@
       "details": "",
       "response_data": {
         "detail": "Not authenticated"
-      "test": "GET /chat/init (new user)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_length": 375
-      }
-    },
-    {
-      "test": "Chat init message saved to history",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_count": 1
-      }
-    },
-    {
-      "test": "GET /chat/init (idempotency)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message": null
-      }
-    },
-    {
-      "test": "No duplicate messages created",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_count": 1
-      }
-    },
-    {
-      "test": "first_chat_initiated flag set",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "first_chat_initiated": true
-      }
-    },
-    {
-      "test": "GET /chat/messages",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_count": 1
-      }
-    },
-    {
-      "test": "POST /chat/send",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "has_response": true
-      }
-    },
-    {
-      "test": "GET /chat/messages (after send)",
-      "success": false,
-      "details": "Status: 200, Messages: 1",
-      "response_data": {
-        "message_count": 3
-      }
-    },
-    {
-      "test": "GET /portfolio",
-      "success": false,
-      "details": "Status: 404",
-      "response_data": {
-        "risk_tolerance": null,
-        "roi_expectations": null,
-        "allocation_count": 0
-      }
-    },
-    {
-      "test": "GET /news",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "news_count": 0
-      }
-    },
-    {
-      "test": "GET /invalid/endpoint",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not Found"
-      }
-    },
-    {
-      "test": "POST /data/assets/batch (malformed)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": [
-          {
-            "type": "list_type",
-            "loc": [
-              "body"
-            ],
-            "msg": "Input should be a valid list",
-            "input": {
-              "invalid": "data"
-            },
-            "url": "https://errors.pydantic.dev/2.12/v/list_type"
-          }
-        ]
-      }
-    },
-    {
-      "test": "GET /data/asset/NONEXISTENT",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Asset NONEXISTENT not found in database. Admin needs to add it."
-      }
-    },
-    {
-      "test": "POST /auth/logout",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "success": true
       }
     }
   ]
