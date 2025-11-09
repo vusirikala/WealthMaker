@@ -279,12 +279,12 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-6">
-          {/* Allocation Chart */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* Ticker Allocation Chart */}
           {chartData.length > 0 && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
-                {hasHoldings ? 'Current Holdings' : 'Target Allocation'}
+                {hasHoldings ? 'Current Holdings' : 'Ticker Allocation'}
               </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -312,6 +312,38 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
               </ResponsiveContainer>
             </div>
           )}
+
+          {/* Asset Type Allocation Chart */}
+          {assetTypeData.length > 0 && (
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                Asset Type Allocation
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={assetTypeData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {assetTypeData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
 
           {/* Holdings/Allocations Table */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
