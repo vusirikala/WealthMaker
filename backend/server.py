@@ -366,17 +366,40 @@ async def delete_account(response: Response, user: User = Depends(require_auth))
     WARNING: This action is irreversible
     """
     try:
+        logger.info(f"Starting account deletion for user: {user.email} (ID: {user.id})")
+        
         # Delete all user data from all collections
-        await db.user_sessions.delete_many({"user_id": user.id})
-        await db.user_context.delete_many({"user_id": user.id})
-        await db.portfolios.delete_many({"user_id": user.id})
-        await db.chat_messages.delete_many({"user_id": user.id})
-        await db.portfolio_suggestions.delete_many({"user_id": user.id})
+        sessions_deleted = await db.user_sessions.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {sessions_deleted.deleted_count} sessions")
+        
+        context_deleted = await db.user_context.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {context_deleted.deleted_count} user contexts")
+        
+        portfolios_deleted = await db.portfolios.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {portfolios_deleted.deleted_count} legacy portfolios")
+        
+        # Delete new multi-portfolio system portfolios
+        user_portfolios_deleted = await db.user_portfolios.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {user_portfolios_deleted.deleted_count} user portfolios")
+        
+        chat_messages_deleted = await db.chat_messages.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {chat_messages_deleted.deleted_count} chat messages")
+        
+        suggestions_deleted = await db.portfolio_suggestions.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {suggestions_deleted.deleted_count} portfolio suggestions")
+        
+        # Delete goals if any
+        goals_deleted = await db.goals.delete_many({"user_id": user.id})
+        logger.info(f"Deleted {goals_deleted.deleted_count} goals")
+        
+        # Delete the user record itself
+        user_deleted = await db.users.delete_one({"_id": user.id})
+        logger.info(f"Deleted user record: {user_deleted.deleted_count}")
         
         # Clear cookie
         response.delete_cookie("session_token", path="/")
         
-        logger.info(f"Account deleted for user: {user.email}")
+        logger.info(f"Account deletion completed for user: {user.email}")
         
         return {"success": True, "message": "Account deleted successfully"}
     except Exception as e:
