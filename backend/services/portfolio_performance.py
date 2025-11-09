@@ -74,26 +74,35 @@ async def get_cached_price_data(ticker: str, start_date: datetime, end_date: dat
         # Last resort: Fetch from Yahoo Finance (causes rate limiting!)
         logger.warning(f"Fetching from yfinance API for {ticker} (may cause rate limiting)")
         stock = yf.Ticker(ticker)
-    hist = stock.history(start=start_date, end=end_date)
+        hist = stock.history(start=start_date, end=end_date)
+        
+        if not hist.empty:
+            # Cache the data in MongoDB
+            cache_doc = {
+                "cache_key": cache_key,
+                "ticker": ticker,
+                "start_date": start_date,
+                "end_date": end_date,
+                "data": hist['Close'].reset_index().to_dict('records'),
+                "updated_at": datetime.now()
+            }
+            await db.price_cache.update_one(
+                {"cache_key": cache_key},
+                {"$set": cache_doc},
+                upsert=True
+            )
+            logger.info(f"Cached data for {ticker}")
+            
+            # Also cache in memory
+            _price_cache[cache_key] = hist['Close']
+            if _cache_timestamp is None:
+                _cache_timestamp = datetime.now()
+        
+        return hist['Close']
     
-    if not hist.empty:
-        # Cache the data
-        cache_doc = {
-            "cache_key": cache_key,
-            "ticker": ticker,
-            "start_date": start_date,
-            "end_date": end_date,
-            "data": hist['Close'].reset_index().to_dict('records'),
-            "updated_at": datetime.now()
-        }
-        await database.price_cache.update_one(
-            {"cache_key": cache_key},
-            {"$set": cache_doc},
-            upsert=True
-        )
-        logger.info(f"Cached data for {ticker}")
-    
-    return hist['Close']
+    except Exception as e:
+        logger.error(f"Error fetching price data for {ticker}: {e}")
+        return None
 
 
 async def calculate_portfolio_historical_returns(
