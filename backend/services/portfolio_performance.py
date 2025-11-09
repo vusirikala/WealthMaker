@@ -257,12 +257,20 @@ async def calculate_portfolio_historical_returns(
     if len(portfolio_returns) >= 756:  # ~3 years of trading days
         three_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-756])
         period_stats['3y_return'] = round(three_year_return, 2)
+    elif len(portfolio_returns) > 0:
+        # If less than 3 years of data, calculate return from beginning
+        three_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[0])
+        period_stats['3y_return'] = round(three_year_return, 2)
     else:
         period_stats['3y_return'] = None
     
     # 5 year return
     if len(portfolio_returns) >= 1260:  # ~5 years of trading days
         five_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-1260])
+        period_stats['5y_return'] = round(five_year_return, 2)
+    elif len(portfolio_returns) > 0:
+        # If less than 5 years of data, calculate return from beginning
+        five_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[0])
         period_stats['5y_return'] = round(five_year_return, 2)
     else:
         period_stats['5y_return'] = None
