@@ -1,0 +1,135 @@
+{
+  "timestamp": "2025-11-09T00:20:00.897518+00:00",
+  "test_type": "updated_chat_auto_initiation",
+  "total_tests": 16,
+  "passed_tests": 9,
+  "success_rate": 56.25,
+  "test_details": [
+    {
+      "test": "Initial message is under 300 characters",
+      "success": false,
+      "details": "Message length: 375 chars",
+      "response_data": {
+        "message_length": 375
+      }
+    },
+    {
+      "test": "Initial message asks only ONE question",
+      "success": false,
+      "details": "Found 2 questions",
+      "response_data": {
+        "question_count": 2
+      }
+    },
+    {
+      "test": "Initial message asks about financial goal",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_financial_keywords": true
+      }
+    },
+    {
+      "test": "Initial message is friendly and conversational",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "is_friendly": true
+      }
+    },
+    {
+      "test": "Initial message saved to chat_messages",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "AI acknowledges user's retirement goal",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "acknowledges_answer": true
+      }
+    },
+    {
+      "test": "AI asks ONE follow-up question",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "follow_up_questions": 1
+      }
+    },
+    {
+      "test": "Follow-up question is relevant to retirement",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "retirement_relevant": true
+      }
+    },
+    {
+      "test": "Retirement goal extracted to liquidity_requirements",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "goals_count": 1,
+        "has_retirement": true
+      }
+    },
+    {
+      "test": "Relevant context fields populated",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "populated_fields": [
+          "user_id",
+          "updated_at"
+        ]
+      }
+    },
+    {
+      "test": "Turn 1 - Chat response received",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    },
+    {
+      "test": "Turn 2 - Chat response received",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    },
+    {
+      "test": "Turn 3 - Chat response received",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    },
+    {
+      "test": "Context progressively built up",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "context_fields_count": 8
+      }
+    },
+    {
+      "test": "Previous context retained",
+      "success": false,
+      "details": "Age: False, Investment: False, Risk: False",
+      "response_data": {
+        "age_info": false,
+        "investment_info": false,
+        "risk_info": false
+      }
+    },
+    {
+      "test": "Complex message handled",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
+    }
+  ]
+}
