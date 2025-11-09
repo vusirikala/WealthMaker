@@ -169,7 +169,12 @@ export default function ChatTab() {
         console.log("Dispatching portfolioUpdated event");
         window.dispatchEvent(new Event('portfolioUpdated'));
       } else {
-        const errorData = await response.json();
+        let errorData = {};
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          console.error("Could not parse error response as JSON:", e);
+        }
         console.error("Failed to accept portfolio:", errorData);
         toast.error("Failed to update portfolio");
       }
