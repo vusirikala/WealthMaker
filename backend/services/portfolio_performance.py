@@ -136,7 +136,7 @@ async def calculate_portfolio_historical_returns(
         logger.info("Fetching S&P 500 benchmark data")
         if db is not None:
             try:
-                sp500_data = asyncio.run(get_cached_price_data('^GSPC', max_start_date, end_date, db))
+                sp500_data = await get_cached_price_data('^GSPC', max_start_date, end_date, db)
             except:
                 sp500 = yf.Ticker('^GSPC')
                 sp500_hist = sp500.history(start=max_start_date, end=end_date)
