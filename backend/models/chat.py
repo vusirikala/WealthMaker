@@ -16,6 +16,7 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
+    portfolio_id: Optional[str] = None
 
 
 class PortfolioSuggestion(BaseModel):
