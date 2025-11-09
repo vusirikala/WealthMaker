@@ -306,7 +306,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen]);
 
-  const totalSteps = 3; // Step 1: Basic info, Step 2: Sectors, Step 3: Strategies
+  const totalSteps = 4; // Step 1: Basic info, Step 2: Sectors, Step 3: Strategies, Step 4: AI Review
 
   const loadUserContext = async () => {
     try {
