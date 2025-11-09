@@ -236,7 +236,7 @@ def build_context_string(user_context):
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
             context_info += f"\n- Retirement Plans: {user_context['retirement_plans']}"
-    elif user_context['portfolio_type'] == 'institutional':
+    elif user_context.get('portfolio_type') == 'institutional':
         if user_context.get('institution_name'):
             context_info += f"\n- Institution: {user_context['institution_name']}"
         if user_context.get('institution_sector'):
