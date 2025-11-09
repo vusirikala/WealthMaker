@@ -29,11 +29,11 @@ print('User ID: ' + userId);
 
 ```bash
 # Test auth endpoint
-curl -X GET "https://finance-advisor-28.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://dataflow-finance.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test portfolio endpoint
-curl -X GET "https://finance-advisor-28.preview.emergentagent.com/api/portfolio" \
+curl -X GET "https://dataflow-finance.preview.emergentagent.com/api/portfolio" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
@@ -50,7 +50,7 @@ await page.context.add_cookies([{
     "secure": true,
     "sameSite": "None"
 }]);
-await page.goto("https://finance-advisor-28.preview.emergentagent.com");
+await page.goto("https://dataflow-finance.preview.emergentagent.com");
 ```
 
 ## Critical Fix: ID Schema

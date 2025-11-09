@@ -1,18 +1,35 @@
-"""
-WealthMaker Backend - Modular FastAPI Application
-Main application file that imports and registers all route modules
-"""
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
 from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from dotenv import load_dotenv
+from pydantic import BaseModel, Field, ConfigDict
+from typing import List, Optional, Dict, Any
+import uuid
+from datetime import datetime, timezone, timedelta
+import finnhub
+import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Load environment variables
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
+
+# Finnhub setup
+finnhub_client = finnhub.Client(api_key=os.environ.get('FINNHUB_API_KEY', ''))
+
+# Create the main app without a prefix
+app = FastAPI()
+
+# Create a router with the /api prefix
+api_router = APIRouter(prefix="/api")
 
 # Configure logging
 logging.basicConfig(
@@ -177,7 +194,6 @@ class UserContext(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_conversation_at: Optional[datetime] = None
-    first_chat_initiated: Optional[bool] = False  # Track if chat has been auto-initiated
 
 class Portfolio(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -335,30 +351,6 @@ async def logout(response: Response, user: User = Depends(require_auth)):
     response.delete_cookie("session_token", path="/")
     
     return {"success": True}
-
-@api_router.delete("/auth/account")
-async def delete_account(response: Response, user: User = Depends(require_auth)):
-    """
-    Delete user account and all associated data
-    WARNING: This action is irreversible
-    """
-    try:
-        # Delete all user data from all collections
-        await db.user_sessions.delete_many({"user_id": user.id})
-        await db.user_context.delete_many({"user_id": user.id})
-        await db.portfolios.delete_many({"user_id": user.id})
-        await db.chat_messages.delete_many({"user_id": user.id})
-        await db.portfolio_suggestions.delete_many({"user_id": user.id})
-        
-        # Clear cookie
-        response.delete_cookie("session_token", path="/")
-        
-        logger.info(f"Account deleted for user: {user.email}")
-        
-        return {"success": True, "message": "Account deleted successfully"}
-    except Exception as e:
-        logger.error(f"Error deleting account: {e}")
-        raise HTTPException(status_code=500, detail="Failed to delete account")
 
 # User Context routes
 @api_router.get("/context")
@@ -788,7 +780,7 @@ Return ONLY valid JSON, no other text."""
             api_key=os.environ.get('OPENAI_API_KEY'),
             session_id=f"context_extraction_{user_id}_{uuid.uuid4()}",
             system_message="You are a data extraction assistant. Extract financial information from conversations and return it as valid JSON."
-        ).with_model("openai", "gpt-4o")
+        ).with_model("openai", "gpt-5")
         
         extraction_response = await chat.send_message(UserMessage(text=extraction_prompt))
         
@@ -1027,69 +1019,6 @@ async def get_chat_messages(user: User = Depends(require_auth)):
     
     return messages
 
-@api_router.get("/chat/init")
-async def initialize_chat(user: User = Depends(require_auth)):
-    """Initialize chat with a greeting message for first-time users"""
-    
-    # Get user context to check if chat has been initiated
-    user_context = await db.user_context.find_one({"user_id": user.id})
-    
-    # If no context or first_chat_initiated is False/None, generate initial message
-    if not user_context or not user_context.get('first_chat_initiated', False):
-        # Check if there are already messages (user might have started chatting before we added this feature)
-        existing_messages = await db.chat_messages.count_documents({"user_id": user.id})
-        
-        if existing_messages > 0:
-            # User has already chatted, don't auto-initiate
-            if user_context:
-                await db.user_context.update_one(
-                    {"user_id": user.id},
-                    {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
-                )
-            return {"message": None}
-        
-        # Generate personalized initial message - simple and conversational
-        initial_message = f"""Hi {user.name}! 👋 Welcome to WealthMaker!
-
-I'm your AI financial advisor, and I'm excited to help you build a personalized investment portfolio.
-
-**What's your main financial goal right now?** 💼"""
-
-        # Save the initial message to chat history
-        ai_msg_doc = {
-            "id": str(uuid.uuid4()),
-            "user_id": user.id,
-            "role": "assistant",
-            "message": initial_message,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        await db.chat_messages.insert_one(ai_msg_doc)
-        
-        # Mark chat as initiated in user context
-        if user_context:
-            await db.user_context.update_one(
-                {"user_id": user.id},
-                {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
-            )
-        else:
-            # Create user context if it doesn't exist
-            new_context = {
-                "_id": str(uuid.uuid4()),
-                "user_id": user.id,
-                "first_chat_initiated": True,
-                "created_at": datetime.now(timezone.utc),
-                "updated_at": datetime.now(timezone.utc)
-            }
-            await db.user_context.insert_one(new_context)
-        
-        return {
-            "message": initial_message,
-            "timestamp": ai_msg_doc["timestamp"]
-        }
-    
-    # Chat already initiated
-    return {"message": None}
-
 @api_router.post("/chat/send", response_model=ChatResponse)
 async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
     user_message = chat_request.message
@@ -1129,7 +1058,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     if user_context.get('portfolio_type'):
         context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
     
-    if user_context.get('portfolio_type') == 'personal':
+    if user_context['portfolio_type'] == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
             from dateutil.relativedelta import relativedelta
@@ -1140,7 +1069,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
             context_info += f"\n- Retirement Plans: {user_context['retirement_plans']}"
-    elif user_context.get('portfolio_type') == 'institutional':
+    elif user_context['portfolio_type'] == 'institutional':
         if user_context.get('institution_name'):
             context_info += f"\n- Institution: {user_context['institution_name']}"
         if user_context.get('institution_sector'):
@@ -1178,12 +1107,12 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         context_info += "\n\n- FINANCIAL GOALS & LIQUIDITY NEEDS:"
         for req in user_context['liquidity_requirements']:
             goal_name = req.get('goal_name', req.get('goal', 'Goal'))
-            target_amount = req.get('target_amount', req.get('amount', 0)) or 0
-            amount_saved = req.get('amount_saved', 0) or 0
-            amount_needed = req.get('amount_needed', target_amount - amount_saved) or 0
+            target_amount = req.get('target_amount', req.get('amount', 0))
+            amount_saved = req.get('amount_saved', 0)
+            amount_needed = req.get('amount_needed', target_amount - amount_saved)
             target_date = req.get('target_date', req.get('when', 'TBD'))
             priority = req.get('priority', 'medium')
-            progress = req.get('progress_percentage', 0) or 0
+            progress = req.get('progress_percentage', 0)
             
             context_info += f"\n  * {goal_name} ({priority} priority)"
             context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
@@ -1448,7 +1377,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4o")
+            ).with_model("openai", "gpt-5")
             
             llm_message = UserMessage(text=user_message)
             ai_response = await chat.send_message(llm_message)
@@ -1458,7 +1387,7 @@ Respond in a friendly, professional tone. Keep responses concise but informative
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 session_id=f"portfolio_chat_{user.id}",
                 system_message=system_message
-            ).with_model("openai", "gpt-4o")
+            ).with_model("openai", "gpt-5")
             
             # Send message
             llm_message = UserMessage(text=user_message)
@@ -1666,21 +1595,73 @@ async def accept_portfolio(request: AcceptPortfolioRequest, user: User = Depends
         logger.error(f"Error accepting portfolio: {e}")
         raise HTTPException(status_code=500, detail="Failed to update portfolio")
 
-# Import and include all route modules
-from routes import auth, context, goals, portfolios, chat, news
+@api_router.get("/portfolio")
+async def get_portfolio(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    if not portfolio:
+        # Create default portfolio
+        portfolio_doc = {
+            "_id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "risk_tolerance": "medium",
+            "roi_expectations": 10.0,
+            "preferences": {},
+            "allocations": get_default_allocations("medium"),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        await db.portfolios.insert_one(portfolio_doc)
+        portfolio = await db.portfolios.find_one({"user_id": user.id}, {"_id": 0})
+    
+    # Convert dates
+    if isinstance(portfolio.get('created_at'), str):
+        portfolio['created_at'] = datetime.fromisoformat(portfolio['created_at'])
+    if isinstance(portfolio.get('updated_at'), str):
+        portfolio['updated_at'] = datetime.fromisoformat(portfolio['updated_at'])
+    
+    return portfolio
 
-# Register all routers
-api_router.include_router(auth.router)
-api_router.include_router(context.router)
-api_router.include_router(goals.router)
-api_router.include_router(portfolios.router)
-api_router.include_router(chat.router)
-api_router.include_router(news.router)
+# News routes
+@api_router.get("/news")
+async def get_portfolio_news(user: User = Depends(require_auth)):
+    portfolio = await db.portfolios.find_one({"user_id": user.id})
+    
+    if not portfolio or not portfolio.get('allocations'):
+        return []
+    
+    # Get unique tickers
+    tickers = list(set([alloc['ticker'] for alloc in portfolio['allocations'] if alloc['asset_type'] == 'Stocks']))
+    
+    all_news = []
+    try:
+        for ticker in tickers[:5]:  # Limit to 5 stocks to avoid rate limits
+            try:
+                news = finnhub_client.company_news(ticker, _from="2025-01-01", to="2025-12-31")
+                for item in news[:3]:  # Top 3 news per stock
+                    all_news.append({
+                        "ticker": ticker,
+                        "headline": item.get('headline', ''),
+                        "summary": item.get('summary', ''),
+                        "url": item.get('url', ''),
+                        "image": item.get('image', ''),
+                        "source": item.get('source', ''),
+                        "datetime": datetime.fromtimestamp(item.get('datetime', 0), tz=timezone.utc) if item.get('datetime') else None
+                    })
+            except Exception as e:
+                logger.error(f"Error fetching news for {ticker}: {e}")
+                continue
+    except Exception as e:
+        logger.error(f"Finnhub error: {e}")
+    
+    # Sort by datetime
+    all_news.sort(key=lambda x: x['datetime'] if x['datetime'] else datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+    
+    return all_news[:20]  # Return top 20 news items
 
-# Include the API router in the main app
+# Include the router in the main app
 app.include_router(api_router)
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
@@ -1689,27 +1670,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    """Root endpoint"""
-    return {"message": "WealthMaker API", "version": "1.0.0", "status": "active"}
-
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy"}
-
-
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    """Close database connections on shutdown"""
-    from utils.database import client
     client.close()
-    logger.info("Database connection closed")
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
