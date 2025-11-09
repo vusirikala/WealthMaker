@@ -72,9 +72,21 @@ export default function PortfolioSidebar({ selectedPortfolioId, onSelectPortfoli
       {/* Portfolio List */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {portfolios.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <p className="text-sm">No portfolios yet</p>
-            <p className="text-xs mt-2">Click "Add Portfolio" to create one</p>
+          <div className="text-center py-8 px-4">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-100 to-emerald-100 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">No Portfolios Yet</p>
+            <p className="text-xs text-gray-500 leading-relaxed mb-4">
+              Start building your investment portfolio by clicking the button above.
+            </p>
+            <div className="bg-gradient-to-r from-cyan-50 to-emerald-50 rounded-lg p-3 border border-cyan-200">
+              <p className="text-xs text-gray-600">
+                <span className="font-semibold text-cyan-700">Tip:</span> You can create multiple portfolios to track different investment strategies!
+              </p>
+            </div>
           </div>
         ) : (
           portfolios.map((portfolio) => (
