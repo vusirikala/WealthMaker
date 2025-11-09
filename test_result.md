@@ -187,6 +187,21 @@ frontend:
         agent: "testing"
         comment: "TESTED: Backend liquidity_requirements type handling working correctly. ✅ Successfully handles mixed data types (strings and dicts) in liquidity_requirements array without AttributeError. ✅ Context building function properly processes both 'Retirement planning' (string) and {'goal_name': 'House Down Payment', 'target_amount': 50000} (dict) formats. ✅ AI responses correctly include context from mixed data types. ✅ No 'str' object has no attribute 'get' errors. ✅ Fixed additional KeyError bug in portfolio_type access. All context building functionality working as expected."
 
+  - task: "Portfolio accept and load functionality with ObjectId serialization fix"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/portfolios.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed ObjectId serialization issue in GET /api/portfolios endpoint. Updated portfolio loading to properly convert ObjectId to string for JSON serialization. Implemented POST /api/portfolio/accept endpoint for accepting AI-generated portfolio suggestions."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Portfolio accept and load functionality working perfectly after ObjectId serialization bug fix. ✅ POST /api/portfolios/accept successfully accepts portfolio suggestions with proper data validation. ✅ GET /api/portfolios loads AI-generated portfolios without ObjectId serialization errors. ✅ Portfolio _id field properly serialized as string (not ObjectId). ✅ GET /api/portfolios/my-portfolio returns proper response for existing portfolios. ✅ End-to-end flow verified: Accept portfolio → Load portfolio → Data integrity maintained. ✅ All portfolio data (risk_tolerance, roi_expectations, allocations) correctly preserved through accept/load cycle. Portfolio functionality is production-ready."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
