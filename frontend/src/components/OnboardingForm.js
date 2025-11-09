@@ -281,6 +281,7 @@ export default function OnboardingForm({ onComplete }) {
         liquidity_requirements: goalsList.length > 0 ? goalsList : null,
         sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
         investment_strategy: formData.strategies.length > 0 ? formData.strategies : null,
+        onboarding_completed: true, // Mark onboarding as completed
       };
 
       // Add personal-specific fields
