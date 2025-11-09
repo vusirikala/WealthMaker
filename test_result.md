@@ -225,15 +225,18 @@ frontend:
   
   - task: "Fix 52-week high/low not loading in stock detail modal"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/services/shared_assets_db.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Fixed 52-week high/low showing N/A for some ticker symbols. Updated _fetch_live_data function to: 1) Try multiple key variations from Yahoo Finance API (fiftyTwoWeekHigh, 52WeekHigh, yearHigh), 2) Calculate from 52-week historical data if not provided by API, 3) Added better error handling for None/invalid values. Backend restarted."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE 52-WEEK HIGH/LOW TESTING COMPLETE: ✅ All test scenarios from review request successfully validated with 11/11 tests passing (100% success rate). ✅ LARGE-CAP STOCKS: AAPL, MSFT, GOOGL all return valid 52-week high/low values (not 0, not None, logical high > low, reasonable ranges). ✅ MID-CAP STOCKS: AMD, NVDA both return proper 52-week values with logical validation. ✅ ETFs/BONDS: SPY, BND return correct 52-week ranges after live data update. ✅ CRYPTO: BTC-USD returns valid 52-week values with appropriate crypto price ranges (high < 200k, low > 100). ✅ AUTO-INITIALIZATION: New stocks (V, PLTR) properly initialize with 52-week data calculated from historical data when API doesn't provide values. ✅ DATA PERSISTENCE: 52-week values are correctly saved in shared_assets collection and return consistently on subsequent requests. ✅ EDGE CASES: Graceful handling without crashes for all tested symbols. ✅ MULTIPLE KEY VARIATIONS: Implementation successfully tries fiftyTwoWeekHigh, 52WeekHigh, yearHigh from Yahoo Finance API. ✅ HISTORICAL FALLBACK: When API values are None, system calculates from 52-week historical data as designed. The 52-week high/low fix is working perfectly - no more N/A values in stock detail modal."
 
 metadata:
   created_by: "main_agent"
