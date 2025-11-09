@@ -387,6 +387,29 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
         portfolio={portfolio}
         onSuccess={loadPortfolio}
       />
+
+      {/* Edit Portfolio Info Modal */}
+      <EditPortfolioInfoModal
+        isOpen={showEditInfoModal}
+        onClose={() => setShowEditInfoModal(false)}
+        portfolio={portfolio}
+        onSuccess={loadPortfolio}
+      />
+
+      {/* Delete Portfolio Modal */}
+      <DeletePortfolioModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        portfolio={portfolio}
+        onSuccess={handlePortfolioDeleted}
+      />
+
+      {/* Export Portfolio Modal */}
+      <ExportPortfolioModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        portfolio={portfolio}
+      />
     </div>
   );
 }
