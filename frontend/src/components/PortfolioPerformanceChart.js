@@ -187,14 +187,6 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
                 </div>
               </>
             )}
-
-            {/* Period Label */}
-            <div className="flex items-center gap-2 ml-auto">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">
-                {TIME_PERIODS.find(p => p.value === selectedPeriod)?.label}
-              </span>
-            </div>
           </div>
         </div>
 
