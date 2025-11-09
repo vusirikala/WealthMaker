@@ -475,6 +475,18 @@ metadata:
         agent: "main"
         comment: "Restructured onboarding flow to remove portfolio-specific preferences from initial onboarding and moved them to individual portfolio creation. Changes: 1) OnboardingForm.js - Reduced from 8 steps to 4 steps by removing Step 4 (Risk Tolerance & ROI Expectations), Step 6 (Sector Preferences), and Step 7 (Investment Strategies). Updated form submission to exclude risk_tolerance, roi_expectations, sector_preferences, and investment_strategy fields. 2) ManualPortfolioBuilder.js - Added sector preferences selection with checkboxes for stocks, bonds, crypto, real estate, commodities, and forex. Updated API call to include sector_preferences in portfolio creation payload. Risk tolerance and ROI expectations were already present. 3) AIPortfolioBuilder.js - Converted sector preferences from text field to checkboxes matching ManualPortfolioBuilder. Updated handleGeneratePortfolio and handleAcceptPortfolio functions to properly format and send sector preferences. Now users complete simplified onboarding (portfolio type, personal/org details, investment capacity, financial goals) and specify risk tolerance, ROI expectations, and sector preferences when creating each individual portfolio. Frontend restarted successfully."
 
+  - task: "Add Investment Strategies to Portfolio Creation with Help Tooltips"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ManualPortfolioBuilder.js, /app/frontend/src/components/AIPortfolioBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added investment strategies section to both Manual and AI Portfolio creation forms. Features: 1) Six investment strategies available: Value Investing, Growth Investing, Income/Dividend Investing, Index Fund Investing, Dollar-Cost Averaging, and Momentum Investing. 2) Each strategy displays name and brief description. 3) Help icon (HelpCircle) with hover tooltip shows detailed information including: strategy details, risk level, expected ROI, and time horizon. 4) Tooltip component from Radix UI provides elegant hover experience with dark background. 5) Strategies are optional and multi-select (users can choose multiple strategies). 6) Visual feedback with colored borders and backgrounds when selected (emerald for Manual, purple for AI portfolio). 7) Updated API calls in both components to include investment_strategy array in portfolio creation payload. 8) Scrollable container for strategies section to maintain clean UI. Frontend restarted successfully."
+
 test_plan:
   current_focus:
     - "Move Portfolio Preferences to Individual Portfolio Creation"
