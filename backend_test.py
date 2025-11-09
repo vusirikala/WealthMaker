@@ -1957,6 +1957,9 @@ print('Portfolio cleared');
         # Test stock detail auto-initialization fix (PRIORITY TEST)
         self.test_stock_detail_auto_initialization()
         
+        # Test multi-portfolio management system (PRIORITY TEST from review request)
+        self.test_multi_portfolio_management_system()
+        
         self.test_authentication_requirements()
         
         # Test chat auto-initiation feature
