@@ -259,9 +259,21 @@ metadata:
         agent: "testing"
         comment: "COMPREHENSIVE MULTI-PORTFOLIO TESTING COMPLETE: ✅ All 4 test scenarios from review request successfully validated with 18/19 tests passing (94.7% success rate). ✅ PORTFOLIO CRUD OPERATIONS: POST /api/portfolios-v2/create (manual portfolio creation), GET /api/portfolios-v2/list (fetch all portfolios), GET /api/portfolios-v2/{id} (fetch specific portfolio), PUT /api/portfolios-v2/{id} (update portfolio), DELETE /api/portfolios-v2/{id} (soft delete) - ALL WORKING PERFECTLY. ✅ INVESTMENT FEATURE: Created portfolio with AAPL (40%), GOOGL (35%), BND (25%) allocations, invested $10,000, verified price fetching for all tickers, confirmed share calculations based on allocations (AAPL: $4000, GOOGL: $3500, BND: $2500), verified holdings creation with correct shares and cost_basis, confirmed portfolio totals updated correctly. ✅ ALLOCATION UPDATES: PUT /api/portfolios-v2/{id}/allocations validates allocations sum to 100% (valid updates accepted, invalid 110% rejected with proper error message). ✅ AI PORTFOLIO GENERATION: POST /api/chat/generate-portfolio returns portfolio_suggestion with reasoning and allocations, ticker symbols are valid. Minor: AI allocation percentages parsing issue (allocations sum to 0% instead of 100%) - likely JSON parsing issue in AI response, but core functionality works. The multi-portfolio management system is production-ready with comprehensive CRUD operations, investment calculations, and validation working perfectly."
 
+  - task: "Portfolio Editing and Portfolio-Specific Chat"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/EditAllocationModal.js, /app/frontend/src/components/PortfolioView.js, /app/frontend/src/components/ChatTab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented portfolio editing and portfolio-specific chat features. Created EditAllocationModal component for editing allocations with validation. Updated PortfolioView to make allocations clickable - clicking on any ticker opens edit modal. Added Edit button to portfolio header. Updated ChatTab to accept portfolioId prop and include portfolio context in chat messages. Added portfolio context header showing which portfolio is being discussed. Chat now provides portfolio-aware responses. Frontend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Multi-Portfolio Management System"
+    - "Portfolio Editing and Portfolio-Specific Chat"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
