@@ -943,22 +943,32 @@ CRITICAL REQUIREMENTS:
         time_frame = request.get("time_horizon", "5-10")
         user_goal = request.get("goal", "build wealth")
         
+        monitor_freq = request.get("monitoring_frequency", "monthly")
+        
         if risk_level == "low":
             allocation = {"stocks": 35, "bonds": 45, "crypto": 0, "real_estate": 15, "commodities": 5, "forex": 0}
             strats = ["income_investing", "dollar_cost_averaging"]
+            strat_reason = f"These conservative strategies match your low risk tolerance and work well with {monitor_freq} monitoring."
         elif risk_level == "high":
             allocation = {"stocks": 65, "bonds": 10, "crypto": 10, "real_estate": 10, "commodities": 5, "forex": 0}
-            strats = ["growth_investing", "index_funds"]
+            if monitor_freq in ["daily", "weekly"]:
+                strats = ["growth_investing", "momentum_investing"]
+                strat_reason = f"Aggressive strategies leveraging your {monitor_freq} monitoring capability and high risk tolerance."
+            else:
+                strats = ["growth_investing", "index_funds"]
+                strat_reason = f"Growth-focused strategies suitable for {monitor_freq} monitoring while targeting high returns."
         else:
             allocation = {"stocks": 50, "bonds": 30, "crypto": 5, "real_estate": 10, "commodities": 5, "forex": 0}
             strats = ["index_funds", "dollar_cost_averaging"]
+            strat_reason = f"Balanced, proven strategies that work well with {monitor_freq} monitoring and medium risk tolerance."
         
         return {
             "success": True,
             "recommendations": {
                 "sector_allocation": allocation,
                 "recommended_strategies": strats,
-                "reasoning": f"Based on your {risk_level} risk tolerance over a {time_frame} timeframe, this balanced allocation aims to help you achieve your goal: {user_goal}. The mix provides growth potential while managing risk appropriately."
+                "reasoning": f"Based on your {risk_level} risk tolerance over a {time_frame} timeframe, this balanced allocation aims to help you achieve your goal: {user_goal}. The mix provides growth potential while managing risk appropriately.",
+                "strategy_reasoning": strat_reason
             }
         }
 
