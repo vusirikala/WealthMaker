@@ -934,7 +934,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             {step === 1 ? 'Cancel' : 'Back'}
           </Button>
 
-          {step < 3 ? (
+          {step < 4 ? (
             <Button
               onClick={() => {
                 if (step === 1) {
@@ -944,13 +944,24 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                   }
                   setStep(2);
                 } else if (step === 2) {
+                  // Validate sector allocation
+                  const totalAllocation = Object.values(sectorPreferences).reduce(
+                    (sum, s) => sum + (s.enabled ? s.allocation : 0), 
+                    0
+                  );
+                  if (Math.abs(totalAllocation - 100) > 0.1) {
+                    toast.error("Sector allocation must total 100%");
+                    return;
+                  }
+                  setStep(3);
+                } else if (step === 3) {
                   handleGeneratePortfolio();
                 }
               }}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
               disabled={isGenerating}
             >
-              {step === 2 && isGenerating ? "Generating..." : "Next"}
+              {step === 3 && isGenerating ? "Generating..." : "Next"}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
