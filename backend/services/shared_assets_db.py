@@ -206,6 +206,36 @@ class SharedAssetsService:
         else:
             return "stock"
     
+    def _calculate_dividend_yield(self, info: dict) -> float:
+        """Calculate dividend yield correctly from dividend rate and price"""
+        try:
+            # Get dividend rate (annual dividend per share)
+            dividend_rate = info.get('dividendRate', 0)
+            
+            # Get current price (try multiple fields)
+            current_price = info.get('currentPrice') or info.get('regularMarketPrice') or info.get('previousClose', 0)
+            
+            # Calculate yield: (Annual Dividend / Current Price)
+            if dividend_rate > 0 and current_price > 0:
+                calculated_yield = dividend_rate / current_price
+                return calculated_yield
+            
+            # Fallback to provided yields (already in decimal format 0.0045 = 0.45%)
+            trailing_yield = info.get('trailingAnnualDividendYield', 0)
+            if trailing_yield and trailing_yield < 1:  # Sanity check: yield should be < 100%
+                return trailing_yield
+            
+            # Last fallback
+            yield_value = info.get('yield', 0)
+            if yield_value and yield_value < 1:  # Sanity check
+                return yield_value
+                
+            return 0
+            
+        except Exception as e:
+            logger.warning(f"Error calculating dividend yield: {e}")
+            return 0
+    
     def _get_fund_holdings(self, ticker, info: dict) -> List[Dict[str, Any]]:
         """Get top holdings for ETFs and Mutual Funds"""
         holdings = []
