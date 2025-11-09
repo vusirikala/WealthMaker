@@ -477,7 +477,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Chat Close Button Visibility Fix"
+    - "Move Portfolio Preferences to Individual Portfolio Creation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
