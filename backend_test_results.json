@@ -1,297 +1,1204 @@
 {
-  "timestamp": "2025-11-09T02:33:09.577799+00:00",
-  "total_tests": 41,
-  "passed_tests": 1,
-  "success_rate": 2.4390243902439024,
+  "timestamp": "2025-11-09T02:45:00.932437+00:00",
+  "total_tests": 65,
+  "passed_tests": 61,
+  "success_rate": 93.84615384615384,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
-      "success": false,
-      "details": "Status: 408",
+      "success": true,
+      "details": "",
       "response_data": {
-        "error": "Request timeout"
+        "_id": "test-user-1762656264",
+        "email": "test.user.1762656264@example.com",
+        "name": "Test User 1762656264",
+        "picture": "https://via.placeholder.com/150",
+        "created_at": "2025-11-09T02:44:25.283000"
       }
     },
     {
       "test": "GET /auth/me (unauthenticated)",
-      "success": false,
-      "details": "Expected 401, got 408",
+      "success": true,
+      "details": "",
       "response_data": {
-        "error": "Request timeout"
+        "detail": "Not authenticated"
       }
     },
     {
       "test": "GET /admin/database-stats",
-      "success": false,
-      "details": "Status: 408",
+      "success": true,
+      "details": "",
       "response_data": {
-        "error": "Request timeout"
+        "total_assets": 6,
+        "by_type": {
+          "stocks": 4,
+          "crypto": 1,
+          "commodities": 1
+        },
+        "last_updated": "2025-11-09T02:30:03.220606+00:00",
+        "status": "active"
       }
     },
     {
       "test": "POST /admin/initialize-database",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "Database already initialized",
+        "stats": {
+          "total_assets": 6,
+          "by_type": {
+            "stocks": 4,
+            "crypto": 1,
+            "commodities": 1
+          },
+          "last_updated": "2025-11-09T02:30:03.220606+00:00",
+          "status": "active"
+        },
+        "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
+      }
     },
     {
       "test": "GET /admin/list-assets",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "asset_count": 0
+        "asset_count": 6
       }
     },
     {
       "test": "POST /admin/add-asset (TSLA)",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "TSLA already exists in database",
+        "asset": {
+          "symbol": "TSLA",
+          "assetType": "stock",
+          "fundamentals": {
+            "sector": "Consumer Cyclical",
+            "industry": "Auto Manufacturers",
+            "description": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, China, and internationally. The company operates in two segments, Automotive; and Energy Generation and Storage. The Automotive segment offers electric vehicles, as well as sells automotive regulatory credits; and non-warranty after-sales vehicle, used vehicles, body shop and parts, supercharging, retail merchandise, and vehicle insurance services. This segment also provides sedans and sport utility vehicles through direct and used vehicle sales, a network of Tesla Superchargers, and in-app upgrades; purchase financing and leasing services; services for electric vehicles through its company-owned service locations and Tesla mobile service technicians; and vehicle limited warranties and extended service plans. The Energy Generation and Storage segment engages in the design, manufacture, installation, sale, and leasing of solar energy generation and energy storage products, and related services to residential, commercial, and industrial customers and utilities through its website, stores, and galleries, as well as through a network of channel partners. This segment also provides services and repairs to its energy product customers, including under warranty; and various financing options to its residential customers. The company was formerly known as Tesla Motors, Inc. and changed its name to Tesla, Inc. in February 2017. Tesla, Inc. was incorporated in 2003 and is headquartered in Austin, Texas.",
+            "marketCap": 1428505755648,
+            "employees": 125665,
+            "website": "https://www.tesla.com",
+            "country": "United States"
+          },
+          "historical": {
+            "lastUpdated": "2025-11-09T02:30:01.085082+00:00",
+            "earnings": [],
+            "priceHistory": {
+              "threeYearReturn": 125.21,
+              "oneYearReturn": 48.86,
+              "sixMonthReturn": 34.91,
+              "volatility": 0.6187456296992299,
+              "beta": 1.872,
+              "allTimeHigh": {
+                "price": 488.5400085449219,
+                "date": "2024-12-18T00:00:00-05:00"
+              },
+              "allTimeLow": {
+                "price": 101.80999755859375,
+                "date": "2023-01-06T00:00:00-05:00"
+              },
+              "monthlyPrices": [
+                {
+                  "month": "2022-11",
+                  "close": 194.6999969482422
+                },
+                {
+                  "month": "2022-12",
+                  "close": 123.18000030517578
+                },
+                {
+                  "month": "2023-01",
+                  "close": 173.22000122070312
+                },
+                {
+                  "month": "2023-02",
+                  "close": 205.7100067138672
+                },
+                {
+                  "month": "2023-03",
+                  "close": 207.4600067138672
+                },
+                {
+                  "month": "2023-04",
+                  "close": 164.30999755859375
+                },
+                {
+                  "month": "2023-05",
+                  "close": 203.92999267578125
+                },
+                {
+                  "month": "2023-06",
+                  "close": 261.7699890136719
+                },
+                {
+                  "month": "2023-07",
+                  "close": 267.42999267578125
+                },
+                {
+                  "month": "2023-08",
+                  "close": 258.0799865722656
+                },
+                {
+                  "month": "2023-09",
+                  "close": 250.22000122070312
+                },
+                {
+                  "month": "2023-10",
+                  "close": 200.83999633789062
+                },
+                {
+                  "month": "2023-11",
+                  "close": 240.0800018310547
+                },
+                {
+                  "month": "2023-12",
+                  "close": 248.47999572753906
+                },
+                {
+                  "month": "2024-01",
+                  "close": 187.2899932861328
+                },
+                {
+                  "month": "2024-02",
+                  "close": 201.8800048828125
+                },
+                {
+                  "month": "2024-03",
+                  "close": 175.7899932861328
+                },
+                {
+                  "month": "2024-04",
+                  "close": 183.27999877929688
+                },
+                {
+                  "month": "2024-05",
+                  "close": 178.0800018310547
+                },
+                {
+                  "month": "2024-06",
+                  "close": 197.8800048828125
+                },
+                {
+                  "month": "2024-07",
+                  "close": 232.07000732421875
+                },
+                {
+                  "month": "2024-08",
+                  "close": 214.11000061035156
+                },
+                {
+                  "month": "2024-09",
+                  "close": 261.6300048828125
+                },
+                {
+                  "month": "2024-10",
+                  "close": 249.85000610351562
+                },
+                {
+                  "month": "2024-11",
+                  "close": 345.1600036621094
+                },
+                {
+                  "month": "2024-12",
+                  "close": 403.8399963378906
+                },
+                {
+                  "month": "2025-01",
+                  "close": 404.6000061035156
+                },
+                {
+                  "month": "2025-02",
+                  "close": 292.9800109863281
+                },
+                {
+                  "month": "2025-03",
+                  "close": 259.1600036621094
+                },
+                {
+                  "month": "2025-04",
+                  "close": 282.1600036621094
+                },
+                {
+                  "month": "2025-05",
+                  "close": 346.4599914550781
+                },
+                {
+                  "month": "2025-06",
+                  "close": 317.6600036621094
+                },
+                {
+                  "month": "2025-07",
+                  "close": 308.2699890136719
+                },
+                {
+                  "month": "2025-08",
+                  "close": 333.8699951171875
+                },
+                {
+                  "month": "2025-09",
+                  "close": 444.7200012207031
+                },
+                {
+                  "month": "2025-10",
+                  "close": 456.55999755859375
+                },
+                {
+                  "month": "2025-11",
+                  "close": 429.5199890136719
+                }
+              ]
+            },
+            "majorEvents": [],
+            "patterns": []
+          },
+          "lastUpdated": "2025-11-09T02:30:03.220606+00:00",
+          "live": {
+            "currentPrice": {
+              "price": 429.52,
+              "change": -16.39,
+              "changePercent": -3.68,
+              "volume": 101472744,
+              "timestamp": "2025-11-09T02:30:03.219820+00:00",
+              "dayHigh": 437.9425,
+              "dayLow": 421.88,
+              "fiftyTwoWeekHigh": 488.54,
+              "fiftyTwoWeekLow": 214.25
+            },
+            "recentNews": [
+              {
+                "headline": "Today's AI boom is 'very different' from the 90s dot-com bubble",
+                "title": "Today's AI boom is 'very different' from the 90s dot-com bubble",
+                "summary": "BMO Private Wealth chief market strategist, Carol Schleif, joins Morning Brief with Yahoo Finance Senior Reporter Allie Canal to discuss whether markets (^DJI, ^GSPC, ^IXIC) are seeing an artificial intelligence (AI) bubble and to share her thoughts on Big Tech companies funding their AI projects with debt. To watch more expert insights and analysis on the latest market action, check out more Morning Brief.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=d455e97351c0a9d22f4d38cc09a8667956ebb174e662a034039948c932795786",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T13:00:30+00:00",
+                "timestamp": "2025-11-08T13:00:30+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk warns Mamdani policies and \u2018low\u2019 universal income would trigger \u2018catastrophic decline\u2019 in US living standards",
+                "title": "Elon Musk warns Mamdani policies and \u2018low\u2019 universal income would trigger \u2018catastrophic decline\u2019 in US living standards",
+                "summary": "Musk correctly predicted that Mamdani would win.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=3728e65c9c35bf5c1cc383688499966566573fa46318952653f38e224c8e2f49",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T11:55:00+00:00",
+                "timestamp": "2025-11-08T11:55:00+00:00",
+                "sentiment": "negative"
+              },
+              {
+                "headline": "Tesla\u2019s Musk sees FSD winning full China approval in early 2026",
+                "title": "Tesla\u2019s Musk sees FSD winning full China approval in early 2026",
+                "summary": "Tesla (TSLA) CEO Elon Musk said on Thursday that he expects the automaker\u2019s Full Self-Driving software will be fully approved in China early next year. \u201cWe have partial approval in China, and hopefully we\u2019ll have a full approval in China around February or March or so,\u201d Musk told the company\u2019s annual general meeting. Published first on TheFly \u2013 the ultimate source for real-time, market-moving breaking financial news. Try Now>> See today\u2019s best-performing stocks on TipRanks >> Read More on TSLA:",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=c693fb1ee1d7a9c0c7e6bbbe3dffe9b25a27a8712056907bd9c803c9b04a5656",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T11:05:13+00:00",
+                "timestamp": "2025-11-08T11:05:13+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "$878B pay package for Elon Musk approved. What to know about Tesla, Boring Co CEO",
+                "title": "$878B pay package for Elon Musk approved. What to know about Tesla, Boring Co CEO",
+                "summary": "Elon Musk, whose Boring Co is preparing to construct a high-speed transit tunnel in Nashville, is on track to become the world\u2019s first trillionaire.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=a17ac573d75cccf508ee649dd702462827c710c04c6d4ac2eee7b4b7bb63f339",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T11:01:32+00:00",
+                "timestamp": "2025-11-08T11:01:32+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
+                "title": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
+                "summary": "We've seen Amazon without Jeff Bezos, Apple without Steve Jobs, and Microsoft without Bill Gates, but for the time being, we're not going to see Tesla without Musk.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=15e841ddb2b3751b98b7d86472de17d9357585c285eb873fb32c42f9d6173c2d",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T11:00:58+00:00",
+                "timestamp": "2025-11-08T11:00:58+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Here\u2019s What It Costs To Charge a Tesla Monthly vs. Using Gas for a Ram 1500",
+                "title": "Here\u2019s What It Costs To Charge a Tesla Monthly vs. Using Gas for a Ram 1500",
+                "summary": "Is charging a Tesla really cheaper than filling up a Ram 1500? We break down the monthly costs of electricity vs. gas so you can see the real savings.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=1cd345430e70401d79b98cb4544460eed5ada4f5c5babc5f650e84243ccf5db3",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T10:55:07+00:00",
+                "timestamp": "2025-11-08T10:55:07+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk Has One Trillion Reasons to Finish His Robot Story",
+                "title": "Elon Musk Has One Trillion Reasons to Finish His Robot Story",
+                "summary": "When Tesla shareholders approved Musk\u2019s 10-year, $1 trillion pay package, they voted to effectively remake the electric-car company into a robot powerhouse.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=21868ac2311f3e910c3df39a2fded0cbb2a693ac6e2e82f6ac6158fd3a8345f6",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T10:30:00+00:00",
+                "timestamp": "2025-11-08T10:30:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Investing.com\u2019s stocks of the week",
+                "title": "Investing.com\u2019s stocks of the week",
+                "summary": "Investing.com \u2013 U.S. equities were extremely volatile this week, as investor concerns regarding valuations led to declines, especially among technology stocks. However, there were some names that managed to make solid gains.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=400e2993eb27f9cae68fb28e55623864f8a898d7532c308016b2b68e248636f7",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T08:57:50+00:00",
+                "timestamp": "2025-11-08T08:57:50+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk says Optimus will 'eliminate poverty' in speech after his $1 trillion pay package was approved",
+                "title": "Elon Musk says Optimus will 'eliminate poverty' in speech after his $1 trillion pay package was approved",
+                "summary": "Elon Musk has spent the last few weeks outlining a future with Optimus \u2014 one that will \"eliminate\" poverty, work, and require a universal income.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=ad716b818a68fc7d4cb0ed4e1f0e18259486bf37998436a32d588a06c2788b9d",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T04:30:55+00:00",
+                "timestamp": "2025-11-08T04:30:55+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Riding in a Chinese Robotaxi Is Pretty Smooth\u2014That\u2019s a Problem for Waymo",
+                "title": "Riding in a Chinese Robotaxi Is Pretty Smooth\u2014That\u2019s a Problem for Waymo",
+                "summary": "While U.S. companies dominate their home market, other countries are looking to China for driverless technology.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=989dd56913ff386406b0842ac52ebd5fb31bed42dfd51145d72896b1a8d1274c",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T04:00:00+00:00",
+                "timestamp": "2025-11-08T04:00:00+00:00",
+                "sentiment": "neutral"
+              }
+            ],
+            "analystRatings": {
+              "lastUpdated": "2025-11-09T02:30:03.219824+00:00",
+              "targetPrice": 392.04977,
+              "recommendation": "hold",
+              "numberOfAnalysts": 41
+            },
+            "upcomingEvents": []
+          },
+          "name": "Tesla, Inc."
+        }
+      }
     },
     {
       "test": "POST /admin/update-live-data",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": "Live data update started",
+        "status": "processing",
+        "note": "Updates running in background. Check /admin/database-stats for completion"
+      }
     },
     {
       "test": "GET /data/search?q=AAPL",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "result_count": 0
+        "result_count": 1
       }
     },
     {
       "test": "GET /data/asset/AAPL",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "has_fundamentals": false,
-        "has_historical": false,
-        "has_live": false
+        "has_fundamentals": true,
+        "has_historical": true,
+        "has_live": true
       }
     },
     {
+      "test": "Asset has symbol",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Asset has name",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Asset has assetType",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has sector",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has industry",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has description",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Fundamentals has marketCap",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has earnings",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has priceHistory",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has majorEvents",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Historical has patterns",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has currentPrice",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has recentNews",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has analystRatings",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Live has upcomingEvents",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
       "test": "POST /data/assets/batch",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "assets_returned": 0
+        "assets_returned": 2
       }
     },
     {
       "test": "POST /data/track?symbol=AAPL",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "success": true,
+        "symbol": "AAPL",
+        "message": "Now tracking Apple Inc.",
+        "asset": {
+          "symbol": "AAPL",
+          "assetType": "stock",
+          "fundamentals": {
+            "sector": "Technology",
+            "industry": "Consumer Electronics",
+            "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhone, a line of smartphones; Mac, a line of personal computers; iPad, a line of multi-purpose tablets; and wearables, home, and accessories comprising AirPods, Apple Vision Pro, Apple TV, Apple Watch, Beats products, and HomePod, as well as Apple branded and third-party accessories. It also provides AppleCare support and cloud services; and operates various platforms, including the App Store that allow customers to discover and download applications and digital content, such as books, music, video, games, and podcasts, as well as advertising services include third-party licensing arrangements and its own advertising platforms. In addition, the company offers various subscription-based services, such as Apple Arcade, a game subscription service; Apple Fitness+, a personalized fitness service; Apple Music, which offers users a curated listening experience with on-demand radio stations; Apple News+, a subscription news and magazine service; Apple TV, which offers exclusive original content and live sports; Apple Card, a co-branded credit card; and Apple Pay, a cashless payment service, as well as licenses its intellectual property. The company serves consumers, and small and mid-sized businesses; and the education, enterprise, and government markets. It distributes third-party applications for its products through the App Store. The company also sells its products through its retail and online stores, and direct sales force; and third-party cellular network carriers and resellers. The company was formerly known as Apple Computer, Inc. and changed its name to Apple Inc. in January 2007. Apple Inc. was founded in 1976 and is headquartered in Cupertino, California.",
+            "marketCap": 3967007326208,
+            "employees": 166000,
+            "website": "https://www.apple.com",
+            "country": "United States"
+          },
+          "historical": {
+            "lastUpdated": "2025-11-09T02:29:13.391871+00:00",
+            "earnings": [],
+            "priceHistory": {
+              "threeYearReturn": 85.37,
+              "oneYearReturn": 21.1,
+              "sixMonthReturn": 27.51,
+              "volatility": 0.2637773897761314,
+              "beta": 1.109,
+              "allTimeHigh": {
+                "price": 277.32000732421875,
+                "date": "2025-10-31T00:00:00-04:00"
+              },
+              "allTimeLow": {
+                "price": 122.44314998227297,
+                "date": "2023-01-03T00:00:00-05:00"
+              },
+              "monthlyPrices": [
+                {
+                  "month": "2022-11",
+                  "close": 145.97132873535156
+                },
+                {
+                  "month": "2022-12",
+                  "close": 128.12307739257812
+                },
+                {
+                  "month": "2023-01",
+                  "close": 142.28335571289062
+                },
+                {
+                  "month": "2023-02",
+                  "close": 145.58189392089844
+                },
+                {
+                  "month": "2023-03",
+                  "close": 162.85499572753906
+                },
+                {
+                  "month": "2023-04",
+                  "close": 167.57571411132812
+                },
+                {
+                  "month": "2023-05",
+                  "close": 175.29396057128906
+                },
+                {
+                  "month": "2023-06",
+                  "close": 191.82948303222656
+                },
+                {
+                  "month": "2023-07",
+                  "close": 194.28208923339844
+                },
+                {
+                  "month": "2023-08",
+                  "close": 186.0476837158203
+                },
+                {
+                  "month": "2023-09",
+                  "close": 169.5492706298828
+                },
+                {
+                  "month": "2023-10",
+                  "close": 169.11355590820312
+                },
+                {
+                  "month": "2023-11",
+                  "close": 188.35533142089844
+                },
+                {
+                  "month": "2023-12",
+                  "close": 190.9136505126953
+                },
+                {
+                  "month": "2024-01",
+                  "close": 182.85186767578125
+                },
+                {
+                  "month": "2024-02",
+                  "close": 179.46127319335938
+                },
+                {
+                  "month": "2024-03",
+                  "close": 170.25735473632812
+                },
+                {
+                  "month": "2024-04",
+                  "close": 169.1155548095703
+                },
+                {
+                  "month": "2024-05",
+                  "close": 191.13815307617188
+                },
+                {
+                  "month": "2024-06",
+                  "close": 209.4019012451172
+                },
+                {
+                  "month": "2024-07",
+                  "close": 220.795654296875
+                },
+                {
+                  "month": "2024-08",
+                  "close": 227.93917846679688
+                },
+                {
+                  "month": "2024-09",
+                  "close": 231.920654296875
+                },
+                {
+                  "month": "2024-10",
+                  "close": 224.8634796142578
+                },
+                {
+                  "month": "2024-11",
+                  "close": 236.49049377441406
+                },
+                {
+                  "month": "2024-12",
+                  "close": 249.5341796875
+                },
+                {
+                  "month": "2025-01",
+                  "close": 235.16519165039062
+                },
+                {
+                  "month": "2025-02",
+                  "close": 241.24948120117188
+                },
+                {
+                  "month": "2025-03",
+                  "close": 221.58761596679688
+                },
+                {
+                  "month": "2025-04",
+                  "close": 211.9811248779297
+                },
+                {
+                  "month": "2025-05",
+                  "close": 200.622314453125
+                },
+                {
+                  "month": "2025-06",
+                  "close": 204.93740844726562
+                },
+                {
+                  "month": "2025-07",
+                  "close": 207.33470153808594
+                },
+                {
+                  "month": "2025-08",
+                  "close": 232.13999938964844
+                },
+                {
+                  "month": "2025-09",
+                  "close": 254.6300048828125
+                },
+                {
+                  "month": "2025-10",
+                  "close": 270.3699951171875
+                },
+                {
+                  "month": "2025-11",
+                  "close": 268.4700012207031
+                }
+              ]
+            },
+            "majorEvents": [],
+            "patterns": []
+          },
+          "lastUpdated": "2025-11-09T02:44:26.487550+00:00",
+          "live": {
+            "currentPrice": {
+              "price": 268.47,
+              "change": -1.3,
+              "changePercent": -0.48,
+              "volume": 45140079,
+              "timestamp": "2025-11-09T02:44:26.486835+00:00",
+              "dayHigh": 272.29,
+              "dayLow": 266.78,
+              "fiftyTwoWeekHigh": 277.32,
+              "fiftyTwoWeekLow": 169.21
+            },
+            "recentNews": [
+              {
+                "headline": "Today's AI boom is 'very different' from the 90s dot-com bubble",
+                "title": "Today's AI boom is 'very different' from the 90s dot-com bubble",
+                "summary": "BMO Private Wealth chief market strategist, Carol Schleif, joins Morning Brief with Yahoo Finance Senior Reporter Allie Canal to discuss whether markets (^DJI, ^GSPC, ^IXIC) are seeing an artificial intelligence (AI) bubble and to share her thoughts on Big Tech companies funding their AI projects with debt. To watch more expert insights and analysis on the latest market action, check out more Morning Brief.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=d455e97351c0a9d22f4d38cc09a8667956ebb174e662a034039948c932795786",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T13:00:30+00:00",
+                "timestamp": "2025-11-08T13:00:30+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Apple\u2019s iPhone Air Is a Marketing Win and a Sales Flop",
+                "title": "Apple\u2019s iPhone Air Is a Marketing Win and a Sales Flop",
+                "summary": "Just one in 10 iPhone 17 buyers opted for Air in the early weeks of sales, a consumer survey found, with some users dissatisfied with the Air\u2019s camera, sound quality, battery and price.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=434964111c84bda7b6c8213f58e0587bec95f91cfd6eb935adabe7bc01c249f2",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T12:00:00+00:00",
+                "timestamp": "2025-11-08T12:00:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
+                "title": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
+                "summary": "We've seen Amazon without Jeff Bezos, Apple without Steve Jobs, and Microsoft without Bill Gates, but for the time being, we're not going to see Tesla without Musk.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=15e841ddb2b3751b98b7d86472de17d9357585c285eb873fb32c42f9d6173c2d",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T11:00:58+00:00",
+                "timestamp": "2025-11-08T11:00:58+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Cisco, Walt Disney To Report Earnings Next Week While U.S. Shutdown Drags On",
+                "title": "Cisco, Walt Disney To Report Earnings Next Week While U.S. Shutdown Drags On",
+                "summary": "Stay ahead with Wall Street Week Ahead: get key market previews, earnings reports, dividend alerts, and insights on upcoming economic events.",
+                "source": "SeekingAlpha",
+                "url": "https://finnhub.io/api/news?id=8c7a8a31310ec0d491f7458a4829687876cc6b1fbfd02adcf0bad5a5ed9e419c",
+                "image": "https://static.seekingalpha.com/assets/og_image_1200-29b2bfe1a595477db6826bd2126c63ac2091efb7ec76347a8e7f81ba17e3de6c.png",
+                "datetime": "2025-11-08T11:00:00+00:00",
+                "timestamp": "2025-11-08T11:00:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Warren Buffett's cash fortress Berkshire closes gap with S&P 500 as AI worries depress Wall Street",
+                "title": "Warren Buffett's cash fortress Berkshire closes gap with S&P 500 as AI worries depress Wall Street",
+                "summary": "Berkshire Hathaway's B shares and A shares moved 4.5% higher this week after a strong earnings report last weekend.",
+                "source": "CNBC",
+                "url": "https://finnhub.io/api/news?id=70b11b5291f74b24790fe6fda7bb672c31c21df1baed9ec5c5f257506463f9ee",
+                "image": "https://image.cnbcfm.com/api/v1/image/107410286-1714759879649-untitled-246-2-335.jpg?v=1714827163&w=1920&h=1080",
+                "datetime": "2025-11-08T06:32:10+00:00",
+                "timestamp": "2025-11-08T06:32:10+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "'We started with a second-hand minivan \u2013 our group tour travel firm is now a \u00a330m business'",
+                "title": "'We started with a second-hand minivan \u2013 our group tour travel firm is now a \u00a330m business'",
+                "summary": "Expat Explore started with \u00a3800 and a second-hand minivan and is now one of the UK\u2019s fastest-growing group travel companies",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=d42415c0068ac709a0548c9e82341a6258f0bc63bb1f4ad026e6e4f94753693d",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T06:00:50+00:00",
+                "timestamp": "2025-11-08T06:00:50+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Jim Cramer Says Companies Like Apple are \u201cNation-States With Good Balance Sheets\u201d",
+                "title": "Jim Cramer Says Companies Like Apple are \u201cNation-States With Good Balance Sheets\u201d",
+                "summary": "Apple Inc. (NASDAQ:AAPL) is one of the stocks Jim Cramer recently shared thoughts on. Cramer said companies like Apple are \u201cnation-states,\u201d as he remarked: \u201cApple, I think, is going to have a great quarter. So I think that their PE is probably going to be roughly just a little bit above the market multiple. All [\u2026]",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=759ac68a75f0c769c54735172596de84a8f4540bc90beb7f6418a031411f820b",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T04:06:52+00:00",
+                "timestamp": "2025-11-08T04:06:52+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Why MP Materials (MP) Is Down 7.1% After Wider Q3 Losses and Profitability Guidance Shift",
+                "title": "Why MP Materials (MP) Is Down 7.1% After Wider Q3 Losses and Profitability Guidance Shift",
+                "summary": "MP Materials reported third-quarter 2025 financial results, revealing sales of US$53.55 million and a net loss of US$41.78 million, with rare earth oxide (REO) production slightly lower year-over-year but higher neodymium-praseodymium (NdPr) output. Despite wider quarterly losses, company management announced an expectation to return to profitability in the fourth quarter of 2025 and beyond, signaling an important shift in their outlook. We will examine how management's...",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=4e3be44622e5e0f913d076ce3875f0829c7f2f3c0c2147335daf7aa5dcc1331d",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T00:21:35+00:00",
+                "timestamp": "2025-11-08T00:21:35+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Dividend Champion, Contender, And Challenger Highlights: Week Of November 9",
+                "title": "Dividend Champion, Contender, And Challenger Highlights: Week Of November 9",
+                "summary": "Get the latest weekly updates on dividend changes, ex-dividend and pay dates for Dividend Champions, Contenders, and Challengers.",
+                "source": "SeekingAlpha",
+                "url": "https://finnhub.io/api/news?id=0f24cb5e688ce530a1a3feef456bd575a4ec37a9f09b01feab5a82b5eee9fb0e",
+                "image": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1072593728/image_1072593728.jpg?io=getty-c-w1536",
+                "datetime": "2025-11-08T00:03:44+00:00",
+                "timestamp": "2025-11-08T00:03:44+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Prediction: 2 Stocks That'll Be Worth More Than Palantir 10 Years From Now",
+                "title": "Prediction: 2 Stocks That'll Be Worth More Than Palantir 10 Years From Now",
+                "summary": "Palantir is growing fast, but it isn't likely to catch these giants.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=152aff74e65a4b91e28913dbded086b1a7e91cfdaefb00e9e5909d1cf1d71ba4",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T00:00:00+00:00",
+                "timestamp": "2025-11-08T00:00:00+00:00",
+                "sentiment": "neutral"
+              }
+            ],
+            "analystRatings": {
+              "lastUpdated": "2025-11-09T02:44:26.486840+00:00",
+              "targetPrice": 280.45538,
+              "recommendation": "buy",
+              "numberOfAnalysts": 41
+            },
+            "upcomingEvents": []
+          },
+          "name": "Apple Inc."
+        }
+      }
     },
     {
       "test": "GET /data/tracked",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "tracked_count": 0
+        "tracked_count": 1
       }
     },
     {
       "test": "DELETE /data/track/AAPL",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "success": true,
+        "symbol": "AAPL",
+        "message": "Stopped tracking AAPL"
+      }
     },
     {
       "test": "GET /admin/database-stats (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "POST /admin/initialize-database (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "GET /admin/list-assets (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "POST /admin/update-live-data (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "GET /data/search?q=AAPL (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "GET /data/asset/AAPL (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "POST /data/assets/batch (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "GET /data/tracked (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "POST /data/track?symbol=AAPL (no auth)",
-      "success": false,
-      "details": "Expected 401, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not authenticated"
+      }
     },
     {
       "test": "GET /chat/init (new user) - generates initial message",
-      "success": false,
-      "details": "Status: 502, No message returned",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_length": 0
+        "message_length": 203
       }
     },
     {
       "test": "Chat init message saved to history",
-      "success": false,
-      "details": "Messages before: 0, after: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 1
       }
     },
     {
       "test": "GET /chat/init (idempotency)",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": null
+      }
     },
     {
       "test": "No duplicate messages created",
-      "success": false,
-      "details": "Messages before: 0, after: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 1
       }
     },
     {
       "test": "first_chat_initiated flag set",
       "success": false,
-      "details": "Status: 502",
+      "details": "Status: 500",
       "response_data": {
         "first_chat_initiated": null
       }
     },
     {
       "test": "GET /chat/messages",
-      "success": false,
-      "details": "Status: 502, Type: <class 'str'>",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 1
       }
     },
     {
       "test": "POST /chat/send (basic message)",
-      "success": false,
-      "details": "Status: 502",
+      "success": true,
+      "details": "",
       "response_data": {
-        "has_response": false
+        "has_response": true
+      }
+    },
+    {
+      "test": "Message saved to chat_messages collection",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "user_messages": 1,
+        "ai_messages": 2
+      }
+    },
+    {
+      "test": "AI response generated and returned",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "response_length": 209
+      }
+    },
+    {
+      "test": "No 'Body is disturbed or locked' error",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_body_error": false
       }
     },
     {
       "test": "Update context with mixed liquidity_requirements",
       "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
     },
     {
       "test": "No AttributeError in build_context_string",
       "success": false,
-      "details": "Status: 502",
+      "details": "Status: 500",
       "response_data": {
         "has_response": false
       }
     },
     {
       "test": "Invalid message returns proper JSON error",
-      "success": false,
-      "details": "Status: 502, Type: <class 'str'>",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "message"
+            ],
+            "msg": "Field required",
+            "input": {
+              "invalid_field": "test"
+            },
+            "url": "https://errors.pydantic.dev/2.12/v/missing"
+          }
+        ]
+      }
     },
     {
       "test": "Empty message returns proper JSON error",
       "success": false,
-      "details": "Status: 502, Type: <class 'str'>",
-      "response_data": ""
+      "details": "Status: 500, Type: <class 'str'>",
+      "response_data": "Internal Server Error"
     },
     {
       "test": "Malformed JSON doesn't cause 'Body is disturbed' error",
       "success": true,
       "details": "",
       "response_data": {
-        "status": 502,
+        "status": 422,
         "has_body_error": false
       }
     },
     {
       "test": "GET /chat/messages (after comprehensive tests)",
-      "success": false,
-      "details": "Status: 502, Messages: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 5
       }
     },
     {
-      "test": "GET /portfolio",
-      "success": false,
-      "details": "Status: 502",
+      "test": "POST /portfolios/accept",
+      "success": true,
+      "details": "",
       "response_data": {
-        "risk_tolerance": null,
-        "roi_expectations": null,
-        "allocation_count": 0
+        "success": true,
+        "message": "Portfolio saved successfully"
+      }
+    },
+    {
+      "test": "GET /portfolios (ObjectId serialization fix)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_risk_tolerance": "moderate",
+        "has_roi_expectations": 12,
+        "allocation_count": 4,
+        "id_type": "str"
+      }
+    },
+    {
+      "test": "Portfolio _id properly serialized as string",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "id_value": "b25c08fc-880e-4504-80ab-6ee3b10abee4",
+        "id_type": "str"
+      }
+    },
+    {
+      "test": "Portfolio data integrity after accept/load",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "risk_tolerance": "moderate",
+        "roi_expectations": 12,
+        "allocations_count": 4
+      }
+    },
+    {
+      "test": "GET /portfolios/my-portfolio",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_portfolio": false,
+        "message": "No portfolio found. Use POST /portfolios/add-stock to add stocks."
+      }
+    },
+    {
+      "test": "End-to-End Flow: Accept \u2192 Load \u2192 Data Match",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "original": {
+          "risk": "moderate",
+          "roi": 12,
+          "allocations": 4
+        },
+        "loaded": {
+          "risk": "moderate",
+          "roi": 12,
+          "allocations": 4
+        }
+      }
+    },
+    {
+      "test": "GET /portfolios/existing",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_count": 0
       }
     },
     {
       "test": "GET /news",
-      "success": false,
-      "details": "Status: 502, Type: <class 'str'>",
+      "success": true,
+      "details": "",
       "response_data": {
         "news_count": 0
       }
     },
     {
       "test": "GET /invalid/endpoint",
-      "success": false,
-      "details": "Expected 404, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Not Found"
+      }
     },
     {
       "test": "POST /data/assets/batch (malformed)",
-      "success": false,
-      "details": "Expected 400/422, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": [
+          {
+            "type": "list_type",
+            "loc": [
+              "body"
+            ],
+            "msg": "Input should be a valid list",
+            "input": {
+              "invalid": "data"
+            },
+            "url": "https://errors.pydantic.dev/2.12/v/list_type"
+          }
+        ]
+      }
     },
     {
       "test": "GET /data/asset/NONEXISTENT",
-      "success": false,
-      "details": "Expected 404, got 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "detail": "Asset NONEXISTENT not found in database. Admin needs to add it."
+      }
     },
     {
       "test": "POST /auth/logout",
-      "success": false,
-      "details": "Status: 502",
-      "response_data": ""
+      "success": true,
+      "details": "",
+      "response_data": {
+        "success": true
+      }
     }
   ]
 }
