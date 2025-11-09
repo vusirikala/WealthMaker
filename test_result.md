@@ -222,6 +222,18 @@ frontend:
       - working: true
         agent: "testing"
         comment: "COMPREHENSIVE TESTING COMPLETE: ✅ All 5 test scenarios from review request successfully validated with 15/15 tests passing (100% success rate). ✅ SCENARIO 1 - Stock NOT in Database: Successfully auto-initialized NVDA, AMD, and BA with complete asset data structure (symbol, name, assetType, fundamentals with sector/industry/marketCap, historical with priceHistory, live with currentPrice/recentNews). ✅ SCENARIO 2 - Stock Already in Database: AAPL returns immediately with fast response time (<5s). ✅ SCENARIO 3 - Invalid Symbol: INVALIDXYZ123 correctly returns 404 with user-friendly error message 'Invalid ticker symbol or data unavailable'. ✅ SCENARIO 4 - Multiple New Stocks: Successfully auto-initialized TSLA, NFLX, and AMZN (3/3 successful). ✅ SCENARIO 5 - Stocks Saved in Database: Previously auto-initialized stocks (NVDA, AMD, BA) now return quickly (<3s response time) confirming they are cached in shared_assets collection. The stock detail auto-initialization fix is working perfectly - clicking on any ticker symbol will now work even if not pre-loaded in database."
+  
+  - task: "Fix 52-week high/low not loading in stock detail modal"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/services/shared_assets_db.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed 52-week high/low showing N/A for some ticker symbols. Updated _fetch_live_data function to: 1) Try multiple key variations from Yahoo Finance API (fiftyTwoWeekHigh, 52WeekHigh, yearHigh), 2) Calculate from 52-week historical data if not provided by API, 3) Added better error handling for None/invalid values. Backend restarted."
 
 metadata:
   created_by: "main_agent"
