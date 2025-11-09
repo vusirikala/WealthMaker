@@ -252,10 +252,23 @@ def calculate_portfolio_historical_returns(
     
     logger.info(f"Calculated returns: {current_return:.2f}% for {time_period}")
     
+    # Build S&P 500 time series for comparison
+    sp500_time_series = []
+    if sp500_returns is not None:
+        for date, return_pct in sp500_returns_display.items():
+            sp500_time_series.append({
+                'date': date.strftime('%Y-%m-%d'),
+                'return_percentage': round(float(return_pct), 2)
+            })
+    
     return {
         'return_percentage': round(current_return, 2),
         'time_series': time_series,
         'period_stats': period_stats,
+        'sp500_comparison': {
+            'time_series': sp500_time_series,
+            'current_return': round(float(sp500_returns_display.iloc[-1]), 2) if sp500_returns is not None else None
+        },
         'start_date': display_start_date.strftime('%Y-%m-%d'),
         'end_date': end_date.strftime('%Y-%m-%d')
     }
