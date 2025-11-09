@@ -59,6 +59,11 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
     }
   };
 
+  const handlePortfolioDeleted = () => {
+    // Reload the page to refresh portfolio list
+    window.location.reload();
+  };
+
   const handleInvest = async () => {
     const amount = parseFloat(investAmount);
     
