@@ -606,8 +606,22 @@ async def generate_portfolio(
     }
     strategy_str = ", ".join([strategy_names_map.get(s, s) for s in investment_strategies]) if investment_strategies else "Not specified"
     
-    # Build comprehensive prompt for AI
-    prompt = f"""You are an expert portfolio manager. Generate a specific stock/ETF portfolio allocation that STRICTLY adheres to the user's preferences.
+    # Calculate exact dollar amounts per sector
+    sector_amounts = {}
+    total_pct = 0
+    
+    if sector_allocation:
+        for sector, data in sector_allocation.items():
+            if data.get('enabled', False):
+                pct = data.get('allocation', 0)
+                total_pct += pct
+                if investment_amount > 0:
+                    sector_amounts[sector] = (pct, investment_amount * pct / 100)
+                else:
+                    sector_amounts[sector] = (pct, 0)
+    
+    # Build comprehensive prompt for AI with EXACT calculations
+    prompt = f"""You are an expert portfolio manager. Generate a specific stock/ETF portfolio allocation that EXACTLY matches the user's sector percentages.
 
 USER'S PORTFOLIO PROFILE:
 - Name: {portfolio_name}
@@ -618,18 +632,29 @@ USER'S PORTFOLIO PROFILE:
 - Expected ROI Target: {roi_expectations}% annually
 - Monitoring Frequency: {monitoring_frequency}
 
-USER'S SECTOR ALLOCATION (MUST RESPECT THESE PERCENTAGES):
+USER'S SECTOR ALLOCATION (MUST MATCH EXACTLY):
 {sector_allocation_str}
 
+CALCULATED DOLLAR AMOUNTS (Based on investment amount):
+"""
+    
+    for sector, (pct, amount) in sector_amounts.items():
+        prompt += f"  - {sector.replace('_', ' ').title()}: ${amount:,.2f} ({pct}%)\n"
+    
+    prompt += f"""
 USER'S SELECTED INVESTMENT STRATEGIES:
 {strategy_str}
 
-YOUR TASK:
-Generate a portfolio of 5-10 specific stocks/ETFs/bonds that:
-1. STRICTLY MATCHES the sector allocation percentages above
-2. ALIGNS with the chosen investment strategies
-3. REFLECTS the risk tolerance and time horizon
-4. TARGETS the expected ROI
+YOUR CRITICAL TASK:
+Generate a portfolio where the TOTAL allocation percentages for each sector category EXACTLY match the user's specified percentages.
+
+MANDATORY CALCULATION RULES:
+1. Calculate how much % should go to each sector
+2. Select stocks/ETFs that together add up to EXACTLY that sector's percentage
+3. If Stocks = 60%, then ALL stock allocations MUST sum to 60%
+4. If Bonds = 30%, then ALL bond allocations MUST sum to 30%
+5. If Crypto = 10%, then ALL crypto allocations MUST sum to 10%
+6. TOTAL allocation_percentage MUST sum to 100%
 
 ALLOCATION RULES:
 - If Stocks: {sector_allocation.get('stocks', {}).get('allocation', 0)}% → Include growth stocks, value stocks, or dividend stocks based on strategies
