@@ -251,7 +251,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     try {
       // Prepare sector preferences
       const selectedSectors = Object.keys(sectorPreferences)
-        .filter(key => sectorPreferences[key])
+        .filter(key => sectorPreferences[key].enabled)
+        .map(key => `${key} (${sectorPreferences[key].allocation}%)`)
         .join(", ");
 
       // Send request to AI to generate portfolio suggestion
@@ -270,6 +271,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           roi_expectations: roiExpectations,
           sector_preferences: selectedSectors,
           investment_strategies: investmentStrategies,
+          monitoring_frequency: monitoringFrequency,
         }),
       });
 
