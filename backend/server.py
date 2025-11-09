@@ -194,6 +194,7 @@ class UserContext(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_conversation_at: Optional[datetime] = None
+    first_chat_initiated: Optional[bool] = False  # Track if chat has been auto-initiated
 
 class Portfolio(BaseModel):
     model_config = ConfigDict(extra="ignore")
