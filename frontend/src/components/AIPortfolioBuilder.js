@@ -803,22 +803,30 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                 <div className="p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
                   <div className="flex items-start gap-2">
                     <Sparkles className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-purple-900 mb-1">AI Strategy Recommendations</p>
-                      <p className="text-sm text-purple-700 mb-2">
-                        Based on your {riskTolerance} risk tolerance, {timeHorizon} year horizon, {roiExpectations}% target return, 
-                        {monitoringFrequency} monitoring, and sector allocation, we recommend:
-                      </p>
-                      <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="flex-1">
+                      <p className="font-semibold text-purple-900 mb-2">AI Strategy Recommendations</p>
+                      <div className="flex flex-wrap gap-2 mb-3">
                         {recommendations.recommended_strategies.map((strategyId) => {
                           const strategy = strategies.find(s => s.id === strategyId);
                           return strategy ? (
-                            <span key={strategyId} className="px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-full">
+                            <span key={strategyId} className="px-3 py-1.5 bg-purple-600 text-white text-xs font-semibold rounded-full flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
                               {strategy.name}
                             </span>
                           ) : null;
                         })}
                       </div>
+                      {recommendations.strategy_reasoning && (
+                        <p className="text-sm text-purple-800 bg-white/50 p-2 rounded border border-purple-200">
+                          <span className="font-semibold">Why these strategies:</span> {recommendations.strategy_reasoning}
+                        </p>
+                      )}
+                      {!recommendations.strategy_reasoning && (
+                        <p className="text-sm text-purple-700">
+                          Based on your {riskTolerance} risk tolerance, {timeHorizon} year horizon, {roiExpectations}% target, 
+                          and {monitoringFrequency} monitoring frequency.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
