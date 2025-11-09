@@ -1110,8 +1110,10 @@ I'm your AI financial advisor, and I'm excited to help you build a personalized 
     # Chat already initiated
     return {"message": None}
 
-@api_router.post("/chat/send", response_model=ChatResponse)
-async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
+# DISABLED: Using modular routes/chat.py instead
+# @api_router.post("/chat/send", response_model=ChatResponse)
+@api_router.post("/chat/send-disabled", response_model=ChatResponse)
+async def send_message_old(chat_request: ChatRequest, user: User = Depends(require_auth)):
     user_message = chat_request.message
     
     # Get chat history FIRST to check if this is first message
