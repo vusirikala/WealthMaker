@@ -106,6 +106,14 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     setIsLoading(true);
 
     try {
+      // Prepare sector preferences
+      const selectedSectors = Object.keys(sectorPreferences).reduce((acc, key) => {
+        if (sectorPreferences[key]) {
+          acc[key] = { allowed: true };
+        }
+        return acc;
+      }, {});
+
       const response = await fetch(`${API}/portfolios-v2/create`, {
         method: "POST",
         headers: {
@@ -118,6 +126,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           type: "ai",
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
+          sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
           allocations: aiSuggestion.allocations || [],
         }),
       });
