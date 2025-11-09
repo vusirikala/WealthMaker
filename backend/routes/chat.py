@@ -797,7 +797,8 @@ OUTPUT FORMAT (JSON only, no markdown):
     "forex": <percentage 0-100>
   }},
   "recommended_strategies": ["strategy_id_1", "strategy_id_2"],
-  "reasoning": "2-3 sentences explaining how this allocation specifically addresses the user's goal '{goal}', matches their {risk_tolerance} risk tolerance, targets {roi_expectations}% return over {time_horizon} years, and aligns with {monitoring_frequency} monitoring. Be specific about why each sector percentage was chosen."
+  "reasoning": "2-3 sentences explaining how this allocation specifically addresses the user's goal '{goal}', matches their {risk_tolerance} risk tolerance, targets {roi_expectations}% return over {time_horizon} years, and aligns with {monitoring_frequency} monitoring. Be specific about why each sector percentage was chosen.",
+  "strategy_reasoning": "1-2 sentences explaining specifically WHY these {len(recommended_strategies)} strategies were chosen. Mention: 1) how they match the monitoring frequency ({monitoring_frequency}), 2) how they complement the sector allocation, 3) how they align with the user's goal and risk profile."
 }}
 
 CRITICAL REQUIREMENTS:
