@@ -309,7 +309,7 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
 
       {/* Info Note */}
       <div className="mt-4 text-xs text-gray-500 flex items-start gap-2">
-        <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
+        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
         <p>
           Historical returns are calculated based on your portfolio allocations and actual stock price movements compared to S&P 500 index performance. 
           Chart shows percentage returns starting from 0% at the beginning of the selected period.
