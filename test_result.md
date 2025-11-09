@@ -492,7 +492,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "AI-Powered Investment Strategy Recommendations"
+    - "Context-Aware Portfolio Generation with Sector & Strategy Alignment"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
