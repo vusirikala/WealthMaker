@@ -12,7 +12,7 @@ import subprocess
 from datetime import datetime, timezone
 
 class ChatInitTester:
-    def __init__(self, base_url="https://money-grow-app.preview.emergentagent.com"):
+    def __init__(self, base_url="https://code-preview-54.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.session_token = None

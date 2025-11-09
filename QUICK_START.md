@@ -3,7 +3,7 @@
 ## 🚀 Easy Way: Using Browser Console
 
 ### Step 1: Login to the App
-Go to: https://dataflow-finance.preview.emergentagent.com
+Go to: https://code-preview-54.preview.emergentagent.com
 Login with any OAuth provider (Google, GitHub, etc.)
 
 ### Step 2: Open Browser DevTools
@@ -131,11 +131,11 @@ If you prefer command line:
 SESSION_TOKEN="your_token_here"
 
 # Add Apple stock
-curl -X POST "https://dataflow-finance.preview.emergentagent.com/api/portfolios/add-stock?symbol=AAPL&quantity=10&purchase_price=150&purchase_date=2023-01-15" \
+curl -X POST "https://code-preview-54.preview.emergentagent.com/api/portfolios/add-stock?symbol=AAPL&quantity=10&purchase_price=150&purchase_date=2023-01-15" \
   -H "Authorization: Bearer $SESSION_TOKEN"
 
 # View portfolio
-curl "https://dataflow-finance.preview.emergentagent.com/api/portfolios/my-portfolio" \
+curl "https://code-preview-54.preview.emergentagent.com/api/portfolios/my-portfolio" \
   -H "Authorization: Bearer $SESSION_TOKEN"
 ```
 

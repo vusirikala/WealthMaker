@@ -16,7 +16,7 @@ Results:
 ### Option 1: Using cURL (Command Line)
 
 #### Step 1: Get Authentication Token
-First, login through the UI at: https://dataflow-finance.preview.emergentagent.com
+First, login through the UI at: https://code-preview-54.preview.emergentagent.com
 
 Then extract your session token:
 ```bash
@@ -30,7 +30,7 @@ SESSION_TOKEN="your_token_here"
 **Check Database Status:**
 ```bash
 curl -H "Authorization: Bearer $SESSION_TOKEN" \
-  https://dataflow-finance.preview.emergentagent.com/api/admin/database-stats
+  https://code-preview-54.preview.emergentagent.com/api/admin/database-stats
 ```
 
 Expected response:
@@ -52,7 +52,7 @@ Expected response:
 curl -X POST \
   -H "Authorization: Bearer $SESSION_TOKEN" \
   -H "Content-Type: application/json" \
-  https://dataflow-finance.preview.emergentagent.com/api/admin/initialize-database
+  https://code-preview-54.preview.emergentagent.com/api/admin/initialize-database
 ```
 
 This runs in background. Check status again after ~30 seconds.
@@ -60,7 +60,7 @@ This runs in background. Check status again after ~30 seconds.
 **List All Assets:**
 ```bash
 curl -H "Authorization: Bearer $SESSION_TOKEN" \
-  https://dataflow-finance.preview.emergentagent.com/api/admin/list-assets
+  https://code-preview-54.preview.emergentagent.com/api/admin/list-assets
 ```
 
 #### Step 3: Test User Data Endpoints
@@ -68,13 +68,13 @@ curl -H "Authorization: Bearer $SESSION_TOKEN" \
 **Search for a Stock:**
 ```bash
 curl -H "Authorization: Bearer $SESSION_TOKEN" \
-  "https://dataflow-finance.preview.emergentagent.com/api/data/search?q=Apple"
+  "https://code-preview-54.preview.emergentagent.com/api/data/search?q=Apple"
 ```
 
 **Get Single Asset (AAPL):**
 ```bash
 curl -H "Authorization: Bearer $SESSION_TOKEN" \
-  https://dataflow-finance.preview.emergentagent.com/api/data/asset/AAPL
+  https://code-preview-54.preview.emergentagent.com/api/data/asset/AAPL
 ```
 
 Expected response structure:
@@ -112,26 +112,26 @@ curl -X POST \
   -H "Authorization: Bearer $SESSION_TOKEN" \
   -H "Content-Type: application/json" \
   -d '["AAPL", "MSFT", "GOOGL"]' \
-  https://dataflow-finance.preview.emergentagent.com/api/data/assets/batch
+  https://code-preview-54.preview.emergentagent.com/api/data/assets/batch
 ```
 
 **Track a Stock:**
 ```bash
 curl -X POST \
   -H "Authorization: Bearer $SESSION_TOKEN" \
-  "https://dataflow-finance.preview.emergentagent.com/api/data/track?symbol=AAPL"
+  "https://code-preview-54.preview.emergentagent.com/api/data/track?symbol=AAPL"
 ```
 
 **Get Tracked Stocks:**
 ```bash
 curl -H "Authorization: Bearer $SESSION_TOKEN" \
-  https://dataflow-finance.preview.emergentagent.com/api/data/tracked
+  https://code-preview-54.preview.emergentagent.com/api/data/tracked
 ```
 
 ### Option 2: Using Postman
 
 1. **Import Collection:**
-   - Base URL: `https://dataflow-finance.preview.emergentagent.com/api`
+   - Base URL: `https://code-preview-54.preview.emergentagent.com/api`
    - Add Authorization header: `Bearer YOUR_SESSION_TOKEN`
 
 2. **Test Endpoints:**
@@ -144,7 +144,7 @@ curl -H "Authorization: Bearer $SESSION_TOKEN" \
 
 ### Option 3: Browser DevTools (Easiest)
 
-1. **Open the app:** https://dataflow-finance.preview.emergentagent.com
+1. **Open the app:** https://code-preview-54.preview.emergentagent.com
 2. **Login** with any OAuth provider
 3. **Open DevTools** (F12)
 4. **Go to Console tab**
