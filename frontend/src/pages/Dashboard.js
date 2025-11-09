@@ -29,7 +29,6 @@ export default function Dashboard({ user, setIsAuthenticated }) {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingContext, setCheckingContext] = useState(true);
   const [userContext, setUserContext] = useState(null);
-  const [showAddStockModal, setShowAddStockModal] = useState(false);
 
   // Check if user needs onboarding
   useEffect(() => {
