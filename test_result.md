@@ -400,6 +400,18 @@ metadata:
         agent: "main"
         comment: "Added asset type allocation chart showing breakdown by asset types (stocks, bonds, ETFs, etc.) using pie chart. Updated allocations and holdings display to show sector and asset_type for each ticker with visual badges. Frontend: Added assetTypeData calculation to aggregate allocations by asset_type, added second pie chart for asset type allocation, updated allocation and holding cards to display sector (text) and asset_type (blue badge). Backend: Updated invest endpoint to preserve sector and asset_type when updating existing holdings. ManualPortfolioBuilder: Added auto-fetch of stock info (sector, asset_type) when user enters ticker using /api/data/asset endpoint, displays fetched info as badges below ticker input. Both frontend and backend restarted successfully."
 
+  - task: "Performance Metrics Layout Reorganization"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PortfolioPerformanceChart.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Reorganized performance metrics to display all key information in a single clean line. Updated layout to show Portfolio Return, S&P 500 Return, and Outperforming/Underperforming percentage side by side with vertical dividers. Each metric has a label above and large bold value below. Added Calendar icon with period label at the end of the metrics line. Removed separate S&P 500 comparison card to consolidate all metrics in header. Time period selector remains on the right side. Frontend restarted successfully."
+
 test_plan:
   current_focus:
     - "Asset Type Allocation Chart and Sector/Type Display"
