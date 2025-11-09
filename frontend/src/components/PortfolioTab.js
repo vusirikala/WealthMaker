@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Area, AreaChart, CartesianGrid } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, Zap, Calendar } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Zap, Calendar, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import StockDetailModal from "./StockDetailModal";
+import AddStockModal from "./AddStockModal";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
