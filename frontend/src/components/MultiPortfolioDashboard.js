@@ -67,23 +67,11 @@ export default function MultiPortfolioDashboard() {
         onSuccess={handlePortfolioCreated}
       />
 
-      {/* TODO: AI Portfolio Builder */}
-      {showAIBuilder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md">
-            <h2 className="text-2xl font-bold mb-4">AI Portfolio Builder</h2>
-            <p className="text-gray-600 mb-4">
-              AI Portfolio Builder coming soon! For now, use the manual builder or chat to create portfolios.
-            </p>
-            <button
-              onClick={() => setShowAIBuilder(false)}
-              className="w-full px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <AIPortfolioBuilder
+        isOpen={showAIBuilder}
+        onClose={() => setShowAIBuilder(false)}
+        onSuccess={handlePortfolioCreated}
+      />
     </div>
   );
 }
