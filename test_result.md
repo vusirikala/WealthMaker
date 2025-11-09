@@ -402,7 +402,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "5-Year Return Calculation Fix"
+    - "Asset Type Allocation Chart and Sector/Type Display"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
