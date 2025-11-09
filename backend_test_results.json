@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T02:45:00.932437+00:00",
+  "timestamp": "2025-11-09T02:49:07.439439+00:00",
   "total_tests": 65,
-  "passed_tests": 61,
-  "success_rate": 93.84615384615384,
+  "passed_tests": 59,
+  "success_rate": 90.76923076923077,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762656264",
-        "email": "test.user.1762656264@example.com",
-        "name": "Test User 1762656264",
+        "_id": "test-user-1762656508",
+        "email": "test.user.1762656508@example.com",
+        "name": "Test User 1762656508",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T02:44:25.283000"
+        "created_at": "2025-11-09T02:48:28.584000"
       }
     },
     {
@@ -35,7 +35,7 @@
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T02:30:03.220606+00:00",
+        "last_updated": "2025-11-09T02:44:28.410416+00:00",
         "status": "active"
       }
     },
@@ -52,7 +52,7 @@
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T02:30:03.220606+00:00",
+          "last_updated": "2025-11-09T02:44:28.410416+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T02:30:03.220606+00:00",
+          "lastUpdated": "2025-11-09T02:44:28.410416+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T02:30:03.219820+00:00",
+              "timestamp": "2025-11-09T02:44:28.409570+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T02:30:03.219824+00:00",
+              "lastUpdated": "2025-11-09T02:44:28.409574+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T02:44:26.487550+00:00",
+          "lastUpdated": "2025-11-09T02:48:29.733837+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T02:44:26.486835+00:00",
+              "timestamp": "2025-11-09T02:48:29.733133+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T02:44:26.486840+00:00",
+              "lastUpdated": "2025-11-09T02:48:29.733137+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -986,27 +986,10 @@
     },
     {
       "test": "POST /chat/send (basic message)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 408",
       "response_data": {
-        "has_response": true
-      }
-    },
-    {
-      "test": "Message saved to chat_messages collection",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "user_messages": 1,
-        "ai_messages": 2
-      }
-    },
-    {
-      "test": "AI response generated and returned",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "response_length": 209
+        "has_response": false
       }
     },
     {
@@ -1076,19 +1059,28 @@
       }
     },
     {
-      "test": "POST /portfolios/accept",
+      "test": "Create portfolio suggestion in database",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "suggestion_id": "73b45ff5-d524-4f31-8861-d2c8060cc349"
+      }
+    },
+    {
+      "test": "POST /api/portfolio/accept",
       "success": true,
       "details": "",
       "response_data": {
         "success": true,
-        "message": "Portfolio saved successfully"
+        "message": "Portfolio updated successfully"
       }
     },
     {
-      "test": "GET /portfolios (ObjectId serialization fix)",
+      "test": "GET /api/portfolio - 200 response with portfolio data",
       "success": true,
       "details": "",
       "response_data": {
+        "status": 200,
         "has_risk_tolerance": "moderate",
         "has_roi_expectations": 12,
         "allocation_count": 4,
@@ -1096,48 +1088,53 @@
       }
     },
     {
-      "test": "Portfolio _id properly serialized as string",
+      "test": "Portfolio _id is string (ObjectId serialization fix)",
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "b25c08fc-880e-4504-80ab-6ee3b10abee4",
+        "id_value": "a38c2f35-c6f5-4d6f-abb7-fb423452ada4",
         "id_type": "str"
       }
     },
     {
-      "test": "Portfolio data integrity after accept/load",
+      "test": "Data integrity: accepted vs loaded portfolio match",
       "success": true,
       "details": "",
       "response_data": {
-        "risk_tolerance": "moderate",
-        "roi_expectations": 12,
-        "allocations_count": 4
+        "accepted_risk": "moderate",
+        "loaded_risk": "moderate",
+        "accepted_roi": 12,
+        "loaded_roi": 12,
+        "accepted_allocations": 4,
+        "loaded_allocations": 4
       }
     },
     {
-      "test": "GET /portfolios/my-portfolio",
+      "test": "No JSON serialization errors",
       "success": true,
       "details": "",
       "response_data": {
-        "has_portfolio": false,
-        "message": "No portfolio found. Use POST /portfolios/add-stock to add stocks."
+        "serializable": true
       }
     },
     {
-      "test": "End-to-End Flow: Accept \u2192 Load \u2192 Data Match",
+      "test": "GET /api/portfolio when no portfolio exists",
       "success": true,
       "details": "",
       "response_data": {
-        "original": {
-          "risk": "moderate",
-          "roi": 12,
-          "allocations": 4
-        },
-        "loaded": {
-          "risk": "moderate",
-          "roi": 12,
-          "allocations": 4
+        "status": 200,
+        "response": {
+          "portfolio": null,
+          "message": "No portfolio found"
         }
+      }
+    },
+    {
+      "test": "Complete End-to-End Flow: Accept \u2192 Load via /api/portfolio",
+      "success": false,
+      "details": "Accept failed: Status 500",
+      "response_data": {
+        "accept_status": 500
       }
     },
     {
