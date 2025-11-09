@@ -25,17 +25,13 @@ async def main():
     stats = await shared_assets_service.get_database_stats()
     
     if stats["total_assets"] > 0:
-        print(f"✅ Database already initialized with {stats['total_assets']} assets")
+        print(f"ℹ️  Database already has {stats['total_assets']} assets")
         print(f"   - Stocks: {stats['by_type']['stocks']}")
         print(f"   - Crypto: {stats['by_type']['crypto']}")
         print(f"   - Commodities: {stats['by_type']['commodities']}")
         print(f"   - Last updated: {stats['last_updated']}")
         print()
-        
-        response = input("Do you want to re-initialize? (yes/no): ")
-        if response.lower() != 'yes':
-            print("Skipping initialization.")
-            return
+        print("🔄 Adding any missing assets...")
         print()
     
     # Initialize with top 50 S&P 500 + crypto + commodities
