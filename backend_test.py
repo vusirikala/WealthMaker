@@ -1600,6 +1600,9 @@ print('Portfolio cleared');
         self.test_admin_endpoints()
         self.test_data_endpoints()
         
+        # Test 52-week high/low fix (PRIORITY TEST from review request)
+        self.test_52_week_high_low_fix()
+        
         # Test stock detail auto-initialization fix (PRIORITY TEST)
         self.test_stock_detail_auto_initialization()
         
