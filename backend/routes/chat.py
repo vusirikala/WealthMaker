@@ -114,8 +114,33 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         }
         await db.user_context.insert_one(user_context)
     
+    # Check if this is portfolio-specific chat
+    portfolio_doc = None
+    if portfolio_id:
+        logger.info(f"Loading portfolio context for portfolio_id: {portfolio_id}")
+        portfolio_doc = await db.user_portfolios.find_one({
+            "_id": portfolio_id,
+            "user_id": user.id,
+            "is_active": True
+        })
+        
+        if portfolio_doc:
+            logger.info(f"Found portfolio: {portfolio_doc.get('name')}")
+    
     # Build context string for AI
-    context_info = build_context_string(user_context)
+    if portfolio_doc:
+        # Portfolio-specific context
+        logger.info("Building portfolio-specific context")
+        context_info = await build_portfolio_context(
+            portfolio=portfolio_doc,
+            user_context=user_context,
+            chat_history=chat_history,
+            db=db
+        )
+    else:
+        # Global chat context
+        logger.info("Building global chat context")
+        context_info = build_context_string(user_context)
     
     # Analyze context completeness
     context_analysis = analyze_context_completeness(user_context)
