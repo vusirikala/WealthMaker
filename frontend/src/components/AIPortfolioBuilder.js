@@ -156,6 +156,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           time_horizon: timeHorizon,
           roi_expectations: roiExpectations,
           sector_preferences: selectedSectors,
+          investment_strategies: investmentStrategies,
         }),
       });
 
