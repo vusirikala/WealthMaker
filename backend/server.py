@@ -5,6 +5,10 @@ Main application file that imports and registers all route modules
 from fastapi import FastAPI, APIRouter
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, Dict, Any, List
+from datetime import datetime, timezone
+import uuid
 import os
 import logging
 from pathlib import Path
