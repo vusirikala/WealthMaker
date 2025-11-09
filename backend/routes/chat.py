@@ -6,7 +6,7 @@ import logging
 import uuid
 import json
 import os
-from emergentintegrations.llm.chat import LlmChat, UserMessage, SystemMessage
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 from dateutil.relativedelta import relativedelta
 
 from models.user import User
