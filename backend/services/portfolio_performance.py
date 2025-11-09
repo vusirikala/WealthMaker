@@ -8,8 +8,14 @@ from typing import Dict, List, Any
 import logging
 import pandas as pd
 import numpy as np
+from services.shared_assets_db import shared_assets_service
 
 logger = logging.getLogger(__name__)
+
+# Cache for stock data to avoid repeated API calls
+_price_cache = {}
+_cache_timestamp = None
+_cache_duration = timedelta(hours=1)  # Cache for 1 hour
 
 
 async def get_cached_price_data(ticker: str, start_date: datetime, end_date: datetime, db):
