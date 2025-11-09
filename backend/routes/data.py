@@ -19,6 +19,7 @@ async def get_asset_data(
 ):
     """
     Get complete asset data from shared database
+    Auto-initializes if not found
     
     Returns:
     - Company information (fundamentals)
@@ -30,7 +31,22 @@ async def get_asset_data(
     data = await shared_assets_service.get_single_asset(symbol)
     
     if not data:
-        raise HTTPException(status_code=404, detail=f"Asset {symbol} not found in database. Admin needs to add it.")
+        # Auto-initialize this asset
+        logger.info(f"Asset {symbol} not in database, auto-initializing...")
+        init_result = await shared_assets_service.initialize_database([symbol])
+        
+        if init_result['initialized'] > 0:
+            # Fetch the newly initialized asset
+            data = await shared_assets_service.get_single_asset(symbol)
+            if data:
+                logger.info(f"✅ Successfully initialized and loaded {symbol}")
+                return data
+        
+        # If still not found, return error
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Asset {symbol} not found. Invalid ticker symbol or data unavailable."
+        )
     
     return data
 
