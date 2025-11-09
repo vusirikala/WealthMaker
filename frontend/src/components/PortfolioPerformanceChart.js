@@ -17,12 +17,30 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
   const [selectedPeriod, setSelectedPeriod] = useState('1y');
   const [performanceData, setPerformanceData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [chartKey, setChartKey] = useState(0);
 
   useEffect(() => {
     if (portfolioId) {
       loadPerformanceData();
     }
   }, [portfolioId, selectedPeriod]);
+
+  // Force chart re-render on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setChartKey(prev => prev + 1);
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    // Also trigger on layout changes (like chat opening)
+    const timer = setTimeout(handleResize, 350); // Slightly after animation
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    };
+  }, []);
 
   const loadPerformanceData = async () => {
     setIsLoading(true);
