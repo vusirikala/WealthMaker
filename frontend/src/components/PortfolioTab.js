@@ -395,6 +395,18 @@ export default function PortfolioTab() {
           </table>
         </div>
       </div>
+
+      {/* Stock Detail Modal */}
+      <StockDetailModal
+        symbol={selectedStock}
+        holding={selectedHolding}
+        isOpen={showStockDetail}
+        onClose={() => {
+          setShowStockDetail(false);
+          setSelectedStock(null);
+          setSelectedHolding(null);
+        }}
+      />
     </div>
   );
 }
