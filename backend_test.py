@@ -380,7 +380,15 @@ print('Setup complete');
         
         # Run test suites
         self.test_auth_endpoints()
+        
+        # Test chat auto-initiation feature
+        self.test_chat_init_new_user()
+        self.test_chat_init_idempotency()
+        self.test_user_context_tracking()
+        
+        # Test regular chat functionality
         self.test_chat_endpoints()
+        
         self.test_portfolio_endpoints()
         self.test_news_endpoints()
         self.test_error_handling()
