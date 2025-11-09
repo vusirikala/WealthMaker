@@ -272,16 +272,34 @@ export default function ChatTab({ portfolioId = null }) {
     <div className="h-full flex flex-col" data-testid="chat-interface">
       {/* Portfolio Context Header */}
       {portfolioContext && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200 px-4 py-3 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-semibold text-gray-900">
-              Chatting about: {portfolioContext.name}
-            </span>
-            {portfolioContext.goal && (
-              <span className="text-xs text-gray-600 truncate">• {portfolioContext.goal}</span>
-            )}
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-b border-purple-700 px-4 py-3 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="text-sm font-bold">
+                  {portfolioContext.name}
+                </div>
+                {portfolioContext.goal && (
+                  <div className="text-xs text-white/80 truncate max-w-[300px]">
+                    {portfolioContext.goal}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
+              Portfolio Chat
+            </div>
           </div>
+        </div>
+      )}
+      
+      {/* Debug Info - Remove after testing */}
+      {portfolioId && (
+        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 text-xs text-blue-700">
+          🔍 Debug: Portfolio ID: {portfolioId} | Messages: {messages.length}
         </div>
       )}
       
