@@ -108,7 +108,7 @@ def test_performance_endpoint():
     
     print(f"✅ Created test portfolio: {portfolio_id}")
     
-    base_url = "https://portfolio-genius-28.preview.emergentagent.com"
+    base_url = "https://app-preview-89.preview.emergentagent.com"
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {session_token}'
