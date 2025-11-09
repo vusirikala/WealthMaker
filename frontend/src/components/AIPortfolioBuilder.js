@@ -580,9 +580,9 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Investment Sectors (Optional)
+                  Investment Sectors & Allocation (%) *
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="space-y-2">
                   {[
                     { id: "stocks", label: "Stocks", emoji: "📈" },
                     { id: "bonds", label: "Bonds", emoji: "💰" },
@@ -591,20 +591,54 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                     { id: "commodities", label: "Commodities", emoji: "🥇" },
                     { id: "forex", label: "Forex", emoji: "💱" },
                   ].map((sector) => (
-                    <button
+                    <div
                       key={sector.id}
-                      type="button"
-                      onClick={() => handleSectorToggle(sector.id)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                        sectorPreferences[sector.id]
-                          ? "bg-purple-100 text-purple-700 border-2 border-purple-500"
-                          : "bg-gray-50 text-gray-600 border-2 border-gray-200 hover:border-gray-300"
+                      className={`p-3 border-2 rounded-lg transition-all duration-200 ${
+                        sectorPreferences[sector.id]?.enabled
+                          ? "border-purple-500 bg-purple-50"
+                          : "border-gray-200 bg-gray-50"
                       }`}
                     >
-                      <span>{sector.emoji}</span>
-                      <span>{sector.label}</span>
-                    </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleSectorToggle(sector.id)}
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                            sectorPreferences[sector.id]?.enabled ? "bg-purple-100" : "bg-gray-100"
+                          }`}
+                        >
+                          {sectorPreferences[sector.id]?.enabled ? (
+                            <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+                          ) : (
+                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                          )}
+                        </button>
+                        <span className="text-xl">{sector.emoji}</span>
+                        <span className="font-semibold text-gray-900 flex-1">{sector.label}</span>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="number"
+                            value={sectorPreferences[sector.id]?.allocation || 0}
+                            onChange={(e) => handleSectorAllocationChange(sector.id, e.target.value)}
+                            min="0"
+                            max="100"
+                            step="1"
+                            disabled={!sectorPreferences[sector.id]?.enabled}
+                            className="w-20 text-center"
+                          />
+                          <span className="text-sm font-medium text-gray-600">%</span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
+                </div>
+                <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-xs text-blue-800">
+                    💡 Total allocation: {Object.values(sectorPreferences).reduce((sum, s) => sum + (s.enabled ? s.allocation : 0), 0).toFixed(1)}%
+                    {Math.abs(Object.values(sectorPreferences).reduce((sum, s) => sum + (s.enabled ? s.allocation : 0), 0) - 100) > 0.1 && 
+                      <span className="font-semibold"> (Should total 100%)</span>
+                    }
+                  </p>
                 </div>
               </div>
 
