@@ -1202,7 +1202,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
             amount_needed = req.get('amount_needed', target_amount - amount_saved)
             target_date = req.get('target_date', req.get('when', 'TBD'))
             priority = req.get('priority', 'medium')
-            progress = req.get('progress_percentage', 0)
+            progress = req.get('progress_percentage', 0) or 0
             
             context_info += f"\n  * {goal_name} ({priority} priority)"
             context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
