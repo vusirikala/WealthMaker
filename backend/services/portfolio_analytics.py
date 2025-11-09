@@ -267,8 +267,17 @@ class PortfolioAnalytics:
                 stock = yf.Ticker(ticker)
                 info = stock.info
                 
+                # Get dividend data
                 dividend_rate = info.get('dividendRate', 0)  # Annual dividend per share
-                dividend_yield = info.get('dividendYield', 0) * 100 if info.get('dividendYield') else 0
+                current_price = info.get('currentPrice', info.get('regularMarketPrice', 0))
+                
+                # Calculate dividend yield manually if we have the data
+                if dividend_rate > 0 and current_price > 0:
+                    dividend_yield = (dividend_rate / current_price) * 100
+                else:
+                    # Fallback to provided dividendYield (already in decimal form, needs * 100)
+                    raw_yield = info.get('dividendYield', 0)
+                    dividend_yield = raw_yield * 100 if raw_yield and raw_yield < 1 else raw_yield
                 
                 if holdings:
                     # Calculate actual dividend income based on holdings
