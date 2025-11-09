@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
-import { DollarSign, TrendingUp, TrendingDown, Edit, MessageSquare } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, Edit, MessageSquare, Trash2, Download, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import EditAllocationModal from "./EditAllocationModal";
+import EditPortfolioInfoModal from "./EditPortfolioInfoModal";
+import DeletePortfolioModal from "./DeletePortfolioModal";
+import ExportPortfolioModal from "./ExportPortfolioModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
