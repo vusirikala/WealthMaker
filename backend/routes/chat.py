@@ -717,24 +717,21 @@ OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
 }}
 
 VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
-□ Calculate sum of all stock allocations = Should equal user's stocks %
-□ Calculate sum of all bond allocations = Should equal user's bonds %
-□ Calculate sum of all crypto allocations = Should equal user's crypto %
-□ Calculate sum of all real_estate allocations = Should equal user's real_estate %
-□ Calculate sum of all commodity allocations = Should equal user's commodities %
-□ Calculate total sum = Should equal 100%
-□ If ANY sector doesn't match, RECALCULATE before responding"""
+- Calculate sum of all stock allocations = Should equal users stocks percentage
+- Calculate sum of all bond allocations = Should equal users bonds percentage
+- Calculate sum of all crypto allocations = Should equal users crypto percentage
+- Calculate sum of all real_estate allocations = Should equal users real_estate percentage
+- Calculate sum of all commodity allocations = Should equal users commodities percentage
+- Calculate total sum = Should equal 100 percent
+- If ANY sector does not match, RECALCULATE before responding
 
 CRITICAL REQUIREMENTS - STRICTLY ENFORCE:
-1. MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the user's specified percentage
-   - If user says Stocks 60%, your stock allocations MUST add to 60%
-   - If user says Bonds 30%, your bond allocations MUST add to 30%
-   - If user says Crypto 10%, your crypto allocations MUST add to 10%
-2. Total allocation_percentage MUST sum to exactly 100%
-3. Each allocation's asset_type must correctly identify the sector (stock/bond/crypto/real_estate/commodity/forex)
+1. MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the specified percentage
+2. Total allocation_percentage MUST sum to exactly 100 percent
+3. Each allocations asset_type must correctly identify the sector
 4. Reasoning MUST explicitly state how allocations match sector percentages
-5. Use only well-known, liquid tickers (AAPL, MSFT, SPY, BND, BITO, etc.)
-6. For small percentages (<5%), use broad ETFs instead of individual stocks
+5. Use only well-known liquid tickers
+6. For small percentages under 5 percent use broad ETFs instead of individual stocks
 7. DOUBLE-CHECK your math before returning the JSON"""
 
     try:
