@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T09:07:38.027846+00:00",
-  "total_tests": 116,
-  "passed_tests": 110,
-  "success_rate": 94.82758620689656,
+  "timestamp": "2025-11-09T09:14:47.823034+00:00",
+  "total_tests": 125,
+  "passed_tests": 118,
+  "success_rate": 94.39999999999999,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762679169",
-        "email": "test.user.1762679169@example.com",
-        "name": "Test User 1762679169",
+        "_id": "test-user-1762679618",
+        "email": "test.user.1762679618@example.com",
+        "name": "Test User 1762679618",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T09:06:09.308000"
+        "created_at": "2025-11-09T09:13:39.100000"
       }
     },
     {
@@ -35,7 +35,7 @@
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T08:56:17.155776+00:00",
+        "last_updated": "2025-11-09T09:06:20.696477+00:00",
         "status": "active"
       }
     },
@@ -52,7 +52,7 @@
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T08:56:17.155776+00:00",
+          "last_updated": "2025-11-09T09:06:20.696477+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T08:56:09.437463+00:00",
+          "lastUpdated": "2025-11-09T09:06:12.601011+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T08:56:09.436637+00:00",
+              "timestamp": "2025-11-09T09:06:12.600169+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T08:56:09.436640+00:00",
+              "lastUpdated": "2025-11-09T09:06:12.600172+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T09:06:10.421906+00:00",
+          "lastUpdated": "2025-11-09T09:13:40.385974+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T09:06:10.420963+00:00",
+              "timestamp": "2025-11-09T09:13:40.385101+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T09:06:10.420967+00:00",
+              "lastUpdated": "2025-11-09T09:13:40.385104+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -869,7 +869,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "portfolio_id": "2e138423-ec88-468c-92ba-d5d2384452e8"
+        "portfolio_id": "6b61f0d5-b138-47e9-b88d-2b3950de7767"
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.03727388381958008,
+        "response_time": 0.037943363189697266,
         "fast_response": true
       }
     },
@@ -1143,7 +1143,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03948020935058594,
+        "response_time": 0.03682208061218262,
         "cached": true
       }
     },
@@ -1152,7 +1152,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03711223602294922,
+        "response_time": 0.03669881820678711,
         "cached": true
       }
     },
@@ -1161,16 +1161,16 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03857779502868652,
+        "response_time": 0.04120159149169922,
         "cached": true
       }
     },
     {
       "test": "POST /api/portfolios-v2/create (manual portfolio)",
-      "success": "50c23dc0-480a-437e-8d14-576ad3de285c",
+      "success": "df7b9074-3230-4c7e-b687-026c26c28052",
       "details": "",
       "response_data": {
-        "portfolio_id": "50c23dc0-480a-437e-8d14-576ad3de285c",
+        "portfolio_id": "df7b9074-3230-4c7e-b687-026c26c28052",
         "allocations_count": 3
       }
     },
@@ -1183,7 +1183,7 @@
       }
     },
     {
-      "test": "GET /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c",
+      "test": "GET /api/portfolios-v2/df7b9074-3230-4c7e-b687-026c26c28052",
       "success": true,
       "details": "",
       "response_data": {
@@ -1191,7 +1191,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c",
+      "test": "PUT /api/portfolios-v2/df7b9074-3230-4c7e-b687-026c26c28052",
       "success": true,
       "details": "",
       "response_data": {
@@ -1199,7 +1199,7 @@
       }
     },
     {
-      "test": "POST /api/portfolios-v2/9742f8ea-ef04-4a81-a3e6-8864f6b63aa1/invest ($10,000)",
+      "test": "POST /api/portfolios-v2/40d3d33d-6a35-4361-b80f-eeedfdea2825/invest ($10,000)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1228,7 +1228,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c/allocations (valid - sums to 100%)",
+      "test": "PUT /api/portfolios-v2/df7b9074-3230-4c7e-b687-026c26c28052/allocations (valid - sums to 100%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1236,7 +1236,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c/allocations (invalid - sums to 110%)",
+      "test": "PUT /api/portfolios-v2/df7b9074-3230-4c7e-b687-026c26c28052/allocations (invalid - sums to 110%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1244,7 +1244,7 @@
       }
     },
     {
-      "test": "DELETE /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c (soft delete)",
+      "test": "DELETE /api/portfolios-v2/df7b9074-3230-4c7e-b687-026c26c28052 (soft delete)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1398,10 +1398,8 @@
     {
       "test": "Update context with mixed liquidity_requirements",
       "success": false,
-      "details": "Status: 408",
-      "response_data": {
-        "error": "Request timeout"
-      }
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
     },
     {
       "test": "No AttributeError in build_context_string",
@@ -1456,11 +1454,128 @@
       }
     },
     {
+      "test": "Create test portfolio with allocations (AAPL 50%, GOOGL 50%)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_id": "63364d76-6f5b-49aa-b926-5c43fe286c6b"
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=1y - Valid period_stats with 5y_return",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 77.45,
+        "5y_return": 180.36,
+        "time_series_length": 249
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=6m - Valid period_stats with 5y_return",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 90.89,
+        "5y_return": 180.36,
+        "time_series_length": 124
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=3y - Valid period_stats with 5y_return",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 159.56,
+        "5y_return": 180.36,
+        "time_series_length": 750
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=5y - Valid period_stats with 5y_return",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 178.56,
+        "5y_return": 180.36,
+        "time_series_length": 1254
+      }
+    },
+    {
+      "test": "5-year view: return_percentage valid, time_series has data, 5y_return NOT null",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "return_percentage": 178.56,
+        "time_series_length": 1254,
+        "5y_return": 180.36
+      }
+    },
+    {
+      "test": "Backend logs show data points calculation",
+      "success": false,
+      "details": "Data points message not found in logs",
+      "response_data": {
+        "data_points_found": false,
+        "data_points_count": null,
+        "has_enough_for_5y": false
+      }
+    },
+    {
+      "test": "All period_stats returns are valid numbers (not null)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "all_valid": true,
+        "invalid_returns": [],
+        "period_stats_sample": {
+          "6m_return": 95.57,
+          "1y_return": 80.44,
+          "3y_return": 171.85,
+          "5y_return": 180.36
+        }
+      }
+    },
+    {
+      "test": "5y_return is valid (not null) across ALL time periods",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "all_5y_valid": true,
+        "5y_returns": [
+          {
+            "period": "1y",
+            "value": 180.36,
+            "is_valid": true
+          },
+          {
+            "period": "6m",
+            "value": 180.36,
+            "is_valid": true
+          },
+          {
+            "period": "3y",
+            "value": 180.36,
+            "is_valid": true
+          },
+          {
+            "period": "5y",
+            "value": 180.36,
+            "is_valid": true
+          }
+        ]
+      }
+    },
+    {
       "test": "Create portfolio suggestion in database",
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "e2b04925-d533-4ab6-b47b-5681766f7a8f"
+        "suggestion_id": "e2128750-126a-48ea-b503-7b52bded13d4"
       }
     },
     {
@@ -1489,7 +1604,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "6f38d993-e8b8-42bc-87ba-256066af8a1e",
+        "id_value": "2c04cc89-a439-4c95-8d79-64e6adbdcf56",
         "id_type": "str"
       }
     },
@@ -1539,7 +1654,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "portfolio_id": "c1417292-4ebe-4312-b2ec-69dc80c83c0e"
+        "portfolio_id": "dea791a5-fd5c-4af5-ba42-3a3271329939"
       }
     },
     {
@@ -1597,8 +1712,8 @@
       "success": true,
       "details": "",
       "response_data": {
-        "first_request_time": 0.05,
-        "second_request_time": 0.05,
+        "first_request_time": 0.06,
+        "second_request_time": 0.06,
         "caching_effective": true
       }
     },
