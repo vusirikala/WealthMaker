@@ -307,9 +307,21 @@ metadata:
         agent: "main"
         comment: "Implemented portfolio-specific chat history. Each portfolio now has its own separate conversation thread. Backend: Updated GET /api/chat/messages to accept portfolio_id query parameter and filter messages accordingly. Updated POST /api/chat/send to save messages with portfolio_id. Modified ChatRequest model to include optional portfolio_id field. Messages without portfolio_id are considered global chat. Frontend: Updated ChatTab to load messages filtered by portfolioId. Updated handleSendMessage to send portfolio_id with each message. Chat history is now isolated per portfolio. Backend and frontend restarted successfully."
 
+  - task: "Fix Complete Account Deletion"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed account deletion to completely remove all user data. Previously, user_portfolios and users collections were not being deleted, causing old data to reappear when user re-registered. Updated DELETE /api/auth/account endpoint to delete from all collections: user_sessions, user_context, portfolios (legacy), user_portfolios (new), chat_messages, portfolio_suggestions, goals, and users table. Added detailed logging showing count of deleted records from each collection. Backend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Portfolio-Specific Chat History"
+    - "Fix Complete Account Deletion"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
