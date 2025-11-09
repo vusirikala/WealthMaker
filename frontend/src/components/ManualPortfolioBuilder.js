@@ -13,7 +13,12 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const [portfolioGoal, setPortfolioGoal] = useState("");
   const [riskTolerance, setRiskTolerance] = useState("medium");
   const [roiExpectations, setRoiExpectations] = useState(10);
-  const [allocations, setAllocations] = useState([{ ticker: "", allocation_percentage: "" }]);
+  const [allocations, setAllocations] = useState([{ 
+    ticker: "", 
+    allocation_percentage: "",
+    sector: "",
+    asset_type: "stock"
+  }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
