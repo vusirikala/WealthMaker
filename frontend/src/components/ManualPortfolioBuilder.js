@@ -19,6 +19,9 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const [portfolioGoal, setPortfolioGoal] = useState("");
   const [riskTolerance, setRiskTolerance] = useState("medium");
   const [roiExpectations, setRoiExpectations] = useState(10);
+  const [timeHorizon, setTimeHorizon] = useState("5-10");
+  const [investmentAmount, setInvestmentAmount] = useState("");
+  const [monitoringFrequency, setMonitoringFrequency] = useState("monthly");
   const [sectorPreferences, setSectorPreferences] = useState({
     stocks: true,
     bonds: false,
