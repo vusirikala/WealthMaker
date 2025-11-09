@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-11-09T02:34:53.787792+00:00",
+  "total_tests": 8,
+  "passed_tests": 7,
+  "success_rate": 87.5,
+  "test_details": [
+    {
+      "test": "Chat init generates initial message",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_length": 197
+      }
+    },
+    {
+      "test": "first_chat_initiated flag set",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Chat send message returns AI response",
+      "success": false,
+      "details": "Status: 500, Data: {'error': \"HTTPSConnectionPool(host='code-preview-54.preview.emergentagent.com', port=443): Read timed out. (read timeout=30)\"}",
+      "response_data": {
+        "has_response": false
+      }
+    },
+    {
+      "test": "Messages saved to chat_messages collection",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "No 'Body is disturbed or locked' error",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "Update context with mixed liquidity_requirements",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "No AttributeError in build_context_string",
+      "success": true,
+      "details": "",
+      "response_data": null
+    },
+    {
+      "test": "AI response includes context from mixed data types",
+      "success": true,
+      "details": "",
+      "response_data": null
+    }
+  ]
+}
