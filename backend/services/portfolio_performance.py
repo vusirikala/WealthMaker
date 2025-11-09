@@ -248,45 +248,45 @@ async def calculate_portfolio_historical_returns(
         })
     
     # Calculate period returns (now this is the actual return for the selected period)
-    current_return = float(portfolio_returns_display.iloc[-1]) if len(portfolio_returns_display) > 0 else 0
+    current_return = sanitize_float(portfolio_returns_display.iloc[-1] if len(portfolio_returns_display) > 0 else 0)
     
     period_stats = {}
     
     # 6 month return
     if len(portfolio_returns) >= 126:  # ~6 months of trading days
-        six_month_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-126])
-        period_stats['6m_return'] = round(six_month_return, 2)
+        six_month_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[-126]
+        period_stats['6m_return'] = sanitize_float(six_month_return)
     else:
-        period_stats['6m_return'] = round(current_return, 2)
+        period_stats['6m_return'] = current_return
     
     # 1 year return
     if len(portfolio_returns) >= 252:  # ~1 year of trading days
-        one_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-252])
-        period_stats['1y_return'] = round(one_year_return, 2)
+        one_year_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[-252]
+        period_stats['1y_return'] = sanitize_float(one_year_return)
     else:
-        period_stats['1y_return'] = round(current_return, 2)
+        period_stats['1y_return'] = current_return
     
     # 3 year return
     if len(portfolio_returns) >= 756:  # ~3 years of trading days
-        three_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-756])
-        period_stats['3y_return'] = round(three_year_return, 2)
+        three_year_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[-756]
+        period_stats['3y_return'] = sanitize_float(three_year_return)
     elif len(portfolio_returns) > 0:
         # If less than 3 years of data, calculate return from beginning
-        three_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[0])
-        period_stats['3y_return'] = round(three_year_return, 2)
+        three_year_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[0]
+        period_stats['3y_return'] = sanitize_float(three_year_return)
     else:
-        period_stats['3y_return'] = None
+        period_stats['3y_return'] = 0
     
     # 5 year return
     if len(portfolio_returns) >= 1260:  # ~5 years of trading days
-        five_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-1260])
-        period_stats['5y_return'] = round(five_year_return, 2)
+        five_year_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[-1260]
+        period_stats['5y_return'] = sanitize_float(five_year_return)
     elif len(portfolio_returns) > 0:
         # If less than 5 years of data, calculate return from beginning
-        five_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[0])
-        period_stats['5y_return'] = round(five_year_return, 2)
+        five_year_return = portfolio_returns.iloc[-1] - portfolio_returns.iloc[0]
+        period_stats['5y_return'] = sanitize_float(five_year_return)
     else:
-        period_stats['5y_return'] = None
+        period_stats['5y_return'] = 0
     
     logger.info(f"Calculated returns: {current_return:.2f}% for {time_period}")
     
