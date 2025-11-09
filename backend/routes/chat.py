@@ -715,6 +715,13 @@ RETURN THIS JSON (NO EXTRA TEXT):
 }}
 
 CALCULATION CHECK BEFORE RESPONDING:
+"""
+    
+    # Add verification for each sector
+    for sector, pct in sector_requirements.items():
+        prompt += f"- Sum of all {sector} allocations = {pct}%\n"
+    
+    prompt += """- Total of ALL allocations = 100%
 
 VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
 - Calculate sum of all stock allocations = Should equal users stocks percentage
