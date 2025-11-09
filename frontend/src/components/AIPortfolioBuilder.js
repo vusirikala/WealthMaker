@@ -60,55 +60,67 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
       id: "value_investing",
       name: "Value Investing",
       description: "Buy undervalued stocks for long-term growth",
-      details: "Focus on stocks trading below their intrinsic value. Requires patience and thorough fundamental analysis.",
+      details: "This strategy involves identifying stocks trading below their intrinsic value based on fundamental analysis of financial statements, P/E ratios, and book values. Popularized by Benjamin Graham and Warren Buffett, it requires patience and conviction to hold through market volatility until the market recognizes the stock's true value.",
       risk: "Low to Medium",
+      riskFactors: "Market may take years to recognize value, value traps exist, requires deep analysis skills",
       roiExpectation: "8-15% annually",
-      timeHorizon: "Long-term (3-10 years)"
+      timeHorizon: "Long-term (3-10 years)",
+      bestFor: "Patient investors with analytical skills"
     },
     {
       id: "growth_investing",
       name: "Growth Investing",
       description: "Invest in high-growth potential companies",
-      details: "Target companies with strong earnings growth prospects, even if current valuations are high. Focus on future potential rather than current metrics.",
+      details: "Focus on companies with above-average earnings growth, strong competitive advantages, and expanding market opportunities. These stocks often trade at premium valuations but offer significant upside potential. Think of tech companies, emerging market leaders, and innovative businesses disrupting traditional industries.",
       risk: "Medium to High",
+      riskFactors: "Higher volatility, sensitivity to interest rates, growth may not materialize, premium valuations can deflate quickly",
       roiExpectation: "15-30% annually",
-      timeHorizon: "Medium to Long-term (3-7 years)"
+      timeHorizon: "Medium to Long-term (3-7 years)",
+      bestFor: "Risk-tolerant investors seeking capital appreciation"
     },
     {
       id: "income_investing",
       name: "Income/Dividend Investing",
       description: "Focus on dividend-paying stocks and bonds",
-      details: "Prioritize investments that generate regular income through dividends or interest payments. Suitable for conservative investors seeking steady cash flow.",
+      details: "Build a portfolio of established companies with consistent dividend payments and bonds providing regular interest income. This creates a steady cash flow stream that can be reinvested or used as passive income. Ideal for retirees or those seeking regular income alongside capital preservation.",
       risk: "Low to Medium",
-      roiExpectation: "5-10% annually (plus dividends)",
-      timeHorizon: "Long-term (5+ years)"
+      riskFactors: "Dividend cuts during downturns, interest rate sensitivity, lower growth potential, inflation can erode income value",
+      roiExpectation: "5-10% annually + 2-6% dividend yield",
+      timeHorizon: "Long-term (5+ years)",
+      bestFor: "Conservative investors seeking regular income"
     },
     {
       id: "index_funds",
       name: "Index Fund Investing",
       description: "Passive investing through market index funds",
-      details: "Invest in funds that track major market indices like S&P 500. Low-cost, diversified approach with minimal management required.",
+      details: "Gain broad market exposure by investing in funds that replicate major indices like S&P 500, NASDAQ, or total market indexes. This 'set it and forget it' approach offers instant diversification, low fees (typically 0.03-0.20%), and historically consistent returns. Recommended by experts like John Bogle and Warren Buffett for most investors.",
       risk: "Low to Medium",
-      roiExpectation: "8-12% annually (market average)",
-      timeHorizon: "Long-term (5+ years)"
+      riskFactors: "Market risk affects entire portfolio, no downside protection, cannot outperform market, sector concentration in indices",
+      roiExpectation: "8-12% annually (historical market average)",
+      timeHorizon: "Long-term (5+ years)",
+      bestFor: "Beginner to intermediate investors seeking simplicity"
     },
     {
       id: "dollar_cost_averaging",
-      name: "Dollar-Cost Averaging",
+      name: "Dollar-Cost Averaging (DCA)",
       description: "Invest fixed amounts regularly over time",
-      details: "Reduce market timing risk by investing consistent amounts at regular intervals. Smooths out market volatility and reduces emotional decision-making.",
+      details: "Commit to investing a fixed dollar amount at regular intervals (weekly, monthly, quarterly) regardless of market conditions. This eliminates the stress of market timing, reduces the impact of volatility by averaging purchase prices, and enforces disciplined saving. When prices are low, you buy more shares; when high, fewer shares.",
       risk: "Low",
-      roiExpectation: "Matches underlying asset returns",
-      timeHorizon: "Long-term (5+ years)"
+      riskFactors: "May underperform lump sum investing in rising markets, requires discipline to maintain, doesn't prevent losses in bear markets",
+      roiExpectation: "Matches underlying asset returns (typically 8-12% for stock indices)",
+      timeHorizon: "Long-term (5+ years)",
+      bestFor: "All investors, especially those with regular income to invest"
     },
     {
       id: "momentum_investing",
       name: "Momentum Investing",
       description: "Follow market trends and price momentum",
-      details: "Invest in assets showing strong recent performance, expecting the trend to continue. Requires active monitoring and quick decision-making.",
+      details: "Capitalize on market trends by buying assets that have recently risen in price, expecting the momentum to continue. Uses technical indicators like moving averages, RSI, and MACD to identify entry and exit points. Popular in both bull markets and for swing trading. Requires active monitoring, quick decisions, and strict stop-loss discipline.",
       risk: "High",
-      roiExpectation: "20-50% annually (volatile)",
-      timeHorizon: "Short to Medium-term (6 months - 3 years)"
+      riskFactors: "Trend reversals can be sudden and severe, requires constant monitoring, higher transaction costs, emotional stress, whipsaws in volatile markets",
+      roiExpectation: "20-50% annually (highly volatile, inconsistent)",
+      timeHorizon: "Short to Medium-term (6 months - 3 years)",
+      bestFor: "Experienced traders with time for active management and high risk tolerance"
     },
   ];
 
