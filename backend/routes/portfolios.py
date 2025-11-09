@@ -258,13 +258,26 @@ async def add_stock_to_portfolio(
     
     symbol = symbol.upper()
     
-    # Check if stock exists in shared database
+    # Check if stock exists in shared database, if not add it
     asset_data = await shared_assets_service.get_single_asset(symbol)
     if not asset_data:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Stock {symbol} not found in database. Please ask admin to add it first."
-        )
+        # Auto-add this stock to shared database
+        logger.info(f"Stock {symbol} not in database, adding it now...")
+        result = await shared_assets_service.initialize_database([symbol])
+        
+        if result['initialized'] > 0:
+            # Fetch the newly added asset
+            asset_data = await shared_assets_service.get_single_asset(symbol)
+            if not asset_data:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to add {symbol} to database"
+                )
+        else:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Stock {symbol} not found. Invalid ticker symbol."
+            )
     
     # Get current price from asset data
     current_price = asset_data.get('live', {}).get('currentPrice', {}).get('price', purchase_price)
