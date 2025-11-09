@@ -1116,6 +1116,284 @@ print('Portfolio cleared');
                 data
             )
 
+    def test_52_week_high_low_fix(self):
+        """Test 52-week high/low fix for stock detail modal as per review request"""
+        print("\n📈 Testing 52-Week High/Low Fix (Review Request)...")
+        
+        # Test 1: Large-cap stocks
+        print("\n🏢 Test 1: Large-cap stocks (AAPL, MSFT, GOOGL)...")
+        large_cap_stocks = ["AAPL", "MSFT", "GOOGL"]
+        
+        for symbol in large_cap_stocks:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                live_data = data.get('live', {})
+                current_price_data = live_data.get('currentPrice', {})
+                
+                fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                
+                # Validate 52-week high/low values
+                high_valid = isinstance(fifty_two_week_high, (int, float)) and fifty_two_week_high > 0
+                low_valid = isinstance(fifty_two_week_low, (int, float)) and fifty_two_week_low > 0
+                logical_check = high_valid and low_valid and fifty_two_week_high > fifty_two_week_low
+                reasonable_values = high_valid and low_valid and fifty_two_week_high < 10000 and fifty_two_week_low > 0.01
+                
+                success = high_valid and low_valid and logical_check and reasonable_values
+                details = f"High: {fifty_two_week_high} (valid: {high_valid}), Low: {fifty_two_week_low} (valid: {low_valid}), Logical: {logical_check}, Reasonable: {reasonable_values}"
+            else:
+                details = f"Status: {status}"
+            
+            self.log_test(
+                f"52-week high/low for {symbol} (large-cap)", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "fiftyTwoWeekHigh": fifty_two_week_high if success else None,
+                    "fiftyTwoWeekLow": fifty_two_week_low if success else None,
+                    "valid": success
+                }
+            )
+        
+        # Test 2: Mid-cap stocks
+        print("\n🏭 Test 2: Mid-cap stocks (AMD, NVDA)...")
+        mid_cap_stocks = ["AMD", "NVDA"]
+        
+        for symbol in mid_cap_stocks:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                live_data = data.get('live', {})
+                current_price_data = live_data.get('currentPrice', {})
+                
+                fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                
+                # Validate values
+                high_valid = isinstance(fifty_two_week_high, (int, float)) and fifty_two_week_high > 0
+                low_valid = isinstance(fifty_two_week_low, (int, float)) and fifty_two_week_low > 0
+                logical_check = high_valid and low_valid and fifty_two_week_high > fifty_two_week_low
+                
+                success = high_valid and low_valid and logical_check
+                details = f"High: {fifty_two_week_high}, Low: {fifty_two_week_low}, Valid: {high_valid and low_valid}, Logical: {logical_check}"
+            else:
+                details = f"Status: {status}"
+            
+            self.log_test(
+                f"52-week high/low for {symbol} (mid-cap)", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "fiftyTwoWeekHigh": fifty_two_week_high if success else None,
+                    "fiftyTwoWeekLow": fifty_two_week_low if success else None
+                }
+            )
+        
+        # Test 3: ETFs/Bonds
+        print("\n📊 Test 3: ETFs/Bonds (SPY, BND)...")
+        etf_bonds = ["SPY", "BND"]
+        
+        for symbol in etf_bonds:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                live_data = data.get('live', {})
+                current_price_data = live_data.get('currentPrice', {})
+                
+                fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                
+                # Validate values
+                high_valid = isinstance(fifty_two_week_high, (int, float)) and fifty_two_week_high > 0
+                low_valid = isinstance(fifty_two_week_low, (int, float)) and fifty_two_week_low > 0
+                logical_check = high_valid and low_valid and fifty_two_week_high > fifty_two_week_low
+                
+                success = high_valid and low_valid and logical_check
+                details = f"High: {fifty_two_week_high}, Low: {fifty_two_week_low}"
+            else:
+                details = f"Status: {status}"
+            
+            self.log_test(
+                f"52-week high/low for {symbol} (ETF/Bond)", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "fiftyTwoWeekHigh": fifty_two_week_high if success else None,
+                    "fiftyTwoWeekLow": fifty_two_week_low if success else None
+                }
+            )
+        
+        # Test 4: Crypto
+        print("\n₿ Test 4: Crypto (BTC-USD)...")
+        crypto_symbols = ["BTC-USD"]
+        
+        for symbol in crypto_symbols:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                live_data = data.get('live', {})
+                current_price_data = live_data.get('currentPrice', {})
+                
+                fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                
+                # Validate values (crypto can have higher ranges)
+                high_valid = isinstance(fifty_two_week_high, (int, float)) and fifty_two_week_high > 0
+                low_valid = isinstance(fifty_two_week_low, (int, float)) and fifty_two_week_low > 0
+                logical_check = high_valid and low_valid and fifty_two_week_high > fifty_two_week_low
+                reasonable_crypto = high_valid and low_valid and fifty_two_week_high < 200000 and fifty_two_week_low > 1000
+                
+                success = high_valid and low_valid and logical_check and reasonable_crypto
+                details = f"High: {fifty_two_week_high}, Low: {fifty_two_week_low}, Reasonable: {reasonable_crypto}"
+            else:
+                details = f"Status: {status}"
+            
+            self.log_test(
+                f"52-week high/low for {symbol} (crypto)", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "fiftyTwoWeekHigh": fifty_two_week_high if success else None,
+                    "fiftyTwoWeekLow": fifty_two_week_low if success else None
+                }
+            )
+        
+        # Test 5: Auto-initialization with 52-week data
+        print("\n🆕 Test 5: Auto-initialization with 52-week data (BA, JPM, V)...")
+        new_stocks = ["BA", "JPM", "V"]
+        
+        for symbol in new_stocks:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                # Verify asset was created with proper structure
+                has_symbol = data.get('symbol') == symbol
+                has_live_data = 'live' in data and isinstance(data['live'], dict)
+                
+                if has_live_data:
+                    live_data = data.get('live', {})
+                    current_price_data = live_data.get('currentPrice', {})
+                    
+                    fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                    fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                    
+                    # Check if 52-week values are calculated from historical data
+                    high_valid = isinstance(fifty_two_week_high, (int, float)) and fifty_two_week_high > 0
+                    low_valid = isinstance(fifty_two_week_low, (int, float)) and fifty_two_week_low > 0
+                    
+                    success = has_symbol and has_live_data and high_valid and low_valid
+                    details = f"Symbol: {has_symbol}, LiveData: {has_live_data}, High: {fifty_two_week_high}, Low: {fifty_two_week_low}"
+                else:
+                    success = False
+                    details = "Missing live data structure"
+            else:
+                details = f"Status: {status}"
+            
+            self.log_test(
+                f"Auto-initialize {symbol} with 52-week data", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "auto_initialized": success,
+                    "has_52_week_data": success
+                }
+            )
+        
+        # Test 6: Data persistence
+        print("\n💾 Test 6: Data persistence...")
+        
+        # Fetch a stock's data twice to verify persistence
+        test_symbol = "AAPL"
+        
+        # First fetch
+        status1, data1 = self.make_request('GET', f'data/asset/{test_symbol}')
+        success1 = status1 == 200 and isinstance(data1, dict)
+        
+        if success1:
+            high1 = data1.get('live', {}).get('currentPrice', {}).get('fiftyTwoWeekHigh')
+            low1 = data1.get('live', {}).get('currentPrice', {}).get('fiftyTwoWeekLow')
+            
+            # Second fetch (should return same values from database)
+            time.sleep(1)  # Small delay
+            status2, data2 = self.make_request('GET', f'data/asset/{test_symbol}')
+            success2 = status2 == 200 and isinstance(data2, dict)
+            
+            if success2:
+                high2 = data2.get('live', {}).get('currentPrice', {}).get('fiftyTwoWeekHigh')
+                low2 = data2.get('live', {}).get('currentPrice', {}).get('fiftyTwoWeekLow')
+                
+                # Values should be consistent (saved in database)
+                values_consistent = high1 == high2 and low1 == low2
+                success = values_consistent and high1 is not None and low1 is not None
+                details = f"First: High={high1}, Low={low1}; Second: High={high2}, Low={low2}; Consistent: {values_consistent}"
+            else:
+                success = False
+                details = f"Second fetch failed: Status {status2}"
+        else:
+            success = False
+            details = f"First fetch failed: Status {status1}"
+        
+        self.log_test(
+            "52-week data persistence in shared_assets collection", 
+            success,
+            details if not success else "",
+            {
+                "symbol": test_symbol,
+                "persistent": success,
+                "first_high": high1 if success1 else None,
+                "second_high": high2 if success1 and success2 else None
+            }
+        )
+        
+        # Test 7: Edge cases
+        print("\n⚠️ Test 7: Edge cases...")
+        
+        # Test with a stock that might have limited history (recent IPO simulation)
+        edge_case_symbols = ["PLTR"]  # Palantir - relatively newer stock
+        
+        for symbol in edge_case_symbols:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                live_data = data.get('live', {})
+                current_price_data = live_data.get('currentPrice', {})
+                
+                fifty_two_week_high = current_price_data.get('fiftyTwoWeekHigh')
+                fifty_two_week_low = current_price_data.get('fiftyTwoWeekLow')
+                
+                # Should handle gracefully without crashes
+                no_crash = True  # If we got here, no crash occurred
+                has_values = fifty_two_week_high is not None and fifty_two_week_low is not None
+                
+                success = no_crash and has_values
+                details = f"No crash: {no_crash}, Has values: {has_values}, High: {fifty_two_week_high}, Low: {fifty_two_week_low}"
+            else:
+                success = status != 500  # Should not crash with 500 error
+                details = f"Status: {status} (should not be 500)"
+            
+            self.log_test(
+                f"Edge case handling for {symbol} (graceful handling)", 
+                success,
+                details if not success else "",
+                {
+                    "symbol": symbol,
+                    "graceful_handling": success,
+                    "status": status
+                }
+            )
+
     def test_stock_detail_auto_initialization(self):
         """Test stock detail auto-initialization fix as per review request"""
         print("\n🔧 Testing Stock Detail Auto-Initialization Fix...")
