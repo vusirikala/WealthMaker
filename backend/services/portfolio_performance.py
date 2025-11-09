@@ -136,7 +136,7 @@ def calculate_portfolio_historical_returns(
     sp500_data = None
     try:
         logger.info("Fetching S&P 500 benchmark data")
-        if db:
+        if db is not None:
             try:
                 sp500_data = asyncio.run(get_cached_price_data('^GSPC', max_start_date, end_date, db))
             except:
