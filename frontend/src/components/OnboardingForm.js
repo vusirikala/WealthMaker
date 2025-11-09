@@ -823,7 +823,7 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
-  // Step 4: Investment Preferences
+  // Step 4: Financial Goals
   const renderStep4 = () => (
     <div className="space-y-8">
       <div className="text-center">
