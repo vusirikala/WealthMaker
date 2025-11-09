@@ -84,14 +84,46 @@ async def search_assets(
     """
     Search for assets in shared database by symbol or company name
     
-    Returns list of matching assets with basic information
+    Returns list of matching assets with basic information including live prices
     """
+    import yfinance as yf
+    
     results = await shared_assets_service.search_assets(q)
+    
+    # Enhance results with live price data
+    enhanced_results = []
+    for result in results:
+        try:
+            ticker = result['symbol']
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            
+            current_price = info.get('currentPrice') or info.get('regularMarketPrice', 0)
+            prev_close = info.get('previousClose', current_price)
+            
+            # Calculate 24h change
+            if prev_close > 0:
+                price_change_pct = ((current_price - prev_close) / prev_close) * 100
+            else:
+                price_change_pct = 0
+            
+            enhanced_results.append({
+                **result,
+                "current_price": round(current_price, 2),
+                "price_change_pct": round(price_change_pct, 2)
+            })
+        except Exception as e:
+            logger.warning(f"Could not fetch live data for {result['symbol']}: {e}")
+            enhanced_results.append({
+                **result,
+                "current_price": 0,
+                "price_change_pct": 0
+            })
     
     return {
         "query": q,
-        "count": len(results),
-        "results": results
+        "count": len(enhanced_results),
+        "results": enhanced_results
     }
 
 
