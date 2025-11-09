@@ -188,8 +188,26 @@ def calculate_portfolio_historical_returns(
         # Add weighted contribution to portfolio
         portfolio_values += normalized_prices * allocation
     
-    # Calculate returns (portfolio starts at 100, so return is (current - 100))
-    returns = ((portfolio_values - 100) / 100) * 100
+    # Calculate portfolio returns (portfolio starts at 100, so return is (current - 100))
+    portfolio_returns = ((portfolio_values - 100) / 100) * 100
+    
+    # Calculate S&P 500 returns for comparison
+    sp500_returns = None
+    if sp500_data is not None and len(sp500_data) > 0:
+        # Add to DataFrame
+        df['SP500'] = sp500_data
+        df['SP500'] = df['SP500'].fillna(method='ffill')
+        
+        # Normalize S&P 500 to start at 100
+        sp500_normalized = (df['SP500'] / df['SP500'].iloc[0]) * 100
+        sp500_returns = ((sp500_normalized - 100) / 100) * 100
+    
+    # Filter to display range
+    display_mask = df.index >= display_start_date
+    portfolio_returns_display = portfolio_returns[display_mask]
+    
+    if sp500_returns is not None:
+        sp500_returns_display = sp500_returns[display_mask]
     
     # Build time series for charting
     time_series = []
