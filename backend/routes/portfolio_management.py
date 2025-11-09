@@ -298,6 +298,9 @@ async def invest_in_portfolio(
             existing_holding['purchase_price'] = avg_purchase_price
             existing_holding['current_price'] = investment['current_price']
             existing_holding['current_value'] = new_shares * investment['current_price']
+            # Ensure sector and asset_type are preserved/updated
+            existing_holding['sector'] = investment['sector']
+            existing_holding['asset_type'] = investment['asset_type']
         else:
             # Add new holding
             existing_holdings.append({
