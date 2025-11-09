@@ -200,6 +200,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
           sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
+          investment_strategy: investmentStrategies.length > 0 ? investmentStrategies : null,
           allocations: aiSuggestion.allocations || [],
         }),
       });
