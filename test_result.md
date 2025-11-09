@@ -189,11 +189,11 @@ frontend:
 
   - task: "Portfolio accept and load functionality with ObjectId serialization fix"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/portfolios.py, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -204,6 +204,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Added missing GET /api/portfolio endpoint in server.py. Frontend was calling /api/portfolio but only /api/portfolios/ existed. Added legacy endpoint for frontend compatibility with proper ObjectId serialization. Backend restarted."
+      - working: true
+        agent: "testing"
+        comment: "COMPREHENSIVE TESTING COMPLETE: ✅ Tested complete end-to-end portfolio accept and load flow as requested in review. ✅ Step 1: Created test user and portfolio suggestion in portfolio_suggestions collection with suggestion_id. ✅ Step 2: POST /api/portfolio/accept successfully accepts portfolio with risk_tolerance=moderate, roi_expectations=12, and 4 allocations (AAPL, GOOGL, MSFT, BND). ✅ Step 3: GET /api/portfolio (legacy endpoint frontend calls) returns 200 response with complete portfolio data. ✅ Step 4: Data integrity verified - _id properly serialized as string (ObjectId fix working), all portfolio fields present (risk_tolerance, roi_expectations, allocations), allocations array intact with correct ticker symbols and allocation percentages. ✅ Step 5: Error case tested - GET /api/portfolio returns proper response when no portfolio exists. ✅ 13/13 tests passed (100% success rate). The EXACT flow frontend uses (Accept via /api/portfolio/accept → Load via /api/portfolio) is fully functional and production-ready."
 
 metadata:
   created_by: "main_agent"
