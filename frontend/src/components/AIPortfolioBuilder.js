@@ -124,6 +124,42 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     },
   ];
 
+  const riskToleranceOptions = [
+    {
+      value: "low",
+      label: "Low Risk",
+      emoji: "🛡️",
+      description: "Preserve capital with minimal volatility",
+      details: "Focus on capital preservation over growth. Suitable for those nearing retirement or with short investment horizons. Typically involves bonds, dividend stocks, and stable value funds.",
+      roiExpectation: "3-8% annually",
+      volatility: "Low (5-10% annual swings)",
+      drawdownRisk: "Maximum loss typically 10-15% in worst years",
+      bestFor: "Conservative investors, near retirees, short-term goals"
+    },
+    {
+      value: "medium",
+      label: "Medium Risk",
+      emoji: "⚖️",
+      description: "Balanced growth and stability",
+      details: "Balanced approach mixing stocks (60%) and bonds (40%) for moderate growth with reasonable stability. The most popular choice offering growth potential while cushioning major downturns.",
+      roiExpectation: "6-12% annually",
+      volatility: "Moderate (10-20% annual swings)",
+      drawdownRisk: "Maximum loss typically 20-30% in worst years",
+      bestFor: "Most investors with 5+ year horizons, balanced goals"
+    },
+    {
+      value: "high",
+      label: "High Risk",
+      emoji: "🚀",
+      description: "Maximum growth potential",
+      details: "Aggressive portfolio heavily weighted toward stocks (80-100%), growth companies, and emerging markets. Accept significant volatility for potential of higher long-term returns. Requires strong conviction to hold through 30%+ drawdowns.",
+      roiExpectation: "10-18% annually (long-term average)",
+      volatility: "High (20-40% annual swings)",
+      drawdownRisk: "Maximum loss can exceed 40-50% in severe bear markets",
+      bestFor: "Young investors, long time horizons (10+ years), high risk tolerance"
+    }
+  ];
+
   useEffect(() => {
     if (isOpen) {
       loadUserContext();
