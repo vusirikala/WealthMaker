@@ -355,7 +355,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
       if (response.ok) {
         const data = await response.json();
         setAiSuggestion(data.portfolio_suggestion);
-        setStep(3); // Move to review step
+        setStep(4); // Move to review step
       } else {
         toast.error("Failed to generate portfolio");
       }
