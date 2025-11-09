@@ -282,6 +282,14 @@ class SharedAssetsService:
             change = current_price - previous_close if previous_close > 0 else 0
             change_percent = (change / previous_close * 100) if previous_close > 0 else 0
             
+            # Get 52-week history to calculate high/low if not provided by API
+            try:
+                end_date = datetime.now()
+                start_date = end_date - timedelta(days=365)
+                hist_52w = ticker.history(start=start_date, end=end_date)
+            except:
+                hist_52w = None
+            
             # Fetch news from Finnhub
             news_items = []
             try:
