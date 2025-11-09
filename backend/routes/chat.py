@@ -479,3 +479,126 @@ Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allo
 Respond in a friendly, professional tone. Keep responses SHORT and CONVERSATIONAL - avoid overwhelming users with information."""
     
     return system_message
+
+
+
+@router.post("/generate-portfolio")
+async def generate_portfolio(
+    request: dict,
+    user: User = Depends(require_auth)
+):
+    """
+    Generate AI portfolio suggestions based on user preferences
+    Used by AI Portfolio Builder
+    """
+    portfolio_name = request.get('portfolio_name', 'My Portfolio')
+    goal = request.get('goal', '')
+    risk_tolerance = request.get('risk_tolerance', 'medium')
+    investment_amount = request.get('investment_amount', 0)
+    time_horizon = request.get('time_horizon', '5-10')
+    roi_expectations = request.get('roi_expectations', 10)
+    sector_preferences = request.get('sector_preferences', '')
+    
+    # Build prompt for AI
+    prompt = f"""Based on the following portfolio requirements, generate a diversified investment portfolio:
+
+Portfolio Details:
+- Name: {portfolio_name}
+- Goal: {goal}
+- Risk Tolerance: {risk_tolerance}
+- Investment Amount: ${investment_amount}
+- Time Horizon: {time_horizon} years
+- Expected ROI: {roi_expectations}% annually
+- Sector Preferences: {sector_preferences if sector_preferences else 'No specific preferences'}
+
+Please provide:
+1. A brief reasoning (2-3 sentences) explaining the strategy
+2. 5-8 specific stock/ETF allocations with:
+   - Ticker symbol (e.g., AAPL, MSFT, SPY, BND)
+   - Allocation percentage (must sum to 100%)
+   - Sector
+   - Asset type (stock, bond, etf, crypto, etc.)
+
+Format your response EXACTLY as JSON like this:
+{{
+  "reasoning": "Your brief explanation here",
+  "allocations": [
+    {{"ticker": "AAPL", "allocation_percentage": 25, "sector": "Technology", "asset_type": "stock"}},
+    {{"ticker": "MSFT", "allocation_percentage": 20, "sector": "Technology", "asset_type": "stock"}}
+  ]
+}}
+
+Based on risk tolerance:
+- LOW risk: Focus on bonds (60-70%), blue-chip stocks (20-30%), minimal volatility
+- MEDIUM risk: Balanced mix of stocks (40%), bonds (30%), ETFs (20%), alternatives (10%)
+- HIGH risk: Growth stocks (50-60%), emerging markets (20%), crypto (10%), bonds (10%)
+
+IMPORTANT: Return ONLY valid JSON, no additional text."""
+
+    try:
+        # Call LLM to generate portfolio
+        llm_chat = LlmChat()
+        response = llm_chat.generate(
+            [UserMessage(content=prompt)],
+            model="gpt-4o",
+            temperature=0.7
+        )
+        
+        ai_response = response.content
+        
+        # Try to extract JSON from response
+        try:
+            # Find JSON in response (between { and })
+            start_idx = ai_response.find('{')
+            end_idx = ai_response.rfind('}') + 1
+            
+            if start_idx >= 0 and end_idx > start_idx:
+                json_str = ai_response[start_idx:end_idx]
+                portfolio_data = json.loads(json_str)
+                
+                # Validate allocations sum to ~100%
+                total = sum(alloc.get('allocation_percentage', 0) for alloc in portfolio_data.get('allocations', []))
+                if abs(total - 100) > 1:
+                    logger.warning(f"Portfolio allocations sum to {total}%, adjusting...")
+                    # Normalize to 100%
+                    for alloc in portfolio_data['allocations']:
+                        alloc['allocation_percentage'] = round(alloc['allocation_percentage'] * 100 / total, 1)
+                
+                logger.info(f"Generated AI portfolio for user {user.id}: {len(portfolio_data.get('allocations', []))} allocations")
+                
+                return {
+                    "success": True,
+                    "portfolio_suggestion": portfolio_data
+                }
+            else:
+                raise ValueError("No valid JSON found in response")
+                
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.error(f"Failed to parse AI response as JSON: {e}")
+            logger.error(f"AI Response: {ai_response}")
+            
+            # Fallback to default allocation based on risk tolerance
+            default_allocations = get_default_allocations(risk_tolerance)
+            
+            return {
+                "success": True,
+                "portfolio_suggestion": {
+                    "reasoning": f"Based on your {risk_tolerance} risk tolerance and {time_horizon} year time horizon, here's a balanced portfolio.",
+                    "allocations": default_allocations
+                }
+            }
+            
+    except Exception as e:
+        logger.error(f"Error generating portfolio: {e}")
+        
+        # Return default allocations as fallback
+        default_allocations = get_default_allocations(risk_tolerance)
+        
+        return {
+            "success": True,
+            "portfolio_suggestion": {
+                "reasoning": f"Based on your {risk_tolerance} risk tolerance, here's a recommended portfolio allocation.",
+                "allocations": default_allocations
+            }
+        }
+
