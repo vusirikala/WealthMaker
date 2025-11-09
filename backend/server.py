@@ -193,6 +193,9 @@ class UserContext(BaseModel):
     #  "crypto": {"allowed": false}, 
     #  "bonds": {"allowed": true}, etc.}
     
+    # Onboarding Status
+    onboarding_completed: Optional[bool] = False  # Track if user completed initial onboarding
+    
     # Metadata
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
