@@ -467,6 +467,75 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                   ))}
                 </div>
               </div>
+
+              {/* Additional fields on step 1 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Expected Annual Return (%)
+                  </label>
+                  <Input
+                    type="number"
+                    value={roiExpectations}
+                    onChange={(e) => setRoiExpectations(parseFloat(e.target.value))}
+                    min="0"
+                    max="100"
+                    step="0.5"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Time Horizon
+                  </label>
+                  <select
+                    value={timeHorizon}
+                    onChange={(e) => setTimeHorizon(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="0-3">Short term (0-3 years)</option>
+                    <option value="3-5">Medium term (3-5 years)</option>
+                    <option value="5-10">Long term (5-10 years)</option>
+                    <option value="10+">Very long term (10+ years)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Initial Investment Amount ($)
+                  </label>
+                  <Input
+                    type="number"
+                    value={investmentAmount}
+                    onChange={(e) => setInvestmentAmount(e.target.value)}
+                    placeholder="Optional"
+                    min="0"
+                    step="100"
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">You can invest later too</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Monitoring Frequency
+                  </label>
+                  <select
+                    value={monitoringFrequency}
+                    onChange={(e) => setMonitoringFrequency(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="daily">Daily - Active monitoring</option>
+                    <option value="weekly">Weekly - Regular check-ins</option>
+                    <option value="monthly">Monthly - Moderate oversight</option>
+                    <option value="quarterly">Quarterly - Periodic reviews</option>
+                    <option value="annually">Annually - Long-term hold</option>
+                  </select>
+                </div>
+              </div>
             </div>
           )}
 
