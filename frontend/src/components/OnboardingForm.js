@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function OnboardingForm({ onComplete }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [totalSteps, setTotalSteps] = useState(8);
+  const [totalSteps, setTotalSteps] = useState(4);
   const [formData, setFormData] = useState({
     portfolio_type: "",
     // Personal fields
@@ -30,20 +30,7 @@ export default function OnboardingForm({ onComplete }) {
     number_of_employees: "",
     // Common fields
     monthly_investment: "",
-    risk_tolerance: "",
-    roi_expectations: "",
     financial_goals: [],
-    // Sector preferences
-    sectors: {
-      stocks: false,
-      bonds: false,
-      crypto: false,
-      real_estate: false,
-      commodities: false,
-      forex: false,
-    },
-    // Investment strategies
-    strategies: [],
     // Goal details (will be populated after goals are entered)
     goal_details: [],
   });
