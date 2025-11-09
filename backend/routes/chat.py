@@ -867,23 +867,7 @@ STEP-BY-STEP PROCESS:
 3. Assign percentages that sum to the sector requirement
 4. Verify total = 100%
 
-ANALYSIS FRAMEWORK:
-1. Parse the user's goal to understand specific objective (retirement, home purchase, wealth building, etc.)
-2. Match time horizon with appropriate asset allocation (longer = more stocks, shorter = more bonds)
-3. Align risk tolerance with volatility exposure
-4. Ensure ROI expectations are realistic given the allocation
-5. Match monitoring frequency to strategy complexity:
-   - Daily/Weekly → Can handle momentum_investing, growth_investing
-   - Monthly → growth_investing, value_investing, index_funds work well
-   - Quarterly/Annually → ONLY passive strategies (index_funds, income_investing, dollar_cost_averaging)
-6. Select strategies that complement the sector allocation:
-   - High stocks allocation → growth_investing or value_investing
-   - High bonds allocation → income_investing
-   - Balanced allocation → index_funds + dollar_cost_averaging
-   - Crypto/volatile mix → momentum_investing (only if daily/weekly monitoring)
-7. Consider investment amount for diversification requirements
-
-OUTPUT FORMAT (JSON only, no markdown):
+OUTPUT FORMAT (JSON ONLY):
 {{
   "sector_allocation": {{
     "stocks": <percentage 0-100>,
