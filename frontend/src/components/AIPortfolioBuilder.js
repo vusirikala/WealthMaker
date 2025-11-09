@@ -306,6 +306,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen]);
 
+  const totalSteps = 3; // Step 1: Basic info, Step 2: Sectors, Step 3: Strategies
+
   const loadUserContext = async () => {
     try {
       const response = await fetch(`${API}/context`, {
