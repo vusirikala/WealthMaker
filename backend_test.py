@@ -162,6 +162,91 @@ print('Setup complete');
             data
         )
 
+    def test_chat_init_new_user(self):
+        """Test chat init endpoint for new user"""
+        print("\n🆕 Testing Chat Init for New User...")
+        
+        # First, ensure no existing messages
+        status, data = self.make_request('GET', 'chat/messages')
+        initial_message_count = len(data) if isinstance(data, list) else 0
+        
+        # Test chat init endpoint
+        status, data = self.make_request('GET', 'chat/init')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success and data.get('message'):
+            # Should return a greeting message
+            message = data.get('message', '')
+            has_greeting = any(word in message.lower() for word in ['welcome', 'hi', 'hello', 'greet'])
+            has_financial_questions = any(word in message.lower() for word in ['financial', 'goals', 'investment', 'risk', 'portfolio'])
+            
+            success = has_greeting and has_financial_questions and len(message) > 100
+            details = f"Message length: {len(message)}, Has greeting: {has_greeting}, Has financial questions: {has_financial_questions}"
+        else:
+            success = False
+            details = f"Status: {status}, No message returned"
+        
+        self.log_test(
+            "GET /chat/init (new user)", 
+            success,
+            details if not success else "",
+            {"message_length": len(data.get('message', '')) if isinstance(data, dict) else 0}
+        )
+        
+        # Verify message was saved to chat history
+        status, messages = self.make_request('GET', 'chat/messages')
+        new_message_count = len(messages) if isinstance(messages, list) else 0
+        success = status == 200 and new_message_count == initial_message_count + 1
+        
+        if success and isinstance(messages, list) and len(messages) > 0:
+            last_message = messages[-1]
+            success = last_message.get('role') == 'assistant' and len(last_message.get('message', '')) > 100
+        
+        self.log_test(
+            "Chat init message saved to history", 
+            success,
+            f"Messages before: {initial_message_count}, after: {new_message_count}" if not success else "",
+            {"message_count": new_message_count}
+        )
+
+    def test_chat_init_idempotency(self):
+        """Test chat init idempotency - should not create duplicate messages"""
+        print("\n🔄 Testing Chat Init Idempotency...")
+        
+        # Get current message count
+        status, messages = self.make_request('GET', 'chat/messages')
+        initial_count = len(messages) if isinstance(messages, list) else 0
+        
+        # Call chat init again
+        status, data = self.make_request('GET', 'chat/init')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            # Should return null message since chat already initiated
+            success = data.get('message') is None
+            details = f"Returned message: {data.get('message')}" if not success else ""
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "GET /chat/init (idempotency)", 
+            success,
+            details if not success else "",
+            data
+        )
+        
+        # Verify no new messages were created
+        status, messages = self.make_request('GET', 'chat/messages')
+        final_count = len(messages) if isinstance(messages, list) else 0
+        success = status == 200 and final_count == initial_count
+        
+        self.log_test(
+            "No duplicate messages created", 
+            success,
+            f"Messages before: {initial_count}, after: {final_count}" if not success else "",
+            {"message_count": final_count}
+        )
+
     def test_chat_endpoints(self):
         """Test chat functionality"""
         print("\n💬 Testing Chat Endpoints...")
@@ -178,7 +263,7 @@ print('Setup complete');
         
         # Test send message
         test_message = {
-            "message": "I'm looking for a medium risk portfolio with 10% ROI expectations. I want to invest in technology stocks and some bonds."
+            "message": "I'm 35 years old, looking for a moderate risk portfolio with 10% ROI expectations. I want to invest $2000 monthly in technology stocks and some bonds for retirement planning."
         }
         
         status, data = self.make_request('POST', 'chat/send', test_message)
@@ -203,6 +288,28 @@ print('Setup complete');
             success,
             f"Status: {status}, Messages: {len(data) if isinstance(data, list) else 0}" if not success else "",
             {"message_count": len(data) if isinstance(data, list) else 0}
+        )
+
+    def test_user_context_tracking(self):
+        """Test that first_chat_initiated is properly tracked"""
+        print("\n👤 Testing User Context Tracking...")
+        
+        # Get user context to check first_chat_initiated flag
+        status, data = self.make_request('GET', 'context')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            first_chat_initiated = data.get('first_chat_initiated', False)
+            success = first_chat_initiated is True
+            details = f"first_chat_initiated: {first_chat_initiated}" if not success else ""
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "first_chat_initiated flag set", 
+            success,
+            details if not success else "",
+            {"first_chat_initiated": data.get('first_chat_initiated') if isinstance(data, dict) else None}
         )
 
     def test_portfolio_endpoints(self):
@@ -273,7 +380,15 @@ print('Setup complete');
         
         # Run test suites
         self.test_auth_endpoints()
+        
+        # Test chat auto-initiation feature
+        self.test_chat_init_new_user()
+        self.test_chat_init_idempotency()
+        self.test_user_context_tracking()
+        
+        # Test regular chat functionality
         self.test_chat_endpoints()
+        
         self.test_portfolio_endpoints()
         self.test_news_endpoints()
         self.test_error_handling()

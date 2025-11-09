@@ -177,6 +177,7 @@ class UserContext(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_conversation_at: Optional[datetime] = None
+    first_chat_initiated: Optional[bool] = False  # Track if chat has been auto-initiated
 
 class Portfolio(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -1026,6 +1027,69 @@ async def get_chat_messages(user: User = Depends(require_auth)):
     
     return messages
 
+@api_router.get("/chat/init")
+async def initialize_chat(user: User = Depends(require_auth)):
+    """Initialize chat with a greeting message for first-time users"""
+    
+    # Get user context to check if chat has been initiated
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    
+    # If no context or first_chat_initiated is False/None, generate initial message
+    if not user_context or not user_context.get('first_chat_initiated', False):
+        # Check if there are already messages (user might have started chatting before we added this feature)
+        existing_messages = await db.chat_messages.count_documents({"user_id": user.id})
+        
+        if existing_messages > 0:
+            # User has already chatted, don't auto-initiate
+            if user_context:
+                await db.user_context.update_one(
+                    {"user_id": user.id},
+                    {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
+                )
+            return {"message": None}
+        
+        # Generate personalized initial message - simple and conversational
+        initial_message = f"""Hi {user.name}! 👋 Welcome to WealthMaker!
+
+I'm your AI financial advisor, and I'm excited to help you build a personalized investment portfolio.
+
+**What's your main financial goal right now?** 💼"""
+
+        # Save the initial message to chat history
+        ai_msg_doc = {
+            "id": str(uuid.uuid4()),
+            "user_id": user.id,
+            "role": "assistant",
+            "message": initial_message,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        await db.chat_messages.insert_one(ai_msg_doc)
+        
+        # Mark chat as initiated in user context
+        if user_context:
+            await db.user_context.update_one(
+                {"user_id": user.id},
+                {"$set": {"first_chat_initiated": True, "updated_at": datetime.now(timezone.utc)}}
+            )
+        else:
+            # Create user context if it doesn't exist
+            new_context = {
+                "_id": str(uuid.uuid4()),
+                "user_id": user.id,
+                "first_chat_initiated": True,
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            }
+            await db.user_context.insert_one(new_context)
+        
+        return {
+            "message": initial_message,
+            "timestamp": ai_msg_doc["timestamp"]
+        }
+    
+    # Chat already initiated
+    return {"message": None}
+
 @api_router.post("/chat/send", response_model=ChatResponse)
 async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
     user_message = chat_request.message
@@ -1065,7 +1129,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     if user_context.get('portfolio_type'):
         context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
     
-    if user_context['portfolio_type'] == 'personal':
+    if user_context.get('portfolio_type') == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
             from dateutil.relativedelta import relativedelta
@@ -1076,7 +1140,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
             context_info += f"\n- Retirement Plans: {user_context['retirement_plans']}"
-    elif user_context['portfolio_type'] == 'institutional':
+    elif user_context.get('portfolio_type') == 'institutional':
         if user_context.get('institution_name'):
             context_info += f"\n- Institution: {user_context['institution_name']}"
         if user_context.get('institution_sector'):
@@ -1114,12 +1178,12 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         context_info += "\n\n- FINANCIAL GOALS & LIQUIDITY NEEDS:"
         for req in user_context['liquidity_requirements']:
             goal_name = req.get('goal_name', req.get('goal', 'Goal'))
-            target_amount = req.get('target_amount', req.get('amount', 0))
-            amount_saved = req.get('amount_saved', 0)
-            amount_needed = req.get('amount_needed', target_amount - amount_saved)
+            target_amount = req.get('target_amount', req.get('amount', 0)) or 0
+            amount_saved = req.get('amount_saved', 0) or 0
+            amount_needed = req.get('amount_needed', target_amount - amount_saved) or 0
             target_date = req.get('target_date', req.get('when', 'TBD'))
             priority = req.get('priority', 'medium')
-            progress = req.get('progress_percentage', 0)
+            progress = req.get('progress_percentage', 0) or 0
             
             context_info += f"\n  * {goal_name} ({priority} priority)"
             context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
