@@ -266,6 +266,9 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           type: "manual",
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
+          time_horizon: timeHorizon,
+          monitoring_frequency: monitoringFrequency,
+          investment_amount: investmentAmount ? parseFloat(investmentAmount) : null,
           sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
           investment_strategy: investmentStrategies.length > 0 ? investmentStrategies : null,
           allocations: validAllocations.map(a => ({
