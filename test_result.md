@@ -372,7 +372,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Portfolio Performance Chart with S&P 500 Comparison"
     - "Invest $X Button Feature"
   stuck_tasks: []
   test_all: false
