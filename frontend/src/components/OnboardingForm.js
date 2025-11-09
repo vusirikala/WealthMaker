@@ -966,7 +966,6 @@ export default function OnboardingForm({ onComplete }) {
     </div>
   );
 
-  const renderStep5 = () => {
     const isPersonal = formData.portfolio_type === "personal";
     
     const personalPlaceholder = `Examples:
@@ -1018,8 +1017,8 @@ export default function OnboardingForm({ onComplete }) {
                 <span className="text-cyan-600 mt-0.5">💡</span>
                 <span>
                   {isPersonal 
-                    ? "Don't worry about details now. We'll refine each goal through our conversation."
-                    : "We'll gather more specific details about each objective in our conversation."}
+                    ? "You'll specify portfolio preferences when creating each portfolio."
+                    : "You'll specify portfolio preferences when creating each portfolio."}
                 </span>
               </p>
             </div>
@@ -1028,19 +1027,30 @@ export default function OnboardingForm({ onComplete }) {
 
         <div className="flex gap-3">
           <Button 
-            onClick={() => setStep(4)} 
+            onClick={() => setStep(3)} 
             variant="outline" 
             className="flex-1 h-12 border-2 hover:bg-gray-50"
+            disabled={loading}
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Back
           </Button>
           <Button
-            onClick={() => setStep(6)}
-            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 h-12 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
           >
-            Continue
-            <ArrowRight className="w-5 h-5 ml-2" />
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Setting up...
+              </>
+            ) : (
+              <>
+                Complete Setup
+                <CheckCircle2 className="w-5 h-5 ml-2" />
+              </>
+            )}
           </Button>
         </div>
       </div>
