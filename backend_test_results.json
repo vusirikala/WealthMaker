@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T04:55:59.785587+00:00",
-  "total_tests": 102,
-  "passed_tests": 96,
-  "success_rate": 94.11764705882352,
+  "timestamp": "2025-11-09T08:53:40.686545+00:00",
+  "total_tests": 110,
+  "passed_tests": 98,
+  "success_rate": 89.0909090909091,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762664111",
-        "email": "test.user.1762664111@example.com",
-        "name": "Test User 1762664111",
+        "_id": "test-user-1762678304",
+        "email": "test.user.1762678304@example.com",
+        "name": "Test User 1762678304",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T04:55:11.704000"
+        "created_at": "2025-11-09T08:51:44.522000"
       }
     },
     {
@@ -29,13 +29,13 @@
       "success": true,
       "details": "",
       "response_data": {
-        "total_assets": 21,
+        "total_assets": 22,
         "by_type": {
-          "stocks": 19,
+          "stocks": 20,
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T03:37:40.956985+00:00",
+        "last_updated": "2025-11-09T08:22:36.872899+00:00",
         "status": "active"
       }
     },
@@ -46,13 +46,13 @@
       "response_data": {
         "message": "Database already initialized",
         "stats": {
-          "total_assets": 21,
+          "total_assets": 22,
           "by_type": {
-            "stocks": 19,
+            "stocks": 20,
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T03:37:40.956985+00:00",
+          "last_updated": "2025-11-09T08:22:36.872899+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -63,7 +63,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "asset_count": 21
+        "asset_count": 22
       }
     },
     {
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T03:35:56.491772+00:00",
+          "lastUpdated": "2025-11-09T04:55:15.191323+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T03:35:56.490830+00:00",
+              "timestamp": "2025-11-09T04:55:15.190393+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T03:35:56.490833+00:00",
+              "lastUpdated": "2025-11-09T04:55:15.190396+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,20 +709,97 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T04:55:12.964352+00:00",
+          "lastUpdated": "2025-11-09T08:51:46.031051+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T04:55:12.963627+00:00",
+              "timestamp": "2025-11-09T08:51:46.030093+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
               "fiftyTwoWeekLow": 169.21
             },
             "recentNews": [
+              {
+                "headline": "Earnings To Watch: Jamf (JAMF) Reports Q3 Results Tomorrow",
+                "title": "Earnings To Watch: Jamf (JAMF) Reports Q3 Results Tomorrow",
+                "summary": "Apple device management company Jamf (NASDAQ:JAMF) will be reporting earnings this Monday afternoon. Here\u2019s what you need to know.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=cd9f51878a758ee6d7a3e8e37dea96aba92c3e58e66e439c9566874b139a1882",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-09T03:04:22+00:00",
+                "timestamp": "2025-11-09T03:04:22+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Apple Is Berkshire Hathaway's Largest Holding by Value. But Is the California-Based Company Still a Strong Play for Long-Term Growth?",
+                "title": "Apple Is Berkshire Hathaway's Largest Holding by Value. But Is the California-Based Company Still a Strong Play for Long-Term Growth?",
+                "summary": "Buffett and his team's confidence in this stock isn't misplaced.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=05bbc050866f8e9e227c1a912e30edaabecb2f95c53666a52b2087867208caa8",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T18:41:00+00:00",
+                "timestamp": "2025-11-08T18:41:00+00:00",
+                "sentiment": "positive"
+              },
+              {
+                "headline": "Prediction: This Supercharged Growth Stock Will Join Nvidia, Apple, Microsoft, and Alphabet in the $3 Trillion Club Before 2028",
+                "title": "Prediction: This Supercharged Growth Stock Will Join Nvidia, Apple, Microsoft, and Alphabet in the $3 Trillion Club Before 2028",
+                "summary": "This category-leading semiconductor and infrastructure software specialist is experiencing robust growth due to artificial intelligence (AI). There could be much more to come.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=db60e59fa26733f80b8b48808f2ad85de1913c1e720b42d1340e5665d4581aff",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T18:02:00+00:00",
+                "timestamp": "2025-11-08T18:02:00+00:00",
+                "sentiment": "positive"
+              },
+              {
+                "headline": "How Analysts See Globalstar\u2019s Story Changing Amid Sale Talks and New Spectrum Opportunities",
+                "title": "How Analysts See Globalstar\u2019s Story Changing Amid Sale Talks and New Spectrum Opportunities",
+                "summary": "Globalstar's fair value estimate remains steady at $60.00 per share. This reflects analysts' continued confidence in the company's long-term prospects. While the discount rate has edged slightly higher, consistent revenue growth projections reinforce a generally positive outlook for the stock. Stay tuned to discover how you can keep track of future updates as the Globalstar story develops further. Analyst Price Targets don't always capture the full story. Head over to our Company Report to...",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=eb3fbbd0254959cac627bfb9e084854e169f8f4ce13c8a9f9b8fb87fdc80d68b",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T16:12:40+00:00",
+                "timestamp": "2025-11-08T16:12:40+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Why Apple Stock Might Be Spared If an AI Bubble Bursts",
+                "title": "Why Apple Stock Might Be Spared If an AI Bubble Bursts",
+                "summary": "With stocks wobbling in the past week over potential AI valuation worries, investors might have noticed that much of the Magnificent Seven has been increasingly choppy while Apple (NASDAQ:AAPL) has acted like a steady rock, holding its ground at around $270 per share. While the positive initial post-earnings reaction has faded, I do think that ... Why Apple Stock Might Be Spared If an AI Bubble Bursts",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=1001b39904fce709d384ed3439f20cff1a0906718d7756f7c685fa2327e48a40",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T15:11:47+00:00",
+                "timestamp": "2025-11-08T15:11:47+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Every payment method Costco accepts: From EBT to Apple Pay",
+                "title": "Every payment method Costco accepts: From EBT to Apple Pay",
+                "summary": "Costco is America\u2019s favorite warehouse club, boasting almost twice as many members as its next-biggest rival, Sam\u2019s Club, despite its more expensive membership fees. Another important distinction between the retailers is the payment methods each one accepts. For instance, while you can use any ...",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=d3a884471779b85d177a35404dab1bfdcb3f86d0caa5d3c412b884f17354e502",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T15:08:00+00:00",
+                "timestamp": "2025-11-08T15:08:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "As Warren Buffett Waves Goodbye \u2013 5 Dividend Stocks That Never Leave Berkshire Hathaway",
+                "title": "As Warren Buffett Waves Goodbye \u2013 5 Dividend Stocks That Never Leave Berkshire Hathaway",
+                "summary": "If any investor has stood the test of time, it\u2019s Warren Buffett, and with good reason. For years, the \u201cOracle of Omaha\u201d has had a rock star-like presence in the investing world, and his annual Berkshire Hathaway shareholders meeting draws thousands of loyal fans who are investors. They were stunned at this year\u2019s meeting when ... As Warren Buffett Waves Goodbye \u2013 5 Dividend Stocks That Never Leave Berkshire Hathaway",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=1be91272a78d3ba520b92ed58d7b33f09e8308e881a575223ea22b7c0b776eb9",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T13:31:06+00:00",
+                "timestamp": "2025-11-08T13:31:06+00:00",
+                "sentiment": "neutral"
+              },
               {
                 "headline": "Today's AI boom is 'very different' from the 90s dot-com bubble",
                 "title": "Today's AI boom is 'very different' from the 90s dot-com bubble",
@@ -755,87 +832,10 @@
                 "datetime": "2025-11-08T11:00:58+00:00",
                 "timestamp": "2025-11-08T11:00:58+00:00",
                 "sentiment": "neutral"
-              },
-              {
-                "headline": "Cisco, Walt Disney To Report Earnings Next Week While U.S. Shutdown Drags On",
-                "title": "Cisco, Walt Disney To Report Earnings Next Week While U.S. Shutdown Drags On",
-                "summary": "Stay ahead with Wall Street Week Ahead: get key market previews, earnings reports, dividend alerts, and insights on upcoming economic events.",
-                "source": "SeekingAlpha",
-                "url": "https://finnhub.io/api/news?id=8c7a8a31310ec0d491f7458a4829687876cc6b1fbfd02adcf0bad5a5ed9e419c",
-                "image": "https://static.seekingalpha.com/assets/og_image_1200-29b2bfe1a595477db6826bd2126c63ac2091efb7ec76347a8e7f81ba17e3de6c.png",
-                "datetime": "2025-11-08T11:00:00+00:00",
-                "timestamp": "2025-11-08T11:00:00+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Warren Buffett's cash fortress Berkshire closes gap with S&P 500 as AI worries depress Wall Street",
-                "title": "Warren Buffett's cash fortress Berkshire closes gap with S&P 500 as AI worries depress Wall Street",
-                "summary": "Berkshire Hathaway's B shares and A shares moved 4.5% higher this week after a strong earnings report last weekend.",
-                "source": "CNBC",
-                "url": "https://finnhub.io/api/news?id=70b11b5291f74b24790fe6fda7bb672c31c21df1baed9ec5c5f257506463f9ee",
-                "image": "https://image.cnbcfm.com/api/v1/image/107410286-1714759879649-untitled-246-2-335.jpg?v=1714827163&w=1920&h=1080",
-                "datetime": "2025-11-08T06:32:10+00:00",
-                "timestamp": "2025-11-08T06:32:10+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "'We started with a second-hand minivan \u2013 our group tour travel firm is now a \u00a330m business'",
-                "title": "'We started with a second-hand minivan \u2013 our group tour travel firm is now a \u00a330m business'",
-                "summary": "Expat Explore started with \u00a3800 and a second-hand minivan and is now one of the UK\u2019s fastest-growing group travel companies",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=d42415c0068ac709a0548c9e82341a6258f0bc63bb1f4ad026e6e4f94753693d",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T06:00:50+00:00",
-                "timestamp": "2025-11-08T06:00:50+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Jim Cramer Says Companies Like Apple are \u201cNation-States With Good Balance Sheets\u201d",
-                "title": "Jim Cramer Says Companies Like Apple are \u201cNation-States With Good Balance Sheets\u201d",
-                "summary": "Apple Inc. (NASDAQ:AAPL) is one of the stocks Jim Cramer recently shared thoughts on. Cramer said companies like Apple are \u201cnation-states,\u201d as he remarked: \u201cApple, I think, is going to have a great quarter. So I think that their PE is probably going to be roughly just a little bit above the market multiple. All [\u2026]",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=759ac68a75f0c769c54735172596de84a8f4540bc90beb7f6418a031411f820b",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T04:06:52+00:00",
-                "timestamp": "2025-11-08T04:06:52+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Why MP Materials (MP) Is Down 7.1% After Wider Q3 Losses and Profitability Guidance Shift",
-                "title": "Why MP Materials (MP) Is Down 7.1% After Wider Q3 Losses and Profitability Guidance Shift",
-                "summary": "MP Materials reported third-quarter 2025 financial results, revealing sales of US$53.55 million and a net loss of US$41.78 million, with rare earth oxide (REO) production slightly lower year-over-year but higher neodymium-praseodymium (NdPr) output. Despite wider quarterly losses, company management announced an expectation to return to profitability in the fourth quarter of 2025 and beyond, signaling an important shift in their outlook. We will examine how management's...",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=4e3be44622e5e0f913d076ce3875f0829c7f2f3c0c2147335daf7aa5dcc1331d",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T00:21:35+00:00",
-                "timestamp": "2025-11-08T00:21:35+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Dividend Champion, Contender, And Challenger Highlights: Week Of November 9",
-                "title": "Dividend Champion, Contender, And Challenger Highlights: Week Of November 9",
-                "summary": "Get the latest weekly updates on dividend changes, ex-dividend and pay dates for Dividend Champions, Contenders, and Challengers.",
-                "source": "SeekingAlpha",
-                "url": "https://finnhub.io/api/news?id=0f24cb5e688ce530a1a3feef456bd575a4ec37a9f09b01feab5a82b5eee9fb0e",
-                "image": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1072593728/image_1072593728.jpg?io=getty-c-w1536",
-                "datetime": "2025-11-08T00:03:44+00:00",
-                "timestamp": "2025-11-08T00:03:44+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Prediction: 2 Stocks That'll Be Worth More Than Palantir 10 Years From Now",
-                "title": "Prediction: 2 Stocks That'll Be Worth More Than Palantir 10 Years From Now",
-                "summary": "Palantir is growing fast, but it isn't likely to catch these giants.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=152aff74e65a4b91e28913dbded086b1a7e91cfdaefb00e9e5909d1cf1d71ba4",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T00:00:00+00:00",
-                "timestamp": "2025-11-08T00:00:00+00:00",
-                "sentiment": "neutral"
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T04:55:12.963631+00:00",
+              "lastUpdated": "2025-11-09T08:51:46.030096+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -1030,7 +1030,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.03734469413757324,
+        "response_time": 0.03952360153198242,
         "fast_response": true
       }
     },
@@ -1081,7 +1081,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.035881996154785156,
+        "response_time": 0.036004066467285156,
         "cached": true
       }
     },
@@ -1090,7 +1090,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03833889961242676,
+        "response_time": 0.03633928298950195,
         "cached": true
       }
     },
@@ -1099,16 +1099,16 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.04111361503601074,
+        "response_time": 0.03352761268615723,
         "cached": true
       }
     },
     {
       "test": "POST /api/portfolios-v2/create (manual portfolio)",
-      "success": "f3ba50cf-483e-409e-9feb-7380a368526c",
+      "success": "868b479f-4978-4f37-844b-5562411c4e93",
       "details": "",
       "response_data": {
-        "portfolio_id": "f3ba50cf-483e-409e-9feb-7380a368526c",
+        "portfolio_id": "868b479f-4978-4f37-844b-5562411c4e93",
         "allocations_count": 3
       }
     },
@@ -1121,7 +1121,7 @@
       }
     },
     {
-      "test": "GET /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c",
+      "test": "GET /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93",
       "success": true,
       "details": "",
       "response_data": {
@@ -1129,7 +1129,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c",
+      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93",
       "success": true,
       "details": "",
       "response_data": {
@@ -1137,7 +1137,7 @@
       }
     },
     {
-      "test": "POST /api/portfolios-v2/5a40bb61-cbb6-44c1-bb0d-a72eedb06cb3/invest ($10,000)",
+      "test": "POST /api/portfolios-v2/95fc442e-c5cf-4e36-a5e3-0973ea25c888/invest ($10,000)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1157,16 +1157,16 @@
     },
     {
       "test": "POST /api/chat/generate-portfolio",
-      "success": false,
-      "details": "Reasoning: True, Allocations: 6, Sum to 100%: False (total: 0%), Valid tickers: True",
+      "success": true,
+      "details": "",
       "response_data": {
         "has_portfolio_suggestion": true,
-        "allocations_count": 0,
-        "total_allocation": 0
+        "allocations_count": 6,
+        "total_allocation": 100
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c/allocations (valid - sums to 100%)",
+      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93/allocations (valid - sums to 100%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1174,7 +1174,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c/allocations (invalid - sums to 110%)",
+      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93/allocations (invalid - sums to 110%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1182,7 +1182,7 @@
       }
     },
     {
-      "test": "DELETE /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c (soft delete)",
+      "test": "DELETE /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93 (soft delete)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1319,27 +1319,10 @@
     },
     {
       "test": "POST /chat/send (basic message)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 408",
       "response_data": {
-        "has_response": true
-      }
-    },
-    {
-      "test": "Message saved to chat_messages collection",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "user_messages": 1,
-        "ai_messages": 2
-      }
-    },
-    {
-      "test": "AI response generated and returned",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "response_length": 179
+        "has_response": false
       }
     },
     {
@@ -1353,13 +1336,15 @@
     {
       "test": "Update context with mixed liquidity_requirements",
       "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "details": "Status: 408",
+      "response_data": {
+        "error": "Request timeout"
+      }
     },
     {
       "test": "No AttributeError in build_context_string",
-      "success": false,
-      "details": "Status: 500",
+      "success": true,
+      "details": "Status: 408",
       "response_data": {
         "has_response": false
       }
@@ -1413,7 +1398,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "9b3e8046-4b80-4ce2-a496-acb9862d8884"
+        "suggestion_id": "544e56d8-92e2-4cef-969e-0e68190504bf"
       }
     },
     {
@@ -1442,7 +1427,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "1df47821-6995-49ee-a91f-cc5a22370805",
+        "id_value": "d6fbaacf-180d-44f1-8222-856bbacc76bb",
         "id_type": "str"
       }
     },
@@ -1485,6 +1470,100 @@
       "details": "Accept failed: Status 500",
       "response_data": {
         "accept_status": 500
+      }
+    },
+    {
+      "test": "Create test portfolio with allocations (AAPL 40%, GOOGL 35%, MSFT 25%)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_id": "038b1558-9468-46cc-8e09-f8d1bb1bdf62"
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=1y - Complete response structure",
+      "success": false,
+      "details": "return_percentage: True (valid: True), time_series: True, period_stats: True, sp500_comparison: False, sp500_time_series: False, sp500_current_return: False (valid: False), dates: False",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 0,
+        "time_series_length": 0,
+        "sp500_time_series_length": 0,
+        "sp500_current_return": null
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=6m - Shorter time range",
+      "success": false,
+      "details": "6m length: 0, 1y length: 0, shorter: True, has_data: False",
+      "response_data": {
+        "6m_length": 0,
+        "1y_length": 0,
+        "shorter_range": false
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=3y - Longer time range",
+      "success": false,
+      "details": "3y length: 0, 1y length: 0",
+      "response_data": {
+        "3y_length": 0,
+        "longer_range": false
+      }
+    },
+    {
+      "test": "GET /portfolios-v2/{id}/performance?time_period=5y - Maximum time range",
+      "success": false,
+      "details": "5y length: 0",
+      "response_data": {
+        "5y_length": 0,
+        "longest_range": false
+      }
+    },
+    {
+      "test": "Portfolio and S&P 500 time series have matching lengths and aligned dates",
+      "success": false,
+      "details": "No 1y data available for comparison",
+      "response_data": {
+        "portfolio_length": 0,
+        "sp500_length": 0,
+        "aligned": false
+      }
+    },
+    {
+      "test": "Caching reduces response time for repeated requests",
+      "success": false,
+      "details": "First request: 0.04s, Second request: 0.08s, Effective: False",
+      "response_data": {
+        "first_request_time": 0.04,
+        "second_request_time": 0.08,
+        "caching_effective": false
+      }
+    },
+    {
+      "test": "Invalid portfolio_id returns 404",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 404
+      }
+    },
+    {
+      "test": "Invalid time_period parameter handled gracefully (defaults to 1y)",
+      "success": false,
+      "details": "Status: 200, Has data: False",
+      "response_data": {
+        "status": 200
+      }
+    },
+    {
+      "test": "Portfolio with no allocations handled gracefully",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 200,
+        "return_percentage": 0,
+        "time_series_length": 0
       }
     },
     {
