@@ -201,14 +201,96 @@ export default function NewsTab() {
     );
   }
 
+  const handleInitializeDatabase = async () => {
+    setIsLoading(true);
+    try {
+      toast.info("Initializing database... This will take 2-3 minutes");
+      
+      const response = await fetch(`${API}/admin/initialize-database`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        toast.success("Database initialization started! Fetching data...");
+        
+        // Wait a bit then reload
+        setTimeout(() => {
+          toast.info("Still loading... This takes a few minutes for 50+ stocks");
+        }, 5000);
+        
+        setTimeout(() => {
+          loadNews();
+        }, 30000); // Reload after 30 seconds
+      } else {
+        toast.error("Failed to initialize database");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to initialize database");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateLiveData = async () => {
+    setIsLoading(true);
+    try {
+      toast.info("Updating prices and news...");
+      
+      const response = await fetch(`${API}/admin/update-live-data`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        toast.success("Live data update started!");
+        
+        // Reload after a few seconds
+        setTimeout(() => {
+          loadNews();
+        }, 10000);
+      } else {
+        toast.error("Failed to update live data");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to update live data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (news.length === 0) {
     return (
       <div className="clean-card rounded-2xl p-12 text-center" data-testid="no-news">
-        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center">
           <Newspaper className="w-8 h-8 text-white" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">No News Available</h3>
-        <p className="text-gray-600">Add stocks to your portfolio to see related news and market updates.</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No News Available Yet</h3>
+        <p className="text-gray-600 mb-6">
+          The news database needs to be initialized first. This is a one-time setup.
+        </p>
+        
+        <div className="space-y-3 max-w-md mx-auto">
+          <button
+            onClick={handleInitializeDatabase}
+            className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-lg transition-all font-semibold shadow-md"
+          >
+            🚀 Initialize Database (One-Time, 2-3 min)
+          </button>
+          
+          <button
+            onClick={handleUpdateLiveData}
+            className="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg transition-all font-semibold shadow-md"
+          >
+            🔄 Update News & Prices
+          </button>
+          
+          <p className="text-sm text-gray-500 mt-4">
+            After initialization, add stocks to your portfolio or watchlist to see their news!
+          </p>
+        </div>
       </div>
     );
   }
