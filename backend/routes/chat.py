@@ -573,7 +573,7 @@ async def generate_portfolio(
 ):
     """
     Generate AI portfolio suggestions based on user preferences
-    Used by AI Portfolio Builder
+    Used by AI Portfolio Builder - now includes sector allocations and strategies
     """
     portfolio_name = request.get('portfolio_name', 'My Portfolio')
     goal = request.get('goal', '')
@@ -581,43 +581,104 @@ async def generate_portfolio(
     investment_amount = request.get('investment_amount', 0)
     time_horizon = request.get('time_horizon', '5-10')
     roi_expectations = request.get('roi_expectations', 10)
-    sector_preferences = request.get('sector_preferences', '')
+    monitoring_frequency = request.get('monitoring_frequency', 'monthly')
+    sector_allocation = request.get('sector_allocation', {})
+    investment_strategies = request.get('investment_strategies', [])
     
-    # Build prompt for AI
-    prompt = f"""Based on the following portfolio requirements, generate a diversified investment portfolio:
+    # Format sector allocation for prompt
+    sector_details = []
+    if sector_allocation:
+        for sector, data in sector_allocation.items():
+            if data.get('enabled', False):
+                allocation = data.get('allocation', 0)
+                sector_details.append(f"  - {sector.replace('_', ' ').title()}: {allocation}%")
+    
+    sector_allocation_str = "\n".join(sector_details) if sector_details else "  - Not specified"
+    
+    # Format investment strategies
+    strategy_names_map = {
+        "value_investing": "Value Investing",
+        "growth_investing": "Growth Investing", 
+        "income_investing": "Income/Dividend Investing",
+        "index_funds": "Index Fund Investing",
+        "dollar_cost_averaging": "Dollar-Cost Averaging",
+        "momentum_investing": "Momentum Investing"
+    }
+    strategy_str = ", ".join([strategy_names_map.get(s, s) for s in investment_strategies]) if investment_strategies else "Not specified"
+    
+    # Build comprehensive prompt for AI
+    prompt = f"""You are an expert portfolio manager. Generate a specific stock/ETF portfolio allocation that STRICTLY adheres to the user's preferences.
 
-Portfolio Details:
+USER'S PORTFOLIO PROFILE:
 - Name: {portfolio_name}
-- Goal: {goal}
-- Risk Tolerance: {risk_tolerance}
-- Investment Amount: ${investment_amount}
+- Investment Goal: {goal}
+- Risk Tolerance: {risk_tolerance.upper()}
+- Investment Amount: ${investment_amount:,.2f}
 - Time Horizon: {time_horizon} years
-- Expected ROI: {roi_expectations}% annually
-- Sector Preferences: {sector_preferences if sector_preferences else 'No specific preferences'}
+- Expected ROI Target: {roi_expectations}% annually
+- Monitoring Frequency: {monitoring_frequency}
 
-Please provide:
-1. A brief reasoning (2-3 sentences) explaining the strategy
-2. 5-8 specific stock/ETF allocations with:
-   - Ticker symbol (e.g., AAPL, MSFT, SPY, BND)
-   - Allocation percentage (must sum to 100%)
-   - Sector
-   - Asset type (stock, bond, etf, crypto, etc.)
+USER'S SECTOR ALLOCATION (MUST RESPECT THESE PERCENTAGES):
+{sector_allocation_str}
 
-Format your response EXACTLY as JSON like this:
+USER'S SELECTED INVESTMENT STRATEGIES:
+{strategy_str}
+
+YOUR TASK:
+Generate a portfolio of 5-10 specific stocks/ETFs/bonds that:
+1. STRICTLY MATCHES the sector allocation percentages above
+2. ALIGNS with the chosen investment strategies
+3. REFLECTS the risk tolerance and time horizon
+4. TARGETS the expected ROI
+
+ALLOCATION RULES:
+- If Stocks: {sector_allocation.get('stocks', {}).get('allocation', 0)}% → Include growth stocks, value stocks, or dividend stocks based on strategies
+  * Growth strategy → AAPL, MSFT, GOOGL, NVDA, TSLA, AMZN
+  * Value strategy → BRK.B, JNJ, PG, KO, WMT, JPM
+  * Income strategy → Dividend aristocrats (PG, JNJ, KO, MCD)
+  * Index funds → SPY, VOO, VTI
+
+- If Bonds: {sector_allocation.get('bonds', {}).get('allocation', 0)}% → Include bond ETFs
+  * Conservative → AGG, BND, TLT (government bonds)
+  * Income strategy → HYG, LQD (corporate bonds)
+
+- If Crypto: {sector_allocation.get('crypto', {}).get('allocation', 0)}% → Include crypto ETFs or proxies
+  * BITO (Bitcoin ETF), ETHE (Ethereum), COIN (Coinbase stock)
+
+- If Real Estate: {sector_allocation.get('real_estate', {}).get('allocation', 0)}% → Include REIT ETFs
+  * VNQ, SCHH, IYR (broad REIT ETFs)
+  * O, VICI (individual REITs for income)
+
+- If Commodities: {sector_allocation.get('commodities', {}).get('allocation', 0)}% → Include commodity ETFs
+  * GLD, IAU (gold), USO (oil), DBC (diversified commodities)
+
+- If Forex: {sector_allocation.get('forex', {}).get('allocation', 0)}% → Include currency ETFs
+  * UUP (dollar), FXE (euro), FXY (yen)
+
+STRATEGY ALIGNMENT:
+- Value Investing → Focus on undervalued stocks with low P/E ratios (BRK.B, JPM, XOM)
+- Growth Investing → High-growth tech and innovation (AAPL, MSFT, NVDA, TSLA)
+- Income/Dividend → High dividend yield stocks/ETFs (VYM, SCHD, JNJ, PG)
+- Index Funds → Broad market ETFs (SPY, VOO, VTI, VXUS)
+- Dollar-Cost Averaging → Suitable for any allocation, stable picks
+- Momentum → Recent high performers, growth stocks (NVDA, TSLA, high flyers)
+
+OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
 {{
-  "reasoning": "Your brief explanation here",
+  "reasoning": "2-3 sentences explaining how this portfolio matches the user's {sector_allocation_str.replace(chr(10), ' ')} sector allocation, implements their {strategy_str} strategies, and targets {roi_expectations}% returns with {risk_tolerance} risk over {time_horizon} years.",
   "allocations": [
-    {{"ticker": "AAPL", "allocation_percentage": 25, "sector": "Technology", "asset_type": "stock"}},
-    {{"ticker": "MSFT", "allocation_percentage": 20, "sector": "Technology", "asset_type": "stock"}}
+    {{"ticker": "SPY", "allocation_percentage": 30.0, "sector": "Stocks", "asset_type": "etf"}},
+    {{"ticker": "BND", "allocation_percentage": 25.0, "sector": "Bonds", "asset_type": "etf"}}
   ]
 }}
 
-Based on risk tolerance:
-- LOW risk: Focus on bonds (60-70%), blue-chip stocks (20-30%), minimal volatility
-- MEDIUM risk: Balanced mix of stocks (40%), bonds (30%), ETFs (20%), alternatives (10%)
-- HIGH risk: Growth stocks (50-60%), emerging markets (20%), crypto (10%), bonds (10%)
-
-IMPORTANT: Return ONLY valid JSON, no additional text."""
+CRITICAL REQUIREMENTS:
+1. Allocation percentages MUST sum to exactly 100%
+2. Number of allocations should match sector diversity (more sectors = more holdings)
+3. Each allocation's asset_type must match its sector category
+4. Reasoning MUST reference the specific sector percentages and strategies
+5. Use well-known, liquid tickers (no obscure stocks)
+6. For <5% allocations, combine into broader ETFs rather than individual stocks"""
 
     try:
         # Call LLM to generate portfolio
