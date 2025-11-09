@@ -1056,12 +1056,427 @@ print('Portfolio cleared');
                 {"accept_status": status}
             )
 
+    def test_portfolio_performance_endpoint(self):
+        """Test portfolio performance endpoint with S&P 500 comparison feature"""
+        print("\n📈 Testing Portfolio Performance Endpoint with S&P 500 Comparison...")
+        
+        # Step 1: Create a test portfolio with allocations
+        print("\n🔧 Step 1: Creating test portfolio with allocations...")
+        
+        try:
+            import subprocess
+            portfolio_id = str(uuid.uuid4())
+            
+            # Create MongoDB script to insert test portfolio
+            mongo_script = f'''
+use('test_database');
+var portfolioId = '{portfolio_id}';
+var userId = '{self.user_id}';
+db.user_portfolios.insertOne({{
+  _id: portfolioId,
+  user_id: userId,
+  name: "Test Performance Portfolio",
+  goal: "Growth and Income",
+  type: "manual",
+  risk_tolerance: "moderate",
+  roi_expectations: 12,
+  allocations: [
+    {{
+      "ticker": "AAPL",
+      "allocation_percentage": 40,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }},
+    {{
+      "ticker": "GOOGL", 
+      "allocation_percentage": 35,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }},
+    {{
+      "ticker": "MSFT",
+      "allocation_percentage": 25,
+      "sector": "Technology", 
+      "asset_type": "stock"
+    }}
+  ],
+  holdings: [],
+  total_invested: 0,
+  current_value: 0,
+  total_return: 0,
+  total_return_percentage: 0,
+  is_active: true,
+  created_at: new Date(),
+  updated_at: new Date(),
+  last_invested_at: null
+}});
+print('Test portfolio created');
+'''
+            
+            # Execute MongoDB script
+            result = subprocess.run(
+                ['mongosh', '--eval', mongo_script],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                print(f"✅ Test portfolio created: {portfolio_id}")
+                self.log_test(
+                    "Create test portfolio with allocations (AAPL 40%, GOOGL 35%, MSFT 25%)", 
+                    True,
+                    "",
+                    {"portfolio_id": portfolio_id}
+                )
+            else:
+                print(f"❌ Failed to create test portfolio: {result.stderr}")
+                self.log_test(
+                    "Create test portfolio with allocations", 
+                    False,
+                    f"MongoDB error: {result.stderr}",
+                    {}
+                )
+                return
+                
+        except Exception as e:
+            print(f"❌ Setup error: {str(e)}")
+            self.log_test(
+                "Create test portfolio with allocations", 
+                False,
+                f"Exception: {str(e)}",
+                {}
+            )
+            return
+        
+        # Step 2: Test 1-year performance data
+        print("\n📊 Step 2: Testing 1-year performance data...")
+        
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=1y')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            # Verify response structure
+            has_return_percentage = 'return_percentage' in data
+            has_time_series = 'time_series' in data and isinstance(data['time_series'], list)
+            has_period_stats = 'period_stats' in data and isinstance(data['period_stats'], dict)
+            has_sp500_comparison = 'sp500_comparison' in data and isinstance(data['sp500_comparison'], dict)
+            has_start_date = 'start_date' in data
+            has_end_date = 'end_date' in data
+            
+            # Verify period_stats structure
+            period_stats = data.get('period_stats', {})
+            has_6m_return = '6m_return' in period_stats
+            has_1y_return = '1y_return' in period_stats
+            has_3y_return = '3y_return' in period_stats
+            has_5y_return = '5y_return' in period_stats
+            
+            # Verify sp500_comparison structure
+            sp500_comparison = data.get('sp500_comparison', {})
+            has_sp500_time_series = 'time_series' in sp500_comparison and isinstance(sp500_comparison['time_series'], list)
+            has_sp500_current_return = 'current_return' in sp500_comparison
+            
+            # Verify return_percentage is a valid number
+            return_percentage = data.get('return_percentage')
+            return_percentage_valid = isinstance(return_percentage, (int, float)) and not (return_percentage != return_percentage)  # Check for NaN
+            
+            # Verify sp500_comparison.current_return is a valid number
+            sp500_current_return = sp500_comparison.get('current_return')
+            sp500_return_valid = isinstance(sp500_current_return, (int, float)) and not (sp500_current_return != sp500_current_return)
+            
+            structure_complete = (has_return_percentage and has_time_series and has_period_stats and 
+                                has_sp500_comparison and has_start_date and has_end_date and
+                                has_6m_return and has_1y_return and has_3y_return and has_5y_return and
+                                has_sp500_time_series and has_sp500_current_return and
+                                return_percentage_valid and sp500_return_valid)
+            
+            success = structure_complete
+            details = f"return_percentage: {has_return_percentage} (valid: {return_percentage_valid}), time_series: {has_time_series}, period_stats: {has_period_stats}, sp500_comparison: {has_sp500_comparison}, sp500_time_series: {has_sp500_time_series}, sp500_current_return: {has_sp500_current_return} (valid: {sp500_return_valid}), dates: {has_start_date and has_end_date}"
+        else:
+            details = f"Status: {status}, Type: {type(data)}"
+        
+        self.log_test(
+            "GET /portfolios-v2/{id}/performance?time_period=1y - Complete response structure", 
+            success,
+            details if not success else "",
+            {
+                "status": status,
+                "return_percentage": data.get('return_percentage') if isinstance(data, dict) else None,
+                "time_series_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0,
+                "sp500_time_series_length": len(data.get('sp500_comparison', {}).get('time_series', [])) if isinstance(data, dict) else 0,
+                "sp500_current_return": data.get('sp500_comparison', {}).get('current_return') if isinstance(data, dict) else None
+            }
+        )
+        
+        # Store 1y data for comparison
+        one_year_data = data if success else {}
+        
+        # Step 3: Test 6-month performance - verify shorter time range
+        print("\n📅 Step 3: Testing 6-month performance data...")
+        
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=6m')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            # Verify 6m data has shorter time range than 1y
+            six_month_time_series = data.get('time_series', [])
+            one_year_time_series = one_year_data.get('time_series', [])
+            
+            shorter_range = len(six_month_time_series) <= len(one_year_time_series)
+            has_data = len(six_month_time_series) > 0
+            
+            success = shorter_range and has_data
+            details = f"6m length: {len(six_month_time_series)}, 1y length: {len(one_year_time_series)}, shorter: {shorter_range}, has_data: {has_data}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "GET /portfolios-v2/{id}/performance?time_period=6m - Shorter time range", 
+            success,
+            details if not success else "",
+            {
+                "6m_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0,
+                "1y_length": len(one_year_data.get('time_series', [])),
+                "shorter_range": success
+            }
+        )
+        
+        # Step 4: Test 3-year performance
+        print("\n📈 Step 4: Testing 3-year performance data...")
+        
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=3y')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            three_year_time_series = data.get('time_series', [])
+            has_longer_range = len(three_year_time_series) >= len(one_year_data.get('time_series', []))
+            
+            success = has_longer_range and len(three_year_time_series) > 0
+            details = f"3y length: {len(three_year_time_series)}, 1y length: {len(one_year_data.get('time_series', []))}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "GET /portfolios-v2/{id}/performance?time_period=3y - Longer time range", 
+            success,
+            details if not success else "",
+            {
+                "3y_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0,
+                "longer_range": success
+            }
+        )
+        
+        # Step 5: Test 5-year performance
+        print("\n📊 Step 5: Testing 5-year performance data...")
+        
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=5y')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            five_year_time_series = data.get('time_series', [])
+            has_longest_range = len(five_year_time_series) >= len(one_year_data.get('time_series', []))
+            
+            success = has_longest_range and len(five_year_time_series) > 0
+            details = f"5y length: {len(five_year_time_series)}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "GET /portfolios-v2/{id}/performance?time_period=5y - Maximum time range", 
+            success,
+            details if not success else "",
+            {
+                "5y_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0,
+                "longest_range": success
+            }
+        )
+        
+        # Step 6: Verify time_series arrays have matching lengths for portfolio and S&P 500
+        print("\n🔄 Step 6: Verify portfolio and S&P 500 time series alignment...")
+        
+        if one_year_data:
+            portfolio_series = one_year_data.get('time_series', [])
+            sp500_series = one_year_data.get('sp500_comparison', {}).get('time_series', [])
+            
+            lengths_match = len(portfolio_series) == len(sp500_series)
+            both_have_data = len(portfolio_series) > 0 and len(sp500_series) > 0
+            
+            # Verify dates align
+            dates_align = True
+            if lengths_match and both_have_data:
+                for i in range(min(5, len(portfolio_series))):  # Check first 5 dates
+                    portfolio_date = portfolio_series[i].get('date')
+                    sp500_date = sp500_series[i].get('date')
+                    if portfolio_date != sp500_date:
+                        dates_align = False
+                        break
+            
+            success = lengths_match and both_have_data and dates_align
+            details = f"Portfolio length: {len(portfolio_series)}, S&P 500 length: {len(sp500_series)}, lengths_match: {lengths_match}, dates_align: {dates_align}"
+        else:
+            success = False
+            details = "No 1y data available for comparison"
+        
+        self.log_test(
+            "Portfolio and S&P 500 time series have matching lengths and aligned dates", 
+            success,
+            details if not success else "",
+            {
+                "portfolio_length": len(portfolio_series) if 'portfolio_series' in locals() else 0,
+                "sp500_length": len(sp500_series) if 'sp500_series' in locals() else 0,
+                "aligned": success
+            }
+        )
+        
+        # Step 7: Test caching functionality (subsequent requests should be faster)
+        print("\n⚡ Step 7: Testing caching functionality...")
+        
+        # First request (should populate cache)
+        start_time = time.time()
+        status1, data1 = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=1y')
+        first_request_time = time.time() - start_time
+        
+        # Second request (should use cache)
+        start_time = time.time()
+        status2, data2 = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=1y')
+        second_request_time = time.time() - start_time
+        
+        # Caching is working if second request is faster or similar (within 50% of first request)
+        both_successful = status1 == 200 and status2 == 200
+        caching_effective = second_request_time <= (first_request_time * 1.5)  # Allow some variance
+        
+        success = both_successful and caching_effective
+        details = f"First request: {first_request_time:.2f}s, Second request: {second_request_time:.2f}s, Effective: {caching_effective}"
+        
+        self.log_test(
+            "Caching reduces response time for repeated requests", 
+            success,
+            details if not success else "",
+            {
+                "first_request_time": round(first_request_time, 2),
+                "second_request_time": round(second_request_time, 2),
+                "caching_effective": caching_effective
+            }
+        )
+        
+        # Step 8: Test error cases
+        print("\n🚨 Step 8: Testing error cases...")
+        
+        # Test invalid portfolio_id
+        status, data = self.make_request('GET', 'portfolios-v2/invalid-portfolio-id/performance?time_period=1y')
+        success = status == 404
+        self.log_test(
+            "Invalid portfolio_id returns 404", 
+            success,
+            f"Expected 404, got {status}" if not success else "",
+            {"status": status}
+        )
+        
+        # Test invalid time_period parameter
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=invalid')
+        success = status == 200  # Should default to 1y
+        if success and isinstance(data, dict):
+            # Should return data (defaults to 1y)
+            has_data = 'time_series' in data and len(data['time_series']) > 0
+            success = has_data
+        
+        self.log_test(
+            "Invalid time_period parameter handled gracefully (defaults to 1y)", 
+            success,
+            f"Status: {status}, Has data: {has_data if 'has_data' in locals() else False}" if not success else "",
+            {"status": status}
+        )
+        
+        # Step 9: Create portfolio with no allocations and test
+        print("\n📭 Step 9: Testing portfolio with no allocations...")
+        
+        try:
+            empty_portfolio_id = str(uuid.uuid4())
+            
+            # Create portfolio with no allocations
+            mongo_script = f'''
+use('test_database');
+var portfolioId = '{empty_portfolio_id}';
+var userId = '{self.user_id}';
+db.user_portfolios.insertOne({{
+  _id: portfolioId,
+  user_id: userId,
+  name: "Empty Portfolio",
+  goal: "Test",
+  type: "manual",
+  risk_tolerance: "moderate",
+  roi_expectations: 10,
+  allocations: [],
+  holdings: [],
+  total_invested: 0,
+  current_value: 0,
+  total_return: 0,
+  total_return_percentage: 0,
+  is_active: true,
+  created_at: new Date(),
+  updated_at: new Date(),
+  last_invested_at: null
+}});
+print('Empty portfolio created');
+'''
+            
+            result = subprocess.run(
+                ['mongosh', '--eval', mongo_script],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                status, data = self.make_request('GET', f'portfolios-v2/{empty_portfolio_id}/performance?time_period=1y')
+                success = status == 200 and isinstance(data, dict)
+                
+                if success:
+                    # Should return empty/zero data gracefully
+                    return_percentage = data.get('return_percentage', 0)
+                    time_series = data.get('time_series', [])
+                    
+                    graceful_handling = return_percentage == 0 and len(time_series) == 0
+                    success = graceful_handling
+                    details = f"return_percentage: {return_percentage}, time_series_length: {len(time_series)}"
+                else:
+                    details = f"Status: {status}"
+                
+                self.log_test(
+                    "Portfolio with no allocations handled gracefully", 
+                    success,
+                    details if not success else "",
+                    {
+                        "status": status,
+                        "return_percentage": data.get('return_percentage') if isinstance(data, dict) else None,
+                        "time_series_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0
+                    }
+                )
+            else:
+                self.log_test(
+                    "Portfolio with no allocations test setup", 
+                    False,
+                    f"Failed to create empty portfolio: {result.stderr}",
+                    {}
+                )
+                
+        except Exception as e:
+            self.log_test(
+                "Portfolio with no allocations test", 
+                False,
+                f"Exception: {str(e)}",
+                {}
+            )
+
     def test_portfolio_endpoints(self):
         """Test portfolio functionality - updated for bug fix verification"""
         print("\n📊 Testing Portfolio Endpoints...")
         
         # Run comprehensive portfolio accept and load tests
         self.test_portfolio_accept_and_load_functionality()
+        
+        # Test portfolio performance endpoint with S&P 500 comparison
+        self.test_portfolio_performance_endpoint()
         
         # Test existing portfolio endpoints
         status, data = self.make_request('GET', 'portfolios/existing')
