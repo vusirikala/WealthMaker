@@ -1197,8 +1197,8 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         context_info += "\n\n- FINANCIAL GOALS & LIQUIDITY NEEDS:"
         for req in user_context['liquidity_requirements']:
             goal_name = req.get('goal_name', req.get('goal', 'Goal'))
-            target_amount = req.get('target_amount', req.get('amount', 0))
-            amount_saved = req.get('amount_saved', 0)
+            target_amount = req.get('target_amount', req.get('amount', 0)) or 0
+            amount_saved = req.get('amount_saved', 0) or 0
             amount_needed = req.get('amount_needed', target_amount - amount_saved)
             target_date = req.get('target_date', req.get('when', 'TBD'))
             priority = req.get('priority', 'medium')
