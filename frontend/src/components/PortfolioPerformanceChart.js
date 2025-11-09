@@ -177,10 +177,10 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
                 <div className="h-12 w-px bg-gray-300"></div>
 
                 {/* Outperformance */}
-                <div className="flex flex-col">
-                  <span className="text-xs text-gray-600 mb-1">{outperforming ? 'Outperforming' : 'Underperforming'}</span>
-                  <div className={`flex items-center gap-2 ${outperforming ? 'text-green-600' : 'text-red-600'}`}>
-                    <span className="text-2xl font-bold">
+                <div className="flex flex-col min-w-[120px]">
+                  <span className="text-xs text-gray-600 mb-1 whitespace-nowrap">{outperforming ? 'Outperforming' : 'Underperforming'}</span>
+                  <div className={`flex items-center gap-1 ${outperforming ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className="text-2xl font-bold whitespace-nowrap">
                       {outperforming ? '↑' : '↓'} {Math.abs(return_percentage - sp500Return).toFixed(2)}%
                     </span>
                   </div>
