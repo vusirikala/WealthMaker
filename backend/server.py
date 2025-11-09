@@ -2,17 +2,21 @@
 WealthMaker Backend - Modular FastAPI Application
 Main application file that imports and registers all route modules
 """
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Dict, Any, List
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from motor.motor_asyncio import AsyncIOMotorClient
 import uuid
 import os
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
+import finnhub
+import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
