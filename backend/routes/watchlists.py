@@ -7,7 +7,7 @@ from typing import List, Optional
 from datetime import datetime, timezone
 import uuid
 import logging
-from utils.auth import require_auth
+from utils.dependencies import require_auth
 from models.user import User
 from utils.database import db
 import yfinance as yf
