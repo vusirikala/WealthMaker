@@ -574,7 +574,7 @@ async def get_portfolio_performance(
     
     # Calculate historical returns
     try:
-        performance_data = calculate_portfolio_historical_returns(
+        performance_data = await calculate_portfolio_historical_returns(
             allocations=allocations,
             time_period=time_period,
             db=db
