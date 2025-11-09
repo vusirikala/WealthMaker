@@ -3,6 +3,7 @@ import PortfolioSidebar from "./PortfolioSidebar";
 import PortfolioView from "./PortfolioView";
 import AddPortfolioModal from "./AddPortfolioModal";
 import ManualPortfolioBuilder from "./ManualPortfolioBuilder";
+import AIPortfolioBuilder from "./AIPortfolioBuilder";
 import ChatTab from "./ChatTab";
 
 export default function MultiPortfolioDashboard() {
