@@ -184,12 +184,22 @@ class SharedAssetsService:
             logger.error(f"Error fetching complete data for {symbol}: {e}")
             return None
     
-    def _get_asset_type(self, symbol: str) -> str:
-        """Determine asset type from symbol"""
+    def _get_asset_type(self, symbol: str, info: dict) -> str:
+        """Determine asset type from symbol and info"""
         if symbol in self.CRYPTO:
             return "crypto"
         elif symbol in self.COMMODITIES:
             return "commodity"
+        
+        # Check quoteType from yfinance info
+        quote_type = info.get('quoteType', '').lower()
+        
+        if quote_type == 'etf':
+            return "etf"
+        elif quote_type in ['mutualfund', 'fund']:
+            return "fund"
+        elif 'bond' in symbol.lower() or 'bnd' in symbol.lower():
+            return "bond"
         else:
             return "stock"
     
