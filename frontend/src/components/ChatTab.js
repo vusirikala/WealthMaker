@@ -8,17 +8,21 @@ import ReactMarkdown from "react-markdown";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-export default function ChatTab() {
+export default function ChatTab({ portfolioId = null }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [pendingSuggestions, setPendingSuggestions] = useState({});
+  const [portfolioContext, setPortfolioContext] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     loadChatHistory();
-  }, []);
+    if (portfolioId) {
+      loadPortfolioContext();
+    }
+  }, [portfolioId]);
 
   useEffect(() => {
     scrollToBottom();
