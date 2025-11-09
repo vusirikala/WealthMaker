@@ -655,46 +655,48 @@ WRONG:
 - Stock picks that sum to 45% when user wants 60% ✗
 - Bond picks that sum to 35% when user wants 30% ✗
 
-SECTOR-TO-TICKER MAPPING (Choose from these based on strategy):
-
-STOCKS Sector ({sector_allocation.get('stocks', {}).get('allocation', 0)}% REQUIRED):
-  * Growth strategy → AAPL (7-10%), MSFT (7-10%), NVDA (5-8%), GOOGL (5-8%), TSLA (3-5%)
-  * Value strategy → BRK.B (8-12%), JPM (5-7%), JNJ (5-7%), PG (4-6%)
-  * Income strategy → VYM (10-15%), SCHD (8-12%), or JNJ (6-8%) + PG (6-8%)
-  * Index funds → SPY (15-30%), VOO (15-30%), VTI (20-40%)
-  * IMPORTANT: Sum all stock allocations to EXACTLY {sector_allocation.get('stocks', {}).get('allocation', 0)}%
-
-BONDS Sector ({sector_allocation.get('bonds', {}).get('allocation', 0)}% REQUIRED):
-  * Conservative → AGG (15-20%), BND (10-15%), TLT (5-10%)
-  * Income strategy → HYG (8-12%), LQD (10-15%)
-  * IMPORTANT: Sum all bond allocations to EXACTLY {sector_allocation.get('bonds', {}).get('allocation', 0)}%
-
-CRYPTO Sector ({sector_allocation.get('crypto', {}).get('allocation', 0)}% REQUIRED):
-  * BITO (3-7%), ETHE (2-5%), COIN (2-4%)
-  * IMPORTANT: Sum all crypto allocations to EXACTLY {sector_allocation.get('crypto', {}).get('allocation', 0)}%
-
-REAL ESTATE Sector ({sector_allocation.get('real_estate', {}).get('allocation', 0)}% REQUIRED):
-  * Broad → VNQ (5-10%), SCHH (5-8%), IYR (5-8%)
-  * Individual REITs → O (3-5%), VICI (2-4%)
-  * IMPORTANT: Sum all real estate allocations to EXACTLY {sector_allocation.get('real_estate', {}).get('allocation', 0)}%
-
-COMMODITIES Sector ({sector_allocation.get('commodities', {}).get('allocation', 0)}% REQUIRED):
-  * Gold → GLD (3-7%), IAU (3-6%)
-  * Oil → USO (2-4%)
-  * Diversified → DBC (4-8%)
-  * IMPORTANT: Sum all commodity allocations to EXACTLY {sector_allocation.get('commodities', {}).get('allocation', 0)}%
-
-FOREX Sector ({sector_allocation.get('forex', {}).get('allocation', 0)}% REQUIRED):
-  * UUP (3-5%), FXE (2-4%), FXY (2-3%)
-  * IMPORTANT: Sum all forex allocations to EXACTLY {sector_allocation.get('forex', {}).get('allocation', 0)}%
-
-CALCULATION EXAMPLE:
-If user wants: Stocks 60%, Bonds 30%, Crypto 10%
-Your output MUST have:
-- Stock tickers that sum to 60% (e.g., AAPL 20% + MSFT 15% + NVDA 10% + SPY 15% = 60%)
-- Bond tickers that sum to 30% (e.g., AGG 20% + BND 10% = 30%)
-- Crypto tickers that sum to 10% (e.g., BITO 6% + ETHE 4% = 10%)
-TOTAL = 100%
+TICKER RECOMMENDATIONS BY SECTOR:
+"""
+    
+    # Build ticker recommendations based on actual requirements
+    if 'stocks' in sector_requirements:
+        pct = sector_requirements['stocks']
+        prompt += f"\nSTOCKS ({pct}% required):\n"
+        if 'growth' in strategy_str.lower():
+            prompt += "  Use: AAPL, MSFT, NVDA, GOOGL, AMZN (growth stocks)\n"
+        elif 'value' in strategy_str.lower():
+            prompt += "  Use: BRK.B, JPM, JNJ, PG, WMT (value stocks)\n"
+        elif 'index' in strategy_str.lower():
+            prompt += "  Use: SPY, VOO, VTI (index ETFs)\n"
+        else:
+            prompt += "  Use: Mix of AAPL, MSFT, SPY, VOO\n"
+    
+    if 'bonds' in sector_requirements:
+        pct = sector_requirements['bonds']
+        prompt += f"\nBONDS ({pct}% required):\n"
+        prompt += "  Use: AGG, BND, TLT (bond ETFs)\n"
+    
+    if 'crypto' in sector_requirements:
+        pct = sector_requirements['crypto']
+        prompt += f"\nCRYPTO ({pct}% required):\n"
+        prompt += "  Use: BITO, ETHE (crypto ETFs)\n"
+    
+    if 'real_estate' in sector_requirements:
+        pct = sector_requirements['real_estate']
+        prompt += f"\nREAL ESTATE ({pct}% required):\n"
+        prompt += "  Use: VNQ, SCHH (REIT ETFs)\n"
+    
+    if 'commodities' in sector_requirements:
+        pct = sector_requirements['commodities']
+        prompt += f"\nCOMMODITIES ({pct}% required):\n"
+        prompt += "  Use: GLD, DBC (commodity ETFs)\n"
+    
+    if 'forex' in sector_requirements:
+        pct = sector_requirements['forex']
+        prompt += f"\nFOREX ({pct}% required):\n"
+        prompt += "  Use: UUP, FXE (currency ETFs)\n"
+    
+    prompt += """
 
 STRATEGY ALIGNMENT:
 - Value Investing → Focus on undervalued stocks with low P/E ratios (BRK.B, JPM, XOM)
