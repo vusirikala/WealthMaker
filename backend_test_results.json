@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T03:07:25.403848+00:00",
-  "total_tests": 78,
-  "passed_tests": 73,
-  "success_rate": 93.58974358974359,
+  "timestamp": "2025-11-09T03:36:41.714509+00:00",
+  "total_tests": 89,
+  "passed_tests": 80,
+  "success_rate": 89.8876404494382,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762657607",
-        "email": "test.user.1762657607@example.com",
-        "name": "Test User 1762657607",
+        "_id": "test-user-1762659352",
+        "email": "test.user.1762659352@example.com",
+        "name": "Test User 1762659352",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T03:06:47.573000"
+        "created_at": "2025-11-09T03:35:52.867000"
       }
     },
     {
@@ -29,13 +29,13 @@
       "success": true,
       "details": "",
       "response_data": {
-        "total_assets": 6,
+        "total_assets": 18,
         "by_type": {
-          "stocks": 4,
+          "stocks": 16,
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T02:48:31.642455+00:00",
+        "last_updated": "2025-11-09T03:33:16.665642+00:00",
         "status": "active"
       }
     },
@@ -46,13 +46,13 @@
       "response_data": {
         "message": "Database already initialized",
         "stats": {
-          "total_assets": 6,
+          "total_assets": 18,
           "by_type": {
-            "stocks": 4,
+            "stocks": 16,
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T02:48:31.642455+00:00",
+          "last_updated": "2025-11-09T03:33:16.665642+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -63,7 +63,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "asset_count": 6
+        "asset_count": 18
       }
     },
     {
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T02:48:31.642455+00:00",
+          "lastUpdated": "2025-11-09T03:06:50.664029+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T02:48:31.641673+00:00",
+              "timestamp": "2025-11-09T03:06:50.663152+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T02:48:31.641677+00:00",
+              "lastUpdated": "2025-11-09T03:06:50.663156+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T03:06:48.809280+00:00",
+          "lastUpdated": "2025-11-09T03:35:54.121836+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T03:06:48.808562+00:00",
+              "timestamp": "2025-11-09T03:35:54.121020+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T03:06:48.808566+00:00",
+              "lastUpdated": "2025-11-09T03:35:54.121024+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -862,6 +862,140 @@
         "success": true,
         "symbol": "AAPL",
         "message": "Stopped tracking AAPL"
+      }
+    },
+    {
+      "test": "52-week high/low for AAPL (large-cap)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "AAPL",
+        "fiftyTwoWeekHigh": 277.32,
+        "fiftyTwoWeekLow": 169.21,
+        "valid": true
+      }
+    },
+    {
+      "test": "52-week high/low for MSFT (large-cap)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "MSFT",
+        "fiftyTwoWeekHigh": 555.45,
+        "fiftyTwoWeekLow": 344.79,
+        "valid": true
+      }
+    },
+    {
+      "test": "52-week high/low for GOOGL (large-cap)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "GOOGL",
+        "fiftyTwoWeekHigh": 291.59,
+        "fiftyTwoWeekLow": 140.53,
+        "valid": true
+      }
+    },
+    {
+      "test": "52-week high/low for AMD (mid-cap)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "AMD",
+        "fiftyTwoWeekHigh": 267.08,
+        "fiftyTwoWeekLow": 76.48
+      }
+    },
+    {
+      "test": "52-week high/low for NVDA (mid-cap)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "NVDA",
+        "fiftyTwoWeekHigh": 212.19,
+        "fiftyTwoWeekLow": 86.62
+      }
+    },
+    {
+      "test": "52-week high/low for SPY (ETF/Bond)",
+      "success": false,
+      "details": "High: None, Low: None",
+      "response_data": {
+        "symbol": "SPY",
+        "fiftyTwoWeekHigh": null,
+        "fiftyTwoWeekLow": null
+      }
+    },
+    {
+      "test": "52-week high/low for BND (ETF/Bond)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "BND",
+        "fiftyTwoWeekHigh": 75.15,
+        "fiftyTwoWeekLow": 71.1
+      }
+    },
+    {
+      "test": "52-week high/low for BTC-USD (crypto)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "BTC-USD",
+        "fiftyTwoWeekHigh": 126198.07,
+        "fiftyTwoWeekLow": 74436.68
+      }
+    },
+    {
+      "test": "Auto-initialize BA with 52-week data",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "BA",
+        "auto_initialized": true,
+        "has_52_week_data": true
+      }
+    },
+    {
+      "test": "Auto-initialize JPM with 52-week data",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "JPM",
+        "auto_initialized": true,
+        "has_52_week_data": true
+      }
+    },
+    {
+      "test": "Auto-initialize V with 52-week data",
+      "success": false,
+      "details": "Symbol: True, LiveData: True, High: None, Low: None",
+      "response_data": {
+        "symbol": "V",
+        "auto_initialized": false,
+        "has_52_week_data": false
+      }
+    },
+    {
+      "test": "52-week data persistence in shared_assets collection",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "symbol": "AAPL",
+        "persistent": true,
+        "first_high": 277.32,
+        "second_high": 277.32
+      }
+    },
+    {
+      "test": "Edge case handling for PLTR (graceful handling)",
+      "success": false,
+      "details": "No crash: True, Has values: False, High: None, Low: None",
+      "response_data": {
+        "symbol": "PLTR",
+        "graceful_handling": false,
+        "status": 200
       }
     },
     {
@@ -896,7 +1030,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.04379773139953613,
+        "response_time": 0.03829216957092285,
         "fast_response": true
       }
     },
@@ -947,7 +1081,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03792119026184082,
+        "response_time": 0.03428983688354492,
         "cached": true
       }
     },
@@ -956,7 +1090,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.040296077728271484,
+        "response_time": 0.03977680206298828,
         "cached": true
       }
     },
@@ -965,7 +1099,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.04259920120239258,
+        "response_time": 0.036661624908447266,
         "cached": true
       }
     },
@@ -1091,27 +1225,10 @@
     },
     {
       "test": "POST /chat/send (basic message)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 408",
       "response_data": {
-        "has_response": true
-      }
-    },
-    {
-      "test": "Message saved to chat_messages collection",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "user_messages": 1,
-        "ai_messages": 2
-      }
-    },
-    {
-      "test": "AI response generated and returned",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "response_length": 233
+        "has_response": false
       }
     },
     {
@@ -1185,7 +1302,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "8c0e75de-6852-4212-bc85-031ee3b4e5ea"
+        "suggestion_id": "fcf6cbdf-0ec3-4523-b61d-c274a46e395d"
       }
     },
     {
@@ -1214,7 +1331,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "45f739cc-9d7b-48a0-9bd2-4d68a4fa28a3",
+        "id_value": "79bbb319-0c04-4a4c-a5ea-f40b052b0be6",
         "id_type": "str"
       }
     },
