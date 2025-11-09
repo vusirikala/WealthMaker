@@ -337,6 +337,14 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
           </div>
         </div>
       )}
+
+      {/* Edit Allocation Modal */}
+      <EditAllocationModal
+        isOpen={showEditAllocationModal}
+        onClose={() => setShowEditAllocationModal(false)}
+        portfolio={portfolio}
+        onSuccess={loadPortfolio}
+      />
     </div>
   );
 }
