@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T08:57:13.730505+00:00",
-  "total_tests": 110,
-  "passed_tests": 104,
-  "success_rate": 94.54545454545455,
+  "timestamp": "2025-11-09T09:07:38.027846+00:00",
+  "total_tests": 116,
+  "passed_tests": 110,
+  "success_rate": 94.82758620689656,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762678565",
-        "email": "test.user.1762678565@example.com",
-        "name": "Test User 1762678565",
+        "_id": "test-user-1762679169",
+        "email": "test.user.1762679169@example.com",
+        "name": "Test User 1762679169",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T08:56:06.111000"
+        "created_at": "2025-11-09T09:06:09.308000"
       }
     },
     {
@@ -35,7 +35,7 @@
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T08:51:56.347687+00:00",
+        "last_updated": "2025-11-09T08:56:17.155776+00:00",
         "status": "active"
       }
     },
@@ -52,7 +52,7 @@
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T08:51:56.347687+00:00",
+          "last_updated": "2025-11-09T08:56:17.155776+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T08:51:48.516658+00:00",
+          "lastUpdated": "2025-11-09T08:56:09.437463+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T08:51:48.515846+00:00",
+              "timestamp": "2025-11-09T08:56:09.436637+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T08:51:48.515849+00:00",
+              "lastUpdated": "2025-11-09T08:56:09.436640+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T08:56:06.974023+00:00",
+          "lastUpdated": "2025-11-09T09:06:10.421906+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T08:56:06.973173+00:00",
+              "timestamp": "2025-11-09T09:06:10.420963+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T08:56:06.973176+00:00",
+              "lastUpdated": "2025-11-09T09:06:10.420967+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -862,6 +862,68 @@
         "success": true,
         "symbol": "AAPL",
         "message": "Stopped tracking AAPL"
+      }
+    },
+    {
+      "test": "Create test portfolio (AAPL 50%, GOOGL 50%)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_id": "2e138423-ec88-468c-92ba-d5d2384452e8"
+      }
+    },
+    {
+      "test": "6m performance - return_percentage valid, time_series starts near 0%, S&P 500 starts near 0%",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "return_percentage": 90.89,
+        "first_return": 0.0,
+        "first_sp500_return": 0.0,
+        "time_series_length": 124
+      }
+    },
+    {
+      "test": "1y performance - different from 6m, starts near 0%, S&P 500 starts near 0%",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "return_percentage": 77.45,
+        "different_from_6m": true,
+        "first_return": 0.0,
+        "first_sp500_return": 0.0
+      }
+    },
+    {
+      "test": "3y performance - different from 1y, starts near 0%, S&P 500 starts near 0%",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "return_percentage": 159.56,
+        "different_from_1y": true,
+        "first_return": 0.0,
+        "first_sp500_return": 0.0
+      }
+    },
+    {
+      "test": "Last time_series value matches return_percentage",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "return_percentage": 77.45,
+        "last_time_series_value": 77.45,
+        "match": true
+      }
+    },
+    {
+      "test": "RECALIBRATION FIX VERIFIED: Different time periods show DIFFERENT return percentages",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "6m_return": 90.89,
+        "1y_return": 77.45,
+        "3y_return": 159.56,
+        "all_different": true
       }
     },
     {
@@ -1030,7 +1092,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.03650712966918945,
+        "response_time": 0.03727388381958008,
         "fast_response": true
       }
     },
@@ -1081,7 +1143,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.0366363525390625,
+        "response_time": 0.03948020935058594,
         "cached": true
       }
     },
@@ -1090,7 +1152,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03765225410461426,
+        "response_time": 0.03711223602294922,
         "cached": true
       }
     },
@@ -1099,16 +1161,16 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03628206253051758,
+        "response_time": 0.03857779502868652,
         "cached": true
       }
     },
     {
       "test": "POST /api/portfolios-v2/create (manual portfolio)",
-      "success": "4f9eef1d-3952-461f-8185-228b75d72459",
+      "success": "50c23dc0-480a-437e-8d14-576ad3de285c",
       "details": "",
       "response_data": {
-        "portfolio_id": "4f9eef1d-3952-461f-8185-228b75d72459",
+        "portfolio_id": "50c23dc0-480a-437e-8d14-576ad3de285c",
         "allocations_count": 3
       }
     },
@@ -1117,11 +1179,11 @@
       "success": true,
       "details": "",
       "response_data": {
-        "portfolio_count": 1
+        "portfolio_count": 2
       }
     },
     {
-      "test": "GET /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459",
+      "test": "GET /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c",
       "success": true,
       "details": "",
       "response_data": {
@@ -1129,7 +1191,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459",
+      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c",
       "success": true,
       "details": "",
       "response_data": {
@@ -1137,7 +1199,7 @@
       }
     },
     {
-      "test": "POST /api/portfolios-v2/d4b8a5fd-198e-43f5-9ed2-4a62260a3501/invest ($10,000)",
+      "test": "POST /api/portfolios-v2/9742f8ea-ef04-4a81-a3e6-8864f6b63aa1/invest ($10,000)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1166,7 +1228,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459/allocations (valid - sums to 100%)",
+      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c/allocations (valid - sums to 100%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1174,7 +1236,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459/allocations (invalid - sums to 110%)",
+      "test": "PUT /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c/allocations (invalid - sums to 110%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1182,7 +1244,7 @@
       }
     },
     {
-      "test": "DELETE /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459 (soft delete)",
+      "test": "DELETE /api/portfolios-v2/50c23dc0-480a-437e-8d14-576ad3de285c (soft delete)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1336,8 +1398,10 @@
     {
       "test": "Update context with mixed liquidity_requirements",
       "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "details": "Status: 408",
+      "response_data": {
+        "error": "Request timeout"
+      }
     },
     {
       "test": "No AttributeError in build_context_string",
@@ -1396,7 +1460,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "3c6893a3-e3e2-437b-9e9a-9fdb1754c8ef"
+        "suggestion_id": "e2b04925-d533-4ab6-b47b-5681766f7a8f"
       }
     },
     {
@@ -1425,7 +1489,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "1e4341e3-c2c6-42e1-8bcb-89ee5b049e70",
+        "id_value": "6f38d993-e8b8-42bc-87ba-256066af8a1e",
         "id_type": "str"
       }
     },
@@ -1475,7 +1539,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "portfolio_id": "d88d1ff2-494b-41ab-a80f-70eeaa8846d1"
+        "portfolio_id": "c1417292-4ebe-4312-b2ec-69dc80c83c0e"
       }
     },
     {
@@ -1484,10 +1548,10 @@
       "details": "",
       "response_data": {
         "status": 200,
-        "return_percentage": 169.52,
+        "return_percentage": 66.33,
         "time_series_length": 249,
         "sp500_time_series_length": 249,
-        "sp500_current_return": 89.78
+        "sp500_current_return": 20.52
       }
     },
     {
