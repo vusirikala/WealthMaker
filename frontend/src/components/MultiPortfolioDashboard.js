@@ -76,14 +76,17 @@ export default function MultiPortfolioDashboard() {
             </div>
           </div>
           
-          {/* Close Button - Absolute positioned to ensure visibility */}
+          {/* Close Button - Highly visible and prominent */}
           <button
             onClick={() => setShowChat(false)}
-            className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white text-cyan-600 rounded-lg transition-all flex items-center justify-center shadow-lg hover:shadow-xl z-50"
+            className="absolute top-4 right-4 w-12 h-12 bg-white hover:bg-gray-50 text-gray-900 rounded-full transition-all flex items-center justify-center shadow-2xl hover:shadow-3xl border-2 border-gray-300 hover:border-cyan-500 z-[100]"
             title="Close chat"
             aria-label="Close chat"
+            style={{ 
+              boxShadow: '0 10px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1)',
+            }}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <svg className="w-7 h-7 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
