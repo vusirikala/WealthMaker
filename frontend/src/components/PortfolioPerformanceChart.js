@@ -145,7 +145,7 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
           <h3 className="text-lg font-bold text-gray-900 mb-3">Historical Performance</h3>
           
           {/* All metrics in one line */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 flex-wrap">
             {/* Portfolio Return */}
             <div className="flex flex-col min-w-[140px]">
               <span className="text-xs text-gray-600 mb-1 whitespace-nowrap">Your Portfolio</span>
