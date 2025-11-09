@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, MessageSquare, PieChart, Newspaper, TrendingUp, Sparkles, User, Settings } from "lucide-react";
+import { LogOut, MessageSquare, PieChart, Newspaper, TrendingUp, Sparkles, User, Settings, Eye } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
