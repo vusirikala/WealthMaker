@@ -44,10 +44,9 @@ export default function Dashboard({ user, setIsAuthenticated }) {
         const context = await response.json();
         setUserContext(context);
         
-        // Show onboarding if critical fields are missing
-        const needsOnboarding = !context.portfolio_type || 
-                                !context.risk_tolerance || 
-                                (!context.monthly_investment && !context.annual_investment);
+        // Show onboarding if user hasn't completed it yet
+        // Check the dedicated onboarding_completed flag
+        const needsOnboarding = !context.onboarding_completed;
         
         setShowOnboarding(needsOnboarding);
       }
