@@ -726,7 +726,7 @@ VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
 □ If ANY sector doesn't match, RECALCULATE before responding"""
 
 CRITICAL REQUIREMENTS - STRICTLY ENFORCE:
-1. ⚠️ MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the user's specified percentage
+1. MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the user's specified percentage
    - If user says Stocks 60%, your stock allocations MUST add to 60%
    - If user says Bonds 30%, your bond allocations MUST add to 30%
    - If user says Crypto 10%, your crypto allocations MUST add to 10%
