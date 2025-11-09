@@ -271,9 +271,21 @@ metadata:
         agent: "main"
         comment: "Implemented portfolio editing and portfolio-specific chat features. Created EditAllocationModal component for editing allocations with validation. Updated PortfolioView to make allocations clickable - clicking on any ticker opens edit modal. Added Edit button to portfolio header. Updated ChatTab to accept portfolioId prop and include portfolio context in chat messages. Added portfolio context header showing which portfolio is being discussed. Chat now provides portfolio-aware responses. Frontend restarted successfully."
 
+  - task: "Portfolio Deletion, Edit Info, and Export Features"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/DeletePortfolioModal.js, /app/frontend/src/components/EditPortfolioInfoModal.js, /app/frontend/src/components/ExportPortfolioModal.js, /app/backend/routes/portfolio_management.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented portfolio deletion, edit info, and export features. Created DeletePortfolioModal with confirmation (user must type portfolio name to confirm deletion). Created EditPortfolioInfoModal to edit portfolio name, goal, risk tolerance, and ROI. Created ExportPortfolioModal with PDF and CSV export options. Added backend endpoints: GET /api/portfolios-v2/{id}/export/csv (exports to CSV) and GET /api/portfolios-v2/{id}/export/json (provides data for PDF generation). Integrated jspdf and jspdf-autotable for frontend PDF generation. Updated PortfolioView with dropdown menu for all actions (Edit Info, Edit Allocations, Export, Delete). All services restarted successfully."
+
 test_plan:
   current_focus:
-    - "Portfolio Editing and Portfolio-Specific Chat"
+    - "Portfolio Deletion, Edit Info, and Export Features"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
