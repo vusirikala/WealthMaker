@@ -54,7 +54,7 @@ async def get_cached_price_data(ticker: str, start_date: datetime, end_date: dat
     return hist['Close']
 
 
-def calculate_portfolio_historical_returns(
+async def calculate_portfolio_historical_returns(
     allocations: List[Dict[str, Any]],
     time_period: str = "1y",
     db = None
