@@ -56,6 +56,7 @@ export default function PortfolioTab() {
   const [selectedStock, setSelectedStock] = useState(null);
   const [selectedHolding, setSelectedHolding] = useState(null);
   const [showStockDetail, setShowStockDetail] = useState(false);
+  const [showAddStockModal, setShowAddStockModal] = useState(false);
 
   useEffect(() => {
     loadPortfolio();
