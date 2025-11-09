@@ -296,7 +296,15 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
             <div className="space-y-3">
               {hasHoldings ? (
                 portfolio.holdings.map((holding, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div 
+                    key={idx} 
+                    onClick={() => {
+                      setSelectedStock(holding.ticker);
+                      setSelectedHolding(holding);
+                      setShowStockDetail(true);
+                    }}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
                     <div>
                       <div className="font-bold text-gray-900">{holding.ticker}</div>
                       <div className="text-xs text-gray-600">
@@ -320,7 +328,11 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
                 portfolio.allocations.map((alloc, idx) => (
                   <div 
                     key={idx} 
-                    onClick={() => setShowEditAllocationModal(true)}
+                    onClick={() => {
+                      setSelectedStock(alloc.ticker);
+                      setSelectedHolding(null);
+                      setShowStockDetail(true);
+                    }}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors group"
                   >
                     <div className="font-bold text-gray-900">{alloc.ticker}</div>
@@ -328,7 +340,6 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
                       <div className="font-bold gradient-text">
                         {alloc.allocation_percentage}%
                       </div>
-                      <Edit className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
                 ))
