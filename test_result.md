@@ -331,9 +331,21 @@ metadata:
         agent: "main"
         comment: "Implemented comprehensive portfolio context system for LLM conversations. Created portfolio_context_builder.py service with build_portfolio_context() function that gathers: portfolio name, purpose/goal, user demographics (age), risk tolerance, sector preferences, investment strategies, current allocations, actual holdings with performance, financial goals, liquidity needs, and recent chat history. Created build_portfolio_system_message() to format this as LLM system message. Updated chat send endpoint to detect portfolio-specific chats and build appropriate context. Portfolio context provides full visibility of portfolio state, user preferences, and conversation history to LLM for intelligent, contextual responses. Backend restarted successfully."
 
+  - task: "Stock Detail Modal in New Portfolio View"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PortfolioView.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added stock detail modal functionality to new portfolio view. Imported StockDetailModal component. Added state variables for showStockDetail, selectedStock, and selectedHolding. Made both holdings and allocations clickable - clicking on any ticker opens the stock detail modal showing price, charts, news, and company information. Holdings pass holding data to show purchase info. Allocations pass ticker only for stock details. Frontend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Comprehensive Portfolio Context for LLM"
+    - "Stock Detail Modal in New Portfolio View"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
