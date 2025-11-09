@@ -101,3 +101,61 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "After the user registers and finishes the onboarding form, the chatbot should interact with the user to understand the user's financial goals, past investments, sector preferences, liquidity goals, etc. As the user may not know how to start interacting with the chatbot, the chatbot should initiate the conversation when the user logs in."
+
+backend:
+  - task: "Add first_chat_initiated field to UserContext model"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added first_chat_initiated boolean field to UserContext model to track if chat has been auto-initiated for the user"
+  
+  - task: "Create /api/chat/init endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created new GET endpoint /api/chat/init that checks if user has opened chat for first time, generates personalized greeting message asking about financial goals, investments, risk tolerance, sectors, and saves it to chat history. Marks first_chat_initiated as true after generating message."
+
+frontend:
+  - task: "Auto-initiate chat conversation in ChatTab component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ChatTab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Modified loadChatHistory function to call /api/chat/init endpoint when no messages exist. If init returns a message, it's displayed as the first AI message automatically when user opens chat tab."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Create /api/chat/init endpoint"
+    - "Auto-initiate chat conversation in ChatTab component"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Implemented auto-initiate chat feature. Added first_chat_initiated tracking field to UserContext model. Created /api/chat/init endpoint that generates personalized greeting message for first-time chat users. Modified frontend ChatTab to call init endpoint when no messages exist. Backend restarted successfully. Ready for testing."
