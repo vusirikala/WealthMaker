@@ -219,6 +219,11 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "suggestion_id": suggestion_id
     }
+    
+    # Add portfolio_id if provided
+    if portfolio_id:
+        ai_msg_doc["portfolio_id"] = portfolio_id
+    
     await db.chat_messages.insert_one(ai_msg_doc)
     
     return ChatResponse(
