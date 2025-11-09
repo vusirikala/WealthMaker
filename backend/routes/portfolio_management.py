@@ -84,8 +84,13 @@ async def create_portfolio(
         "name": request.name,
         "goal": request.goal,
         "type": request.type,
+        "investment_type": getattr(request, 'investment_type', 'investment'),  # Default to 'investment'
         "risk_tolerance": request.risk_tolerance,
         "roi_expectations": request.roi_expectations,
+        "time_horizon": getattr(request, 'time_horizon', None),
+        "monitoring_frequency": getattr(request, 'monitoring_frequency', None),
+        "sector_preferences": getattr(request, 'sector_preferences', None),
+        "investment_strategy": getattr(request, 'investment_strategy', None),
         "allocations": request.allocations,
         "holdings": [],
         "total_invested": 0.0,
