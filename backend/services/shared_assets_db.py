@@ -282,6 +282,35 @@ class SharedAssetsService:
             change = current_price - previous_close if previous_close > 0 else 0
             change_percent = (change / previous_close * 100) if previous_close > 0 else 0
             
+            # Fetch news from Finnhub
+            news_items = []
+            try:
+                import finnhub
+                import os
+                finnhub_client = finnhub.Client(api_key=os.environ.get('FINNHUB_API_KEY', ''))
+                
+                today = datetime.now(timezone.utc)
+                week_ago = today - timedelta(days=7)
+                from_date = week_ago.strftime('%Y-%m-%d')
+                to_date = today.strftime('%Y-%m-%d')
+                
+                news = finnhub_client.company_news(symbol, _from=from_date, to=to_date)
+                
+                for item in news[:10]:  # Keep last 10 news items
+                    news_items.append({
+                        "headline": item.get('headline', ''),
+                        "title": item.get('headline', ''),
+                        "summary": item.get('summary', ''),
+                        "source": item.get('source', ''),
+                        "url": item.get('url', ''),
+                        "image": item.get('image', ''),
+                        "datetime": datetime.fromtimestamp(item.get('datetime', 0), tz=timezone.utc).isoformat() if item.get('datetime') else None,
+                        "timestamp": datetime.fromtimestamp(item.get('datetime', 0), tz=timezone.utc).isoformat() if item.get('datetime') else None,
+                        "sentiment": self._analyze_sentiment(item.get('headline', ''))
+                    })
+            except Exception as e:
+                logger.warning(f"Could not fetch news for {symbol}: {e}")
+            
             live_data = {
                 "currentPrice": {
                     "price": current_price,
@@ -295,7 +324,7 @@ class SharedAssetsService:
                     "fiftyTwoWeekLow": float(info.get('fiftyTwoWeekLow', 0))
                 },
                 
-                "recentNews": [],  # To be populated from news service
+                "recentNews": news_items,
                 
                 "analystRatings": {
                     "lastUpdated": datetime.now(timezone.utc).isoformat(),
