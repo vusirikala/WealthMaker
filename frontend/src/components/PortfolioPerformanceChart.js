@@ -25,7 +25,7 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
     }
   }, [portfolioId, selectedPeriod]);
 
-  // Force chart re-render on window resize
+  // Force chart re-render on window resize and layout changes
   useEffect(() => {
     const handleResize = () => {
       setChartKey(prev => prev + 1);
@@ -33,12 +33,20 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
 
     window.addEventListener('resize', handleResize);
     
-    // Also trigger on layout changes (like chat opening)
-    const timer = setTimeout(handleResize, 350); // Slightly after animation
+    // Observe parent container size changes (for chat open/close)
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+
+    // Observe the body or parent container
+    const container = document.body;
+    if (container) {
+      resizeObserver.observe(container);
+    }
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      clearTimeout(timer);
+      resizeObserver.disconnect();
     };
   }, []);
 
