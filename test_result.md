@@ -526,6 +526,22 @@ agent_communication:
     implemented: true
 
 
+
+  - task: "Fix Portfolio Performance Data Loading Error"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/services/portfolio_performance.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported 'Failed to load performance data' error when clicking on a portfolio."
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed JSON serialization error caused by NaN, Infinity, and None values in performance calculations. Root Cause: Backend was throwing 'ValueError: Out of range float values are not JSON compliant' when trying to serialize portfolio performance data. This occurred because pandas calculations can produce NaN (Not a Number) or Infinity values, especially when: 1) No price data available for certain periods, 2) Division by zero in return calculations, 3) Missing or insufficient historical data. Fix Implemented: 1) Added sanitize_float() helper function that converts NaN, Infinity, and None values to 0 or valid numbers. Uses np.isnan() and np.isinf() checks. Returns 0 for invalid values, rounds valid floats to 2 decimals. 2) Applied sanitization to all float values before JSON serialization: time_series return percentages, current_return calculation, all period_stats values (6m_return, 1y_return, 3y_return, 5y_return), sp500_comparison time_series and current_return. 3) Changed period_stats default from None to 0 for missing data (3y_return and 5y_return when insufficient history). 4) Added safety checks for sp500_returns_display length before accessing iloc[-1]. 5) Ensured sp500_current_return always has a valid value (defaults to 0). Impact: Portfolio performance data now loads successfully even with: incomplete historical data, newly created portfolios with limited history, tickers with missing price information, edge cases in calculation logic. Backend restarted successfully."
+
   - task: "Context-Aware Portfolio Generation with Sector & Strategy Alignment"
     implemented: true
     working: "NA"
