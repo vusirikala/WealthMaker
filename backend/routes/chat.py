@@ -211,7 +211,7 @@ def build_context_string(user_context):
     if user_context.get('portfolio_type'):
         context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
     
-    if user_context['portfolio_type'] == 'personal':
+    if user_context.get('portfolio_type') == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
             dob_str = user_context['date_of_birth']
