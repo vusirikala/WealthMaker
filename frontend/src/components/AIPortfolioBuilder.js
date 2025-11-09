@@ -343,23 +343,62 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                   Risk Tolerance *
                 </label>
                 <div className="grid grid-cols-3 gap-3">
-                  {['low', 'medium', 'high'].map((risk) => (
-                    <button
-                      key={risk}
-                      onClick={() => setRiskTolerance(risk)}
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        riskTolerance === risk
-                          ? 'border-purple-500 bg-purple-50'
-                          : 'border-gray-200 hover:border-purple-300'
-                      }`}
-                    >
-                      <div className="font-semibold text-gray-900 capitalize">{risk}</div>
-                      <div className="text-xs text-gray-600 mt-1">
-                        {risk === 'low' && 'Preserve capital'}
-                        {risk === 'medium' && 'Balanced growth'}
-                        {risk === 'high' && 'Maximum returns'}
-                      </div>
-                    </button>
+                  {riskToleranceOptions.map((option) => (
+                    <div key={option.value} className="relative">
+                      <button
+                        onClick={() => setRiskTolerance(option.value)}
+                        className={`w-full p-4 rounded-lg border-2 transition-all ${
+                          riskTolerance === option.value
+                            ? 'border-purple-500 bg-purple-50'
+                            : 'border-gray-200 hover:border-purple-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <span className="text-lg">{option.emoji}</span>
+                          <div className="font-semibold text-gray-900">{option.label}</div>
+                        </div>
+                        <div className="text-xs text-gray-600">{option.description}</div>
+                      </button>
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              className="absolute top-2 right-2 p-1 hover:bg-purple-100 rounded-full transition-colors"
+                            >
+                              <HelpCircle className="w-4 h-4 text-purple-600" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-sm p-4 bg-gray-900 text-white border-gray-700">
+                            <div className="space-y-3">
+                              <div>
+                                <p className="font-bold text-sm text-purple-400 mb-1">{option.label}</p>
+                                <p className="text-xs text-gray-300 leading-relaxed">{option.details}</p>
+                              </div>
+                              <div className="pt-2 border-t border-gray-700 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-gray-400">Expected ROI:</span>
+                                  <span className="text-xs font-semibold text-purple-400">{option.roiExpectation}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-gray-400">Volatility:</span>
+                                  <span className="text-xs font-semibold text-white">{option.volatility}</span>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs text-gray-400">Drawdown Risk:</span>
+                                  </div>
+                                  <p className="text-xs text-gray-400 italic">{option.drawdownRisk}</p>
+                                </div>
+                                <div className="pt-1 border-t border-gray-700">
+                                  <p className="text-xs text-gray-400"><span className="font-semibold text-white">Best for:</span> {option.bestFor}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   ))}
                 </div>
               </div>
