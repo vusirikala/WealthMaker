@@ -52,6 +52,203 @@ export default function OnboardingForm({ onComplete }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Validation helper functions
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return null;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const validateStep1 = () => {
+    if (!formData.portfolio_type) {
+      toast.error("Please select a portfolio type");
+      return false;
+    }
+
+    if (formData.portfolio_type === "personal" && formData.date_of_birth) {
+      const birthDate = new Date(formData.date_of_birth);
+      const today = new Date();
+      
+      // Check if date is in the future
+      if (birthDate > today) {
+        toast.error("Date of birth cannot be in the future");
+        return false;
+      }
+
+      const age = calculateAge(formData.date_of_birth);
+      
+      // Check if user is at least 13 years old
+      if (age < 13) {
+        toast.error("You must be at least 13 years old to use this product");
+        return false;
+      }
+
+      // Check if age is reasonable (not more than 120 years)
+      if (age > 120) {
+        toast.error("Please enter a valid date of birth");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const validateStep2 = () => {
+    if (formData.portfolio_type === "personal") {
+      // Validate net worth
+      if (formData.net_worth && parseFloat(formData.net_worth) < 0) {
+        toast.error("Net worth cannot be negative");
+        return false;
+      }
+
+      // Validate home ownership details
+      if (formData.home_ownership === "own") {
+        const housePrice = parseFloat(formData.house_price);
+        const mortgageAmount = parseFloat(formData.mortgage_amount);
+        const mortgageMonthly = parseFloat(formData.mortgage_monthly);
+
+        if (formData.house_price && housePrice <= 0) {
+          toast.error("House price must be a positive value");
+          return false;
+        }
+
+        if (formData.mortgage_amount && mortgageAmount < 0) {
+          toast.error("Mortgage amount cannot be negative");
+          return false;
+        }
+
+        if (formData.house_price && formData.mortgage_amount && mortgageAmount > housePrice) {
+          toast.error("Mortgage amount cannot exceed house price");
+          return false;
+        }
+
+        if (formData.mortgage_amount && mortgageAmount > 0 && !formData.mortgage_monthly) {
+          toast.error("Please provide monthly mortgage payment");
+          return false;
+        }
+
+        if (formData.mortgage_monthly && mortgageMonthly <= 0) {
+          toast.error("Monthly mortgage payment must be a positive value");
+          return false;
+        }
+
+        // Validate reasonable mortgage payment (rough check: monthly payment shouldn't be more than 1% of mortgage)
+        if (formData.mortgage_amount && formData.mortgage_monthly && mortgageAmount > 0) {
+          const maxReasonableMonthly = mortgageAmount * 0.015; // ~1.5% of mortgage per month
+          if (mortgageMonthly > maxReasonableMonthly) {
+            toast.error("Monthly mortgage payment seems unusually high. Please verify the amount.");
+            return false;
+          }
+        }
+      }
+    } else if (formData.portfolio_type === "institutional") {
+      // Validate annual revenue
+      if (formData.annual_revenue && parseFloat(formData.annual_revenue) <= 0) {
+        toast.error("Annual revenue must be a positive value");
+        return false;
+      }
+
+      // Validate annual profit vs revenue
+      if (formData.annual_revenue && formData.annual_profit) {
+        const revenue = parseFloat(formData.annual_revenue);
+        const profit = parseFloat(formData.annual_profit);
+        
+        if (profit > revenue) {
+          toast.error("Annual profit cannot exceed annual revenue");
+          return false;
+        }
+      }
+
+      // Validate number of employees
+      if (formData.number_of_employees) {
+        const employees = parseInt(formData.number_of_employees);
+        if (employees < 1) {
+          toast.error("Number of employees must be at least 1");
+          return false;
+        }
+        if (!Number.isInteger(employees)) {
+          toast.error("Number of employees must be a whole number");
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const validateStep3 = () => {
+    // Validate annual income (for personal)
+    if (formData.portfolio_type === "personal" && formData.annual_income) {
+      const annualIncome = parseFloat(formData.annual_income);
+      if (annualIncome <= 0) {
+        toast.error("Annual income must be a positive value");
+        return false;
+      }
+    }
+
+    // Validate monthly investment
+    if (formData.monthly_investment) {
+      const monthlyInvestment = parseFloat(formData.monthly_investment);
+      
+      if (monthlyInvestment <= 0) {
+        toast.error("Monthly investment must be a positive value");
+        return false;
+      }
+
+      // For personal portfolios, check if monthly investment exceeds monthly income
+      if (formData.portfolio_type === "personal" && formData.annual_income) {
+        const monthlyIncome = parseFloat(formData.annual_income) / 12;
+        if (monthlyInvestment > monthlyIncome) {
+          toast.error("Monthly investment cannot exceed your monthly income");
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const validateStep4 = () => {
+    // Validate ROI expectations
+    if (formData.roi_expectations) {
+      const roi = parseFloat(formData.roi_expectations);
+      
+      if (roi < 0) {
+        toast.error("Target annual return cannot be negative");
+        return false;
+      }
+
+      if (roi > 200) {
+        toast.error("Target annual return of more than 200% is unrealistic. Please enter a reasonable value.");
+        return false;
+      }
+
+      // Warn about unrealistic expectations based on risk tolerance
+      if (formData.risk_tolerance === "conservative" && roi > 15) {
+        toast.error("Conservative portfolios typically achieve 3-15% annual returns. Your target seems too high for this risk level.");
+        return false;
+      }
+
+      if (formData.risk_tolerance === "moderate" && roi > 30) {
+        toast.error("Moderate portfolios typically achieve 8-30% annual returns. Your target seems too high for this risk level.");
+        return false;
+      }
+
+      if (formData.risk_tolerance === "aggressive" && roi > 100) {
+        toast.error("Even aggressive portfolios rarely exceed 100% annual returns. Please enter a more realistic target.");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
