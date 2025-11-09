@@ -524,6 +524,19 @@ agent_communication:
 
   - task: "Portfolio Onboarding Enhancement with AI Recommendations"
     implemented: true
+
+  - task: "AI-Powered Investment Strategy Recommendations"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/AIPortfolioBuilder.js, /app/backend/routes/chat.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added dedicated AI recommendations for investment strategies in Step 3 with comprehensive reasoning. Backend Enhancements: 1) Enhanced STRATEGY ALIGNMENT section with detailed descriptions, best-for profiles, and monitoring requirements for each of 6 strategies. Added monitoring constraints (quarterly/annually cannot use momentum, daily/weekly can use any). 2) Expanded ANALYSIS FRAMEWORK with step 5 (match monitoring frequency to strategy complexity) and step 6 (select strategies that complement sector allocation). Specific rules: Daily/Weekly→momentum/growth OK, Monthly→growth/value/index, Quarterly/Annually→ONLY passive strategies. High stocks→growth/value, High bonds→income, Balanced→index+DCA, Crypto mix→momentum (if monitoring allows). 3) Updated OUTPUT FORMAT to include strategy_reasoning field requiring 1-2 sentences explaining: why these strategies match monitoring frequency, how they complement sector allocation, alignment with goal and risk. 4) Enhanced CRITICAL REQUIREMENTS with explicit monitoring frequency constraints and strategy_reasoning requirements. 5) Updated all 3 fallback scenarios (low/medium/high risk) to include strategy_reasoning and consider monitoring_frequency for strategy selection. High risk with daily/weekly gets growth+momentum, otherwise growth+index. All fallbacks now explain logical connection between strategies and monitoring capability. 6) Error fallback also enhanced to consider monitoring_frequency and provide strategy_reasoning. Frontend Enhancements - Step 3 UI: 1) Added 'Get AI Recommendations' button in Step 3 header (same as Step 2) with Sparkles icon and loading states. Button text changes to 'Refresh Recommendations' if recommendations already exist. 2) AI recommendations box shows selected strategies as purple badges with checkmark icons. 3) Displays strategy_reasoning from backend in white box with purple border, prefixed with 'Why these strategies:'. 4) Falls back to showing user parameters if strategy_reasoning not provided by backend. 5) User can click button multiple times to refresh recommendations if they change sector allocations. Example Flow: User with 'retirement planning', high risk, 12% ROI, 10+ years, daily monitoring, 70% stocks → Recommends growth_investing + momentum_investing with reasoning: 'Growth and momentum investing capitalize on your 70% stock allocation and active daily monitoring. These aggressive strategies match your high risk tolerance and 12% target.' Both services restarted successfully."
+
     working: "NA"
     file: "/app/frontend/src/components/AIPortfolioBuilder.js, /app/frontend/src/components/ManualPortfolioBuilder.js, /app/backend/routes/chat.py"
     stuck_count: 0
