@@ -13,6 +13,14 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const [portfolioGoal, setPortfolioGoal] = useState("");
   const [riskTolerance, setRiskTolerance] = useState("medium");
   const [roiExpectations, setRoiExpectations] = useState(10);
+  const [sectorPreferences, setSectorPreferences] = useState({
+    stocks: true,
+    bonds: false,
+    crypto: false,
+    real_estate: false,
+    commodities: false,
+    forex: false,
+  });
   const [allocations, setAllocations] = useState([{ 
     ticker: "", 
     allocation_percentage: "",
@@ -22,6 +30,13 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
+
+  const handleSectorToggle = (sector) => {
+    setSectorPreferences((prev) => ({
+      ...prev,
+      [sector]: !prev[sector],
+    }));
+  };
 
   const addAllocation = () => {
     setAllocations([...allocations, { 
