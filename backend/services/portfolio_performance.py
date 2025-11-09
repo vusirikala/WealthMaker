@@ -94,9 +94,6 @@ async def calculate_portfolio_historical_returns(
     ticker_data = {}
     valid_allocations = []
     
-    # Use synchronous approach since yfinance is synchronous
-    import asyncio
-    
     for alloc in allocations:
         ticker = alloc['ticker']
         allocation_pct = alloc['allocation_percentage'] / 100.0
@@ -107,8 +104,9 @@ async def calculate_portfolio_historical_returns(
             # Try to use cache if db is available
             if db is not None:
                 try:
-                    price_series = asyncio.run(get_cached_price_data(ticker, max_start_date, end_date, db))
-                except:
+                    price_series = await get_cached_price_data(ticker, max_start_date, end_date, db)
+                except Exception as cache_error:
+                    logger.warning(f"Cache failed for {ticker}: {cache_error}, falling back to direct fetch")
                     # Fallback to direct fetch
                     stock = yf.Ticker(ticker)
                     hist = stock.history(start=max_start_date, end=end_date)
