@@ -351,6 +351,75 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             </div>
           </div>
 
+          {/* Investment Strategies */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Investment Strategies (Optional)
+            </label>
+            <TooltipProvider>
+              <div className="space-y-2">
+                {strategies.map((strategy) => (
+                  <div
+                    key={strategy.id}
+                    onClick={() => handleStrategyToggle(strategy.id)}
+                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      investmentStrategies.includes(strategy.id)
+                        ? "border-emerald-500 bg-emerald-50"
+                        : "border-gray-200 hover:border-emerald-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 flex-shrink-0 ${
+                        investmentStrategies.includes(strategy.id) ? "bg-emerald-100" : "bg-gray-100"
+                      }`}>
+                        {investmentStrategies.includes(strategy.id) ? (
+                          <div className="w-4 h-4 bg-emerald-600 rounded-full"></div>
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 text-sm">{strategy.name}</div>
+                        <div className="text-xs text-gray-600 mt-0.5">{strategy.description}</div>
+                      </div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 hover:bg-gray-200 rounded-full transition-colors flex-shrink-0"
+                          >
+                            <HelpCircle className="w-4 h-4 text-gray-500" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-sm p-4 bg-gray-900 text-white">
+                          <div className="space-y-2">
+                            <p className="font-semibold text-sm">{strategy.name}</p>
+                            <p className="text-xs text-gray-300">{strategy.details}</p>
+                            <div className="pt-2 border-t border-gray-700 space-y-1">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-400">Risk Level:</span>
+                                <span className="font-medium">{strategy.risk}</span>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-400">Expected ROI:</span>
+                                <span className="font-medium">{strategy.roiExpectation}</span>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-400">Time Horizon:</span>
+                                <span className="font-medium">{strategy.timeHorizon}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TooltipProvider>
+          </div>
+
           {/* Stock Allocations */}
           <div>
             <div className="flex items-center justify-between mb-3">
