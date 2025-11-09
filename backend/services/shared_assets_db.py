@@ -311,6 +311,31 @@ class SharedAssetsService:
             except Exception as e:
                 logger.warning(f"Could not fetch news for {symbol}: {e}")
             
+            # Extract 52-week high/low with multiple key variations
+            fifty_two_week_high = (
+                info.get('fiftyTwoWeekHigh') or 
+                info.get('52WeekHigh') or 
+                info.get('yearHigh') or 
+                0
+            )
+            fifty_two_week_low = (
+                info.get('fiftyTwoWeekLow') or 
+                info.get('52WeekLow') or 
+                info.get('yearLow') or 
+                0
+            )
+            
+            # Convert to float, handle None values
+            try:
+                fifty_two_week_high = float(fifty_two_week_high) if fifty_two_week_high else 0
+            except (ValueError, TypeError):
+                fifty_two_week_high = 0
+                
+            try:
+                fifty_two_week_low = float(fifty_two_week_low) if fifty_two_week_low else 0
+            except (ValueError, TypeError):
+                fifty_two_week_low = 0
+            
             live_data = {
                 "currentPrice": {
                     "price": current_price,
@@ -318,10 +343,10 @@ class SharedAssetsService:
                     "changePercent": round(change_percent, 2),
                     "volume": int(info.get('volume', 0)),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                    "dayHigh": float(info.get('dayHigh', 0)),
-                    "dayLow": float(info.get('dayLow', 0)),
-                    "fiftyTwoWeekHigh": float(info.get('fiftyTwoWeekHigh', 0)),
-                    "fiftyTwoWeekLow": float(info.get('fiftyTwoWeekLow', 0))
+                    "dayHigh": float(info.get('dayHigh', 0)) if info.get('dayHigh') else 0,
+                    "dayLow": float(info.get('dayLow', 0)) if info.get('dayLow') else 0,
+                    "fiftyTwoWeekHigh": fifty_two_week_high,
+                    "fiftyTwoWeekLow": fifty_two_week_low
                 },
                 
                 "recentNews": news_items,
