@@ -64,11 +64,14 @@ export default function ChatTab({ portfolioId = null }) {
         ? `${API}/chat/messages?portfolio_id=${portfolioId}`
         : `${API}/chat/messages`;
       
+      console.log(`Loading chat history for portfolio: ${portfolioId || 'global'}`);
+      
       const response = await fetch(url, {
         credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
+        console.log(`Loaded ${data.length} messages for portfolio: ${portfolioId || 'global'}`);
         setMessages(data);
         
         // If no messages, try to initialize chat with AI greeting
