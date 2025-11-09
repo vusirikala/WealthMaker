@@ -77,9 +77,11 @@ export default function MultiPortfolioDashboard() {
           </div>
           <button
             onClick={() => setShowChat(false)}
-            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2 bg-white/10"
+            title="Close chat"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-sm font-semibold hidden sm:inline">Close</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
