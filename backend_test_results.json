@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T03:36:41.714509+00:00",
-  "total_tests": 89,
-  "passed_tests": 80,
-  "success_rate": 89.8876404494382,
+  "timestamp": "2025-11-09T04:55:59.785587+00:00",
+  "total_tests": 102,
+  "passed_tests": 96,
+  "success_rate": 94.11764705882352,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762659352",
-        "email": "test.user.1762659352@example.com",
-        "name": "Test User 1762659352",
+        "_id": "test-user-1762664111",
+        "email": "test.user.1762664111@example.com",
+        "name": "Test User 1762664111",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T03:35:52.867000"
+        "created_at": "2025-11-09T04:55:11.704000"
       }
     },
     {
@@ -29,13 +29,13 @@
       "success": true,
       "details": "",
       "response_data": {
-        "total_assets": 18,
+        "total_assets": 21,
         "by_type": {
-          "stocks": 16,
+          "stocks": 19,
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T03:33:16.665642+00:00",
+        "last_updated": "2025-11-09T03:37:40.956985+00:00",
         "status": "active"
       }
     },
@@ -46,13 +46,13 @@
       "response_data": {
         "message": "Database already initialized",
         "stats": {
-          "total_assets": 18,
+          "total_assets": 21,
           "by_type": {
-            "stocks": 16,
+            "stocks": 19,
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T03:33:16.665642+00:00",
+          "last_updated": "2025-11-09T03:37:40.956985+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -63,7 +63,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "asset_count": 18
+        "asset_count": 21
       }
     },
     {
@@ -255,14 +255,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T03:06:50.664029+00:00",
+          "lastUpdated": "2025-11-09T03:35:56.491772+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T03:06:50.663152+00:00",
+              "timestamp": "2025-11-09T03:35:56.490830+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
@@ -381,7 +381,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T03:06:50.663156+00:00",
+              "lastUpdated": "2025-11-09T03:35:56.490833+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T03:35:54.121836+00:00",
+          "lastUpdated": "2025-11-09T04:55:12.964352+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T03:35:54.121020+00:00",
+              "timestamp": "2025-11-09T04:55:12.963627+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T03:35:54.121024+00:00",
+              "lastUpdated": "2025-11-09T04:55:12.963631+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -919,12 +919,12 @@
     },
     {
       "test": "52-week high/low for SPY (ETF/Bond)",
-      "success": false,
-      "details": "High: None, Low: None",
+      "success": true,
+      "details": "",
       "response_data": {
         "symbol": "SPY",
-        "fiftyTwoWeekHigh": null,
-        "fiftyTwoWeekLow": null
+        "fiftyTwoWeekHigh": 689.7,
+        "fiftyTwoWeekLow": 481.8
       }
     },
     {
@@ -969,12 +969,12 @@
     },
     {
       "test": "Auto-initialize V with 52-week data",
-      "success": false,
-      "details": "Symbol: True, LiveData: True, High: None, Low: None",
+      "success": true,
+      "details": "",
       "response_data": {
         "symbol": "V",
-        "auto_initialized": false,
-        "has_52_week_data": false
+        "auto_initialized": true,
+        "has_52_week_data": true
       }
     },
     {
@@ -990,11 +990,11 @@
     },
     {
       "test": "Edge case handling for PLTR (graceful handling)",
-      "success": false,
-      "details": "No crash: True, Has values: False, High: None, Low: None",
+      "success": true,
+      "details": "",
       "response_data": {
         "symbol": "PLTR",
-        "graceful_handling": false,
+        "graceful_handling": true,
         "status": 200
       }
     },
@@ -1030,7 +1030,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.03829216957092285,
+        "response_time": 0.03734469413757324,
         "fast_response": true
       }
     },
@@ -1081,7 +1081,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03428983688354492,
+        "response_time": 0.035881996154785156,
         "cached": true
       }
     },
@@ -1090,7 +1090,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03977680206298828,
+        "response_time": 0.03833889961242676,
         "cached": true
       }
     },
@@ -1099,8 +1099,102 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.036661624908447266,
+        "response_time": 0.04111361503601074,
         "cached": true
+      }
+    },
+    {
+      "test": "POST /api/portfolios-v2/create (manual portfolio)",
+      "success": "f3ba50cf-483e-409e-9feb-7380a368526c",
+      "details": "",
+      "response_data": {
+        "portfolio_id": "f3ba50cf-483e-409e-9feb-7380a368526c",
+        "allocations_count": 3
+      }
+    },
+    {
+      "test": "GET /api/portfolios-v2/list",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_count": 1
+      }
+    },
+    {
+      "test": "GET /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "portfolio_found": true
+      }
+    },
+    {
+      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "updated": true
+      }
+    },
+    {
+      "test": "POST /api/portfolios-v2/5a40bb61-cbb6-44c1-bb0d-a72eedb06cb3/invest ($10,000)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "total_invested": 10000.002153000001,
+        "investments_count": 3,
+        "aapl_allocation": 4000.0
+      }
+    },
+    {
+      "test": "Holdings created with correct shares and cost_basis",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "holdings_count": 3,
+        "total_invested": 10000.002153000001
+      }
+    },
+    {
+      "test": "POST /api/chat/generate-portfolio",
+      "success": false,
+      "details": "Reasoning: True, Allocations: 6, Sum to 100%: False (total: 0%), Valid tickers: True",
+      "response_data": {
+        "has_portfolio_suggestion": true,
+        "allocations_count": 0,
+        "total_allocation": 0
+      }
+    },
+    {
+      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c/allocations (valid - sums to 100%)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "allocation_update_success": true
+      }
+    },
+    {
+      "test": "PUT /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c/allocations (invalid - sums to 110%)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "proper_validation": true
+      }
+    },
+    {
+      "test": "DELETE /api/portfolios-v2/f3ba50cf-483e-409e-9feb-7380a368526c (soft delete)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "deleted": true
+      }
+    },
+    {
+      "test": "Deleted portfolio not in list (soft delete verified)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "soft_delete_working": true
       }
     },
     {
@@ -1225,10 +1319,27 @@
     },
     {
       "test": "POST /chat/send (basic message)",
-      "success": false,
-      "details": "Status: 408",
+      "success": true,
+      "details": "",
       "response_data": {
-        "has_response": false
+        "has_response": true
+      }
+    },
+    {
+      "test": "Message saved to chat_messages collection",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "user_messages": 1,
+        "ai_messages": 2
+      }
+    },
+    {
+      "test": "AI response generated and returned",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "response_length": 179
       }
     },
     {
@@ -1302,7 +1413,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "fcf6cbdf-0ec3-4523-b61d-c274a46e395d"
+        "suggestion_id": "9b3e8046-4b80-4ce2-a496-acb9862d8884"
       }
     },
     {
@@ -1331,7 +1442,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "79bbb319-0c04-4a4c-a5ea-f40b052b0be6",
+        "id_value": "1df47821-6995-49ee-a91f-cc5a22370805",
         "id_type": "str"
       }
     },
