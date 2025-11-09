@@ -899,20 +899,27 @@ CRITICAL REQUIREMENTS:
     except Exception as e:
         logger.error(f"Error generating recommendations: {e}")
         
-        # Return default recommendations
+        # Return personalized fallback based on available data
+        risk_level = request.get("risk_tolerance", "medium")
+        time_frame = request.get("time_horizon", "5-10")
+        user_goal = request.get("goal", "build wealth")
+        
+        if risk_level == "low":
+            allocation = {"stocks": 35, "bonds": 45, "crypto": 0, "real_estate": 15, "commodities": 5, "forex": 0}
+            strats = ["income_investing", "dollar_cost_averaging"]
+        elif risk_level == "high":
+            allocation = {"stocks": 65, "bonds": 10, "crypto": 10, "real_estate": 10, "commodities": 5, "forex": 0}
+            strats = ["growth_investing", "index_funds"]
+        else:
+            allocation = {"stocks": 50, "bonds": 30, "crypto": 5, "real_estate": 10, "commodities": 5, "forex": 0}
+            strats = ["index_funds", "dollar_cost_averaging"]
+        
         return {
             "success": True,
             "recommendations": {
-                "sector_allocation": {
-                    "stocks": 50,
-                    "bonds": 30,
-                    "crypto": 5,
-                    "real_estate": 10,
-                    "commodities": 5,
-                    "forex": 0
-                },
-                "recommended_strategies": ["index_funds", "dollar_cost_averaging"],
-                "reasoning": "Here's a balanced portfolio allocation suitable for most investors."
+                "sector_allocation": allocation,
+                "recommended_strategies": strats,
+                "reasoning": f"Based on your {risk_level} risk tolerance over a {time_frame} timeframe, this balanced allocation aims to help you achieve your goal: {user_goal}. The mix provides growth potential while managing risk appropriately."
             }
         }
 
