@@ -9,6 +9,8 @@ import uuid
 import logging
 from models.user import User
 from models.portfolio import UserPortfolio, CreatePortfolioRequest, InvestmentRequest, UpdateAllocationRequest
+from services.portfolio_performance import calculate_portfolio_historical_returns
+
 from utils.database import db
 from utils.dependencies import require_auth
 from services.shared_assets_db import shared_assets_service
