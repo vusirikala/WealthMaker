@@ -157,11 +157,18 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
       }
       typeMap[type] += alloc.allocation_percentage;
     });
-    return Object.entries(typeMap).map(([name, value], idx) => ({
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-      value: parseFloat(value.toFixed(2)),
-      color: COLORS[idx % COLORS.length]
-    }));
+    return Object.entries(typeMap).map(([name, value], idx) => {
+      // Special handling for ETF to keep it uppercase
+      let displayName = name.toLowerCase() === 'etf' 
+        ? 'ETF' 
+        : name.charAt(0).toUpperCase() + name.slice(1);
+      
+      return {
+        name: displayName,
+        value: parseFloat(value.toFixed(2)),
+        color: COLORS[idx % COLORS.length]
+      };
+    });
   })() : [];
 
   return (
