@@ -195,6 +195,123 @@ async def remove_tracked_stock(
 
 
 
+
+
+
+# ============= WATCHLIST ENDPOINTS =============
+
+@router.get("/watchlist")
+async def get_watchlist(user: User = Depends(require_auth)):
+    """
+    Get user's watchlist (stocks they're following but not owning)
+    """
+    from utils.database import db
+    
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    
+    if not user_context or not user_context.get('watchlist'):
+        return {"symbols": [], "count": 0, "data": {}}
+    
+    symbols = user_context.get('watchlist', [])
+    
+    # Get data from shared database
+    assets_data = await shared_assets_service.get_assets_data(symbols)
+    
+    return {
+        "symbols": symbols,
+        "count": len(assets_data),
+        "data": assets_data
+    }
+
+
+@router.post("/watchlist/add")
+async def add_to_watchlist(
+    symbol: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Add a stock to watchlist
+    """
+    from utils.database import db
+    from datetime import datetime, timezone
+    
+    symbol = symbol.upper()
+    
+    # Check if asset exists in shared database
+    asset_data = await shared_assets_service.get_single_asset(symbol)
+    
+    if not asset_data:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Asset {symbol} not found in shared database. Contact admin to add it."
+        )
+    
+    # Add to user's watchlist
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    
+    if not user_context:
+        raise HTTPException(status_code=404, detail="User context not found")
+    
+    watchlist = user_context.get('watchlist', [])
+    
+    if symbol not in watchlist:
+        watchlist.append(symbol)
+        
+        await db.user_context.update_one(
+            {"user_id": user.id},
+            {"$set": {
+                "watchlist": watchlist,
+                "updated_at": datetime.now(timezone.utc)
+            }}
+        )
+    
+    return {
+        "success": True,
+        "symbol": symbol,
+        "message": f"Added {asset_data['name']} to watchlist",
+        "asset": asset_data
+    }
+
+
+@router.delete("/watchlist/{symbol}")
+async def remove_from_watchlist(
+    symbol: str,
+    user: User = Depends(require_auth)
+):
+    """
+    Remove a stock from watchlist
+    """
+    from utils.database import db
+    from datetime import datetime, timezone
+    
+    symbol = symbol.upper()
+    
+    user_context = await db.user_context.find_one({"user_id": user.id})
+    
+    if not user_context:
+        raise HTTPException(status_code=404, detail="User context not found")
+    
+    watchlist = user_context.get('watchlist', [])
+    
+    if symbol not in watchlist:
+        raise HTTPException(status_code=404, detail=f"{symbol} is not in watchlist")
+    
+    watchlist.remove(symbol)
+    
+    await db.user_context.update_one(
+        {"user_id": user.id},
+        {"$set": {
+            "watchlist": watchlist,
+            "updated_at": datetime.now(timezone.utc)
+        }}
+    )
+    
+    return {
+        "success": True,
+        "symbol": symbol,
+        "message": f"Removed {symbol} from watchlist"
+    }
+
 # ============= LIVE DATA ENDPOINTS =============
 
 @router.get("/live/{symbol}")
