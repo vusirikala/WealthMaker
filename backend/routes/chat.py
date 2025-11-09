@@ -61,11 +61,15 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     user_message = chat_request.message
     portfolio_id = chat_request.portfolio_id
     
+    logger.info(f"CHAT SEND - User: {user.id}, Portfolio ID: {portfolio_id}, Message: {user_message[:50]}...")
+    
     # Build query for chat history (portfolio-specific or global)
     history_query = {"user_id": user.id}
     if portfolio_id:
+        logger.info(f"Building query for portfolio-specific chat: {portfolio_id}")
         history_query["portfolio_id"] = portfolio_id
     else:
+        logger.info("Building query for global chat (no portfolio)")
         history_query["portfolio_id"] = {"$exists": False}
     
     # Get chat history FIRST to check if this is first message
