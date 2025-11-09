@@ -539,62 +539,44 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             </div>
           )}
 
-          {/* Step 2: Investment Preferences */}
+          {/* Step 2: Sectors & Strategies with AI Recommendations */}
           {step === 2 && (
             <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Preferences</h3>
-                <p className="text-gray-600">Help our AI understand your investment strategy</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Initial Investment Amount ($)
-                  </label>
-                  <Input
-                    type="number"
-                    value={investmentAmount}
-                    onChange={(e) => setInvestmentAmount(e.target.value)}
-                    placeholder="Optional"
-                    min="0"
-                    step="100"
-                    className="w-full"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">You can invest later too</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Preferences</h3>
+                  <p className="text-gray-600">Let AI recommend sectors and strategies based on your profile</p>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Time Horizon (Years)
-                  </label>
-                  <select
-                    value={timeHorizon}
-                    onChange={(e) => setTimeHorizon(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  >
-                    <option value="0-3">Short term (0-3 years)</option>
-                    <option value="3-5">Medium term (3-5 years)</option>
-                    <option value="5-10">Long term (5-10 years)</option>
-                    <option value="10+">Very long term (10+ years)</option>
-                  </select>
-                </div>
+                <Button
+                  onClick={fetchRecommendations}
+                  disabled={loadingRecommendations}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  {loadingRecommendations ? (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                      Getting AI Recommendations...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Get AI Recommendations
+                    </>
+                  )}
+                </Button>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Expected Annual ROI (%)
-                </label>
-                <Input
-                  type="number"
-                  value={roiExpectations}
-                  onChange={(e) => setRoiExpectations(parseFloat(e.target.value))}
-                  min="0"
-                  max="100"
-                  step="0.5"
-                  className="w-full"
-                />
-              </div>
+              {recommendations && (
+                <div className="p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-purple-900 mb-1">AI Recommendation</p>
+                      <p className="text-sm text-purple-700">{recommendations.reasoning}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
