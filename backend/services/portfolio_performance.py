@@ -19,25 +19,61 @@ _cache_duration = timedelta(hours=1)  # Cache for 1 hour
 
 
 async def get_cached_price_data(ticker: str, start_date: datetime, end_date: datetime, db):
-    """Get cached price data or fetch from Yahoo Finance"""
-    from utils.database import db as database
-    
-    # Check cache
-    cache_key = f"{ticker}_{start_date.date()}_{end_date.date()}"
-    cached = await database.price_cache.find_one({"cache_key": cache_key})
-    
-    if cached and (datetime.now() - cached['updated_at']).days < 1:
-        logger.info(f"Using cached data for {ticker}")
-        # Convert to DataFrame
-        data = cached['data']
-        df = pd.DataFrame(data)
-        df['Date'] = pd.to_datetime(df['Date'])
-        df.set_index('Date', inplace=True)
-        return df['Close']
-    
-    # Fetch from Yahoo Finance
-    logger.info(f"Fetching fresh data for {ticker} from Yahoo Finance")
-    stock = yf.Ticker(ticker)
+    """Get cached price data from shared database or fetch from Yahoo Finance"""
+    try:
+        # Check memory cache first
+        cache_key = f"{ticker}_{start_date.date()}_{end_date.date()}"
+        global _price_cache, _cache_timestamp
+        
+        # Clear cache if expired
+        if _cache_timestamp and (datetime.now() - _cache_timestamp) > _cache_duration:
+            _price_cache = {}
+            _cache_timestamp = None
+            logger.info("Price cache expired, cleared")
+        
+        # Check memory cache
+        if cache_key in _price_cache:
+            logger.info(f"Using memory cache for {ticker}")
+            return _price_cache[cache_key]
+        
+        # Try to get from shared assets database first (AVOID API CALLS)
+        try:
+            asset = await shared_assets_service.get_single_asset(ticker.upper())
+            if asset and asset.get('historical', {}).get('priceHistory'):
+                price_history = asset['historical']['priceHistory']
+                
+                # Convert to DataFrame
+                df = pd.DataFrame(price_history)
+                df['Date'] = pd.to_datetime(df['date'])
+                df = df.set_index('Date')
+                df = df[['close']].rename(columns={'close': 'Close'})
+                
+                # Filter by date range
+                df = df[(df.index >= start_date) & (df.index <= end_date)]
+                
+                if not df.empty:
+                    logger.info(f"Using shared database for {ticker} (avoiding API call)")
+                    _price_cache[cache_key] = df
+                    if _cache_timestamp is None:
+                        _cache_timestamp = datetime.now()
+                    return df
+        except Exception as e:
+            logger.warning(f"Shared database lookup failed for {ticker}: {e}, falling back to yfinance")
+        
+        # Check MongoDB cache
+        cached = await db.price_cache.find_one({"cache_key": cache_key})
+        
+        if cached and cached.get('data'):
+            logger.info(f"Using MongoDB cache for {ticker}")
+            df = pd.DataFrame(cached['data'])
+            _price_cache[cache_key] = df
+            if _cache_timestamp is None:
+                _cache_timestamp = datetime.now()
+            return df
+        
+        # Last resort: Fetch from Yahoo Finance (causes rate limiting!)
+        logger.warning(f"Fetching from yfinance API for {ticker} (may cause rate limiting)")
+        stock = yf.Ticker(ticker)
     hist = stock.history(start=start_date, end=end_date)
     
     if not hist.empty:
