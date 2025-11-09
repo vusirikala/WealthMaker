@@ -342,15 +342,65 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Risk Tolerance
               </label>
-              <select
-                value={riskTolerance}
-                onChange={(e) => setRiskTolerance(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
+              <div className="space-y-2">
+                {riskToleranceOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    onClick={() => setRiskTolerance(option.value)}
+                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      riskTolerance === option.value
+                        ? "border-cyan-500 bg-cyan-50"
+                        : "border-gray-200 hover:border-cyan-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className="text-xl mt-0.5">{option.emoji}</span>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900 text-sm">{option.label}</div>
+                        <div className="text-xs text-gray-600">{option.description}</div>
+                      </div>
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1 hover:bg-cyan-100 rounded-full transition-colors flex-shrink-0"
+                            >
+                              <HelpCircle className="w-4 h-4 text-cyan-600" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-sm p-4 bg-gray-900 text-white border-gray-700">
+                            <div className="space-y-3">
+                              <div>
+                                <p className="font-bold text-sm text-cyan-400 mb-1">{option.label}</p>
+                                <p className="text-xs text-gray-300 leading-relaxed">{option.details}</p>
+                              </div>
+                              <div className="pt-2 border-t border-gray-700 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-gray-400">Expected ROI:</span>
+                                  <span className="text-xs font-semibold text-cyan-400">{option.roiExpectation}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs text-gray-400">Volatility:</span>
+                                  <span className="text-xs font-semibold text-white">{option.volatility}</span>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-xs text-gray-400">Drawdown Risk:</p>
+                                  <p className="text-xs text-gray-300 italic">{option.drawdownRisk}</p>
+                                </div>
+                                <div className="pt-1 border-t border-gray-700">
+                                  <p className="text-xs text-gray-400"><span className="font-semibold text-white">Best for:</span> {option.bestFor}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
