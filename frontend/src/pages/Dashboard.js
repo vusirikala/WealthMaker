@@ -118,15 +118,6 @@ export default function Dashboard({ user, setIsAuthenticated }) {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Add Stock Button */}
-              <Button
-                onClick={() => setShowAddStockModal(true)}
-                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-md"
-              >
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Add Stock
-              </Button>
-              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
