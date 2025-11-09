@@ -244,36 +244,46 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
 
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {allocations.map((alloc, index) => (
-                <div key={index} className="flex gap-3 items-center">
-                  <Input
-                    value={alloc.ticker}
-                    onChange={(e) => updateAllocation(index, 'ticker', e.target.value.toUpperCase())}
-                    placeholder="Ticker (e.g., AAPL)"
-                    className="flex-1"
-                  />
-                  <div className="relative flex-1">
+                <div key={index} className="space-y-2">
+                  <div className="flex gap-3 items-center">
                     <Input
-                      type="number"
-                      value={alloc.allocation_percentage}
-                      onChange={(e) => updateAllocation(index, 'allocation_percentage', e.target.value)}
-                      placeholder="Allocation %"
-                      min="0"
-                      max="100"
-                      step="0.1"
-                      className="w-full pr-8"
+                      value={alloc.ticker}
+                      onChange={(e) => updateAllocation(index, 'ticker', e.target.value.toUpperCase())}
+                      placeholder="Ticker (e.g., AAPL)"
+                      className="flex-1"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
-                      %
-                    </span>
+                    <div className="relative flex-1">
+                      <Input
+                        type="number"
+                        value={alloc.allocation_percentage}
+                        onChange={(e) => updateAllocation(index, 'allocation_percentage', e.target.value)}
+                        placeholder="Allocation %"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        className="w-full pr-8"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
+                        %
+                      </span>
+                    </div>
+                    {allocations.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeAllocation(index)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
-                  {allocations.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeAllocation(index)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  {alloc.ticker && alloc.sector && (
+                    <div className="flex items-center gap-2 text-xs text-gray-600 ml-1">
+                      <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+                        {alloc.asset_type}
+                      </span>
+                      <span>{alloc.sector}</span>
+                    </div>
                   )}
                 </div>
               ))}
