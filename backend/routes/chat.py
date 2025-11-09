@@ -34,8 +34,10 @@ async def get_chat_messages(
     
     # Filter by portfolio_id if provided
     if portfolio_id:
+        logger.info(f"Loading chat messages for user {user.id}, portfolio {portfolio_id}")
         query["portfolio_id"] = portfolio_id
     else:
+        logger.info(f"Loading global chat messages for user {user.id}")
         # Get global chat messages (messages without portfolio_id)
         query["portfolio_id"] = {"$exists": False}
     
@@ -43,6 +45,8 @@ async def get_chat_messages(
         query,
         {"_id": 0}
     ).sort("timestamp", 1).to_list(1000)
+    
+    logger.info(f"Found {len(messages)} messages for query: {query}")
     
     for msg in messages:
         if isinstance(msg['timestamp'], str):
