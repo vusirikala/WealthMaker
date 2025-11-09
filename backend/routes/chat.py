@@ -745,13 +745,30 @@ SECTOR ALLOCATION GUIDELINES:
    - Typically 0% for most investors (professional traders only)
    - Key consideration: Extreme leverage risk, requires active management
 
-STRATEGY ALIGNMENT:
-- value_investing: Low-Medium risk, 8-15% ROI, 3-10 year horizon, requires patience
+STRATEGY ALIGNMENT (Select 2-3 that best match user profile):
+- value_investing: Low-Medium risk, 8-15% ROI, 3-10 year horizon, requires patience and analysis skills
+  * Best for: Patient investors, long-term holders, those who understand fundamentals
+  * Monitoring: Monthly/Quarterly sufficient
+  
 - growth_investing: Medium-High risk, 15-30% ROI, 3-7 year horizon, for capital appreciation
+  * Best for: Risk-tolerant investors, believers in innovation, tech-focused
+  * Monitoring: Weekly/Monthly recommended
+  
 - income_investing: Low-Medium risk, 5-10% ROI + dividends, 5+ years, for steady income
-- index_funds: Low-Medium risk, 8-12% ROI, 5+ years, passive approach
+  * Best for: Retirees, income seekers, conservative investors
+  * Monitoring: Quarterly/Annually sufficient
+  
+- index_funds: Low-Medium risk, 8-12% ROI, 5+ years, passive approach, lowest effort
+  * Best for: Beginners, passive investors, those seeking market returns
+  * Monitoring: Quarterly/Annually sufficient
+  
 - dollar_cost_averaging: Low risk, matches underlying assets, 5+ years, reduces timing risk
+  * Best for: Regular savers, those with consistent income, risk-averse
+  * Monitoring: Set-and-forget (automated)
+  
 - momentum_investing: High risk, 20-50% ROI (volatile), 6mo-3yr, requires active monitoring
+  * Best for: Active traders, experienced investors, those with time to monitor
+  * Monitoring: Daily/Weekly REQUIRED
 
 ANALYSIS FRAMEWORK:
 1. Parse the user's goal to understand specific objective (retirement, home purchase, wealth building, etc.)
