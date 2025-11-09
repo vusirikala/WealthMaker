@@ -424,6 +424,18 @@ metadata:
         agent: "main"
         comment: "Implemented comprehensive advanced portfolio analytics suite with 5 major features: 1) Risk Metrics Dashboard - displays Beta (vs S&P 500), Sharpe Ratio, Volatility, and Max Drawdown with color-coded cards and explanations. 2) Correlation Heatmap - visual matrix showing correlation between all stocks with color coding (green=low/good diversification, red=high/poor diversification). 3) Geographic Distribution - pie chart showing US vs International Developed vs Emerging Markets exposure. 4) Market Cap Distribution - pie chart showing Mega/Large/Mid/Small cap breakdown. 5) Dividend/Income Tracker - displays total annual income, monthly income, portfolio yield, and breakdown by dividend-paying stocks. Backend: Created portfolio_analytics.py service with async functions for all calculations using yfinance data. Added 4 new API endpoints: /api/portfolios-v2/{id}/risk-metrics, /correlations, /distributions, /dividends. Frontend: Created 4 new components with full UI, loading states, and error handling. Integrated all components into PortfolioView.js. All services restarted successfully."
 
+  - task: "Navigation Cleanup and Color Palette Uniformity"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Dashboard.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Cleaned up top navigation by removing Chat and Legacy (old Portfolio) tabs. Now only shows 3 main tabs: Portfolios, Watchlist, and News. Updated color palette to be uniform - all tabs now use the same cyan-to-emerald gradient (data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500) when selected. Changed grid layout from grid-cols-5 to grid-cols-3. Removed unused imports (MessageSquare, PieChart, ChatTab, PortfolioTab components). Frontend restarted successfully."
+
 test_plan:
   current_focus:
     - "Advanced Portfolio Analytics Suite"
