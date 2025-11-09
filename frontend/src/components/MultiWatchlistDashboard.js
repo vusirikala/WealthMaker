@@ -99,6 +99,42 @@ export default function MultiWatchlistDashboard() {
     }
   };
 
+  const searchTickers = async (query) => {
+    if (query.length < 1) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch(`${API}/data/search?q=${encodeURIComponent(query)}`, {
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSearchResults(data.results);
+        setShowDropdown(true);
+      }
+    } catch (error) {
+      console.error("Error searching tickers:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleTickerInputChange = (value) => {
+    setNewTicker(value);
+    searchTickers(value);
+  };
+
+  const handleSelectTicker = (ticker) => {
+    setNewTicker(ticker);
+    setShowDropdown(false);
+    setSearchResults([]);
+  };
+
   const handleAddTicker = async (e) => {
     e.preventDefault();
     if (!newTicker.trim()) return;
@@ -117,6 +153,8 @@ export default function MultiWatchlistDashboard() {
       if (response.ok) {
         toast.success(`${newTicker.toUpperCase()} added!`);
         setNewTicker("");
+        setSearchResults([]);
+        setShowDropdown(false);
         setShowAddTickerModal(false);
         loadWatchlistData();
       } else {
