@@ -1761,6 +1761,13 @@ api_router.include_router(admin.router)
 # Include the API router in the main app
 app.include_router(api_router)
 
+# Add rate limiting middleware (FIRST - before CORS)
+app.add_middleware(
+    RateLimiter,
+    requests_per_minute=100,
+    requests_per_hour=1000
+)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
