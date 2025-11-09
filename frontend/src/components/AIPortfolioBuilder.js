@@ -26,15 +26,18 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const [investmentAmount, setInvestmentAmount] = useState("");
   const [timeHorizon, setTimeHorizon] = useState("5-10");
   const [roiExpectations, setRoiExpectations] = useState(10);
+  const [monitoringFrequency, setMonitoringFrequency] = useState("monthly");
   const [sectorPreferences, setSectorPreferences] = useState({
-    stocks: true,
-    bonds: false,
-    crypto: false,
-    real_estate: false,
-    commodities: false,
-    forex: false,
+    stocks: { enabled: true, allocation: 50 },
+    bonds: { enabled: false, allocation: 30 },
+    crypto: { enabled: false, allocation: 5 },
+    real_estate: { enabled: false, allocation: 10 },
+    commodities: { enabled: false, allocation: 5 },
+    forex: { enabled: false, allocation: 0 },
   });
   const [investmentStrategies, setInvestmentStrategies] = useState([]);
+  const [recommendations, setRecommendations] = useState(null);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   
   // AI suggestions
   const [aiSuggestion, setAiSuggestion] = useState(null);
