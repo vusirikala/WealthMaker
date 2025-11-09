@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-03T05:01:16.231799+00:00",
-  "total_tests": 10,
-  "passed_tests": 9,
-  "success_rate": 90.0,
+  "timestamp": "2025-11-09T00:08:20.748353+00:00",
+  "total_tests": 15,
+  "passed_tests": 14,
+  "success_rate": 93.33333333333333,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762146042",
-        "email": "test.user.1762146042@example.com",
-        "name": "Test User 1762146042",
+        "_id": "test-user-1762646898",
+        "email": "test.user.1762646898@example.com",
+        "name": "Test User 1762646898",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-03T05:00:43.037000"
+        "created_at": "2025-11-09T00:08:19.296000"
       }
     },
     {
@@ -25,17 +25,57 @@
       }
     },
     {
+      "test": "GET /chat/init (new user)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_length": 1267
+      }
+    },
+    {
+      "test": "Chat init message saved to history",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "GET /chat/init (idempotency)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": null
+      }
+    },
+    {
+      "test": "No duplicate messages created",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "first_chat_initiated flag set",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "first_chat_initiated": true
+      }
+    },
+    {
       "test": "GET /chat/messages",
       "success": true,
       "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 1
       }
     },
     {
       "test": "POST /chat/send",
       "success": false,
-      "details": "Status: 408",
+      "details": "Status: 500",
       "response_data": {
         "has_response": false
       }
