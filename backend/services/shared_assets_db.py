@@ -342,6 +342,23 @@ class SharedAssetsService:
             logger.error(f"Error fetching live data for {symbol}: {e}")
             return {}
     
+    def _analyze_sentiment(self, headline: str) -> str:
+        """Simple sentiment analysis based on keywords"""
+        headline_lower = headline.lower()
+        
+        positive_keywords = ['surge', 'jump', 'rise', 'gain', 'beat', 'upgrade', 'buy', 'bullish', 'growth', 'profit', 'soar', 'rally']
+        negative_keywords = ['fall', 'drop', 'decline', 'loss', 'downgrade', 'sell', 'bearish', 'concern', 'warning', 'plunge', 'crash']
+        
+        positive_count = sum(1 for word in positive_keywords if word in headline_lower)
+        negative_count = sum(1 for word in negative_keywords if word in headline_lower)
+        
+        if positive_count > negative_count:
+            return "positive"
+        elif negative_count > positive_count:
+            return "negative"
+        else:
+            return "neutral"
+    
     async def get_assets_data(self, symbols: List[str]) -> Dict[str, Any]:
         """
         Get complete data for multiple assets from shared database
