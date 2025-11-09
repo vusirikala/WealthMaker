@@ -205,8 +205,8 @@ export default function Dashboard({ user, setIsAuthenticated }) {
               <MultiPortfolioDashboard />
             </TabsContent>
 
-            <TabsContent value="watchlist" className="mt-0">
-              <WatchlistTab />
+            <TabsContent value="watchlist" className="mt-0 h-[calc(100vh-200px)]">
+              <MultiWatchlistDashboard />
             </TabsContent>
 
             <TabsContent value="news" className="mt-0">
