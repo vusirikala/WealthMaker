@@ -36,6 +36,17 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
 
       if (response.ok) {
         const data = await response.json();
+        
+        // Merge portfolio and S&P 500 data
+        if (data.sp500_comparison && data.sp500_comparison.time_series) {
+          const merged = data.time_series.map((item, idx) => ({
+            date: item.date,
+            portfolio_return: item.return_percentage,
+            sp500_return: data.sp500_comparison.time_series[idx]?.return_percentage || 0
+          }));
+          data.merged_time_series = merged;
+        }
+        
         setPerformanceData(data);
       } else {
         toast.error("Failed to load performance data");
