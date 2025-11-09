@@ -723,23 +723,12 @@ CALCULATION CHECK BEFORE RESPONDING:
     
     prompt += """- Total of ALL allocations = 100%
 
-VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
-- Calculate sum of all stock allocations = Should equal users stocks percentage
-- Calculate sum of all bond allocations = Should equal users bonds percentage
-- Calculate sum of all crypto allocations = Should equal users crypto percentage
-- Calculate sum of all real_estate allocations = Should equal users real_estate percentage
-- Calculate sum of all commodity allocations = Should equal users commodities percentage
-- Calculate total sum = Should equal 100 percent
-- If ANY sector does not match, RECALCULATE before responding
 
-CRITICAL REQUIREMENTS - STRICTLY ENFORCE:
-1. MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the specified percentage
-2. Total allocation_percentage MUST sum to exactly 100 percent
-3. Each allocations asset_type must correctly identify the sector
-4. Reasoning MUST explicitly state how allocations match sector percentages
-5. Use only well-known liquid tickers
-6. For small percentages under 5 percent use broad ETFs instead of individual stocks
-7. DOUBLE-CHECK your math before returning the JSON"""
+RULES:
+1. Allocations within each sector MUST sum to the exact percentage required
+2. Total must equal 100%
+3. Use liquid tickers only (AAPL, SPY, AGG, BITO, VNQ, GLD, etc)
+4. Double-check math before responding"""
 
     try:
         # Call LLM to generate portfolio
