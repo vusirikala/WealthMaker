@@ -900,7 +900,12 @@ CRITICAL REQUIREMENTS:
                     "commodities": 5,
                     "forex": 0
                 }
-                strategies = ["growth_investing", "momentum_investing"] if monitoring_frequency in ["daily", "weekly"] else ["growth_investing", "index_funds"]
+                if monitoring_frequency in ["daily", "weekly"]:
+                    strategies = ["growth_investing", "momentum_investing"]
+                    strategy_reason = f"Growth and momentum investing capitalize on your {stocks_pct}% stock allocation and active {monitoring_frequency} monitoring. These aggressive strategies match your high risk tolerance and {roi_expectations}% target."
+                else:
+                    strategies = ["growth_investing", "index_funds"]
+                    strategy_reason = f"Growth investing targets high returns from your {stocks_pct}% stocks, while index funds provide diversified exposure suitable for {monitoring_frequency} monitoring. Both match your high risk tolerance."
                 reason = f"Aggressive allocation with {stocks_pct}% stocks for maximum growth potential over your {time_horizon} horizon. Crypto ({crypto_pct}%) adds high-risk/high-reward exposure. Targets your {roi_expectations}% return goal with acceptance of higher volatility. Matches your {monitoring_frequency} monitoring capability."
                 
             else:  # medium
