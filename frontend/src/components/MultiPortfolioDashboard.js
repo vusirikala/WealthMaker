@@ -43,16 +43,50 @@ export default function MultiPortfolioDashboard() {
           portfolioId={selectedPortfolioId}
           onChatToggle={() => setShowChat(!showChat)}
         />
+      </div>
 
-        {/* Chat Panel (Expandable from bottom) */}
-        {showChat && (
-          <div className="absolute bottom-0 left-0 right-0 h-96 bg-white border-t-2 border-gray-300 shadow-2xl z-40">
-            <div className="h-full">
+      {/* Chat Sliding Panel (from right) */}
+      {showChat && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/20 z-40 transition-opacity"
+            onClick={() => setShowChat(false)}
+          />
+          
+          {/* Chat Panel */}
+          <div className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col">
+            {/* Chat Header */}
+            <div className="bg-gradient-to-r from-cyan-600 to-emerald-600 text-white p-4 flex items-center justify-between shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">AI Financial Advisor</h3>
+                  <p className="text-xs text-white/80">Get personalized investment advice</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowChat(false)}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Chat Content */}
+            <div className="flex-1 overflow-hidden">
               <ChatTab portfolioId={selectedPortfolioId} />
             </div>
           </div>
-        )}
-      </div>
+        </>
+      )}
+    </div>
 
       {/* Modals */}
       <AddPortfolioModal
