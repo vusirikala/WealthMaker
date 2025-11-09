@@ -406,8 +406,8 @@ export default function OnboardingForm({ onComplete }) {
         onClick={() => {
           if (validateStep1()) {
             setStep(2);
-            // All users go through 8 steps now
-            setTotalSteps(8);
+            // All users go through 4 steps now
+            setTotalSteps(4);
           }
         }}
         disabled={!formData.portfolio_type}
