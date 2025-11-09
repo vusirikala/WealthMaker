@@ -113,8 +113,11 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-cyan-50 via-white to-emerald-50">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600 text-sm">Loading portfolio data...</p>
+        </div>
       </div>
     );
   }
