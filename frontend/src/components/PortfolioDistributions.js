@@ -132,7 +132,10 @@ export default function PortfolioDistributions({ portfolioId }) {
       {/* Market Cap Distribution */}
       {capData.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">💼 Market Cap Distribution</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            💼 Market Cap Distribution
+            <InfoTooltip text="Market capitalization = company size. Mega Cap ($200B+): Very stable, lower growth. Large Cap ($10-200B): Stable with moderate growth. Mid Cap ($2-10B): More growth potential, moderate risk. Small Cap (<$2B): Highest growth potential but more volatile." />
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
