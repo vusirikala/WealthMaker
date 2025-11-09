@@ -18,9 +18,18 @@ export default function ChatTab({ portfolioId = null }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    // Clear messages when portfolio changes to avoid showing old messages
+    setMessages([]);
+    setIsLoadingHistory(true);
+    
+    // Load chat history for this specific portfolio
     loadChatHistory();
+    
+    // Load portfolio context if portfolioId is provided
     if (portfolioId) {
       loadPortfolioContext();
+    } else {
+      setPortfolioContext(null);
     }
   }, [portfolioId]);
 
