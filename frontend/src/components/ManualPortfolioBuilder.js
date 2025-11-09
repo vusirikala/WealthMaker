@@ -24,7 +24,12 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null;
 
   const addAllocation = () => {
-    setAllocations([...allocations, { ticker: "", allocation_percentage: "" }]);
+    setAllocations([...allocations, { 
+      ticker: "", 
+      allocation_percentage: "",
+      sector: "",
+      asset_type: "stock"
+    }]);
   };
 
   const removeAllocation = (index) => {
