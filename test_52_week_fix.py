@@ -12,7 +12,7 @@ class FiftyTwoWeekTester:
     def __init__(self, base_url="https://code-preview-54.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
-        self.session_token = "test_session_1762659352"  # Use existing session
+        self.session_token = "test_session_1762659524"  # Use new session
         self.tests_run = 0
         self.tests_passed = 0
 
