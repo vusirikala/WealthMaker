@@ -64,6 +64,11 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     setIsGenerating(true);
 
     try {
+      // Prepare sector preferences
+      const selectedSectors = Object.keys(sectorPreferences)
+        .filter(key => sectorPreferences[key])
+        .join(", ");
+
       // Send request to AI to generate portfolio suggestion
       const response = await fetch(`${API}/chat/generate-portfolio`, {
         method: "POST",
@@ -78,7 +83,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           investment_amount: parseFloat(investmentAmount) || 0,
           time_horizon: timeHorizon,
           roi_expectations: roiExpectations,
-          sector_preferences: sectorPreferences,
+          sector_preferences: selectedSectors,
         }),
       });
 
