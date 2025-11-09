@@ -775,19 +775,59 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           {/* Step 3: Investment Strategies */}
           {step === 3 && (
             <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Strategies</h3>
-                <p className="text-gray-600">
-                  {recommendations 
-                    ? "Based on your profile, we've recommended some strategies. You can adjust these as needed."
-                    : "Select investment strategies that align with your goals"}
-                </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Strategies</h3>
+                  <p className="text-gray-600">Get AI-powered strategy recommendations based on your profile and sector choices</p>
+                </div>
+                <Button
+                  onClick={fetchRecommendations}
+                  disabled={loadingRecommendations}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  {loadingRecommendations ? (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      {recommendations ? "Refresh Recommendations" : "Get AI Recommendations"}
+                    </>
+                  )}
+                </Button>
               </div>
+
+              {recommendations && recommendations.recommended_strategies && (
+                <div className="p-4 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-purple-900 mb-1">AI Strategy Recommendations</p>
+                      <p className="text-sm text-purple-700 mb-2">
+                        Based on your {riskTolerance} risk tolerance, {timeHorizon} year horizon, {roiExpectations}% target return, 
+                        {monitoringFrequency} monitoring, and sector allocation, we recommend:
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {recommendations.recommended_strategies.map((strategyId) => {
+                          const strategy = strategies.find(s => s.id === strategyId);
+                          return strategy ? (
+                            <span key={strategyId} className="px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-full">
+                              {strategy.name}
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Investment Strategies */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Investment Strategies (Optional)
+                  Select Investment Strategies (Optional)
                 </label>
                 <div className="space-y-2 max-h-72 overflow-y-auto pr-2">
                   {strategies.map((strategy) => (
