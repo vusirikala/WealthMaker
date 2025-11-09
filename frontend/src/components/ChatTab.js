@@ -284,15 +284,15 @@ export default function ChatTab({ portfolioId = null }) {
             <div key={idx}>
               <div
                 data-testid={`message-${msg.role}`}
-                className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"} smooth-transition`}
+                className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"} smooth-transition`}
               >
                 {msg.role === "assistant" && (
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Bot className="w-6 h-6 text-white" />
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Bot className="w-5 h-5 text-white" />
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-2xl px-6 py-4 smooth-transition ${
+                  className={`max-w-[85%] rounded-xl px-4 py-3 smooth-transition ${
                     msg.role === "user"
                       ? "bg-gradient-to-r from-cyan-600 to-emerald-600 text-white shadow-md"
                       : "bg-white text-gray-900 shadow-sm border border-gray-200"
