@@ -252,7 +252,10 @@ export default function StockDetailModal({ symbol, holding, isOpen, onClose }) {
                       )}
                       
                       <div>
-                        <div className="text-sm text-gray-600">Total Assets (AUM)</div>
+                        <div className="text-sm text-gray-600 flex items-center">
+                          Total Assets (AUM)
+                          <InfoTooltip text="Assets Under Management (AUM) - the total market value of all investments in the fund. Larger funds tend to be more stable and liquid." />
+                        </div>
                         <div className="font-semibold text-gray-900">
                           {assetData.fundamentals.totalAssets && assetData.fundamentals.totalAssets > 0
                             ? `$${(assetData.fundamentals.totalAssets / 1e9).toFixed(2)}B` 
@@ -263,7 +266,10 @@ export default function StockDetailModal({ symbol, holding, isOpen, onClose }) {
                       </div>
                       
                       <div>
-                        <div className="text-sm text-gray-600">Expense Ratio</div>
+                        <div className="text-sm text-gray-600 flex items-center">
+                          Expense Ratio
+                          <InfoTooltip text="Annual fee charged by the fund as a percentage of your investment. For example, 0.20% means you pay $2 per year for every $1,000 invested. Lower is better." />
+                        </div>
                         <div className="font-semibold text-gray-900">
                           {assetData.fundamentals.expenseRatio && assetData.fundamentals.expenseRatio > 0
                             ? `${(assetData.fundamentals.expenseRatio * 100).toFixed(2)}%` 
@@ -273,7 +279,10 @@ export default function StockDetailModal({ symbol, holding, isOpen, onClose }) {
                       
                       {assetData.fundamentals.yield && assetData.fundamentals.yield > 0 && (
                         <div>
-                          <div className="text-sm text-gray-600">Dividend Yield</div>
+                          <div className="text-sm text-gray-600 flex items-center">
+                            Dividend Yield
+                            <InfoTooltip text="Annual dividend income as a percentage of the current price. Calculated as (Annual Dividend / Current Price) × 100." />
+                          </div>
                           <div className="font-semibold text-gray-900">
                             {(assetData.fundamentals.yield * 100).toFixed(2)}%
                           </div>
