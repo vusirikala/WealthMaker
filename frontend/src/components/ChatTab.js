@@ -247,24 +247,24 @@ export default function ChatTab({ portfolioId = null }) {
   }
 
   return (
-    <div className="clean-card rounded-2xl overflow-hidden shadow-sm" data-testid="chat-interface">
+    <div className="h-full flex flex-col" data-testid="chat-interface">
       {/* Portfolio Context Header */}
       {portfolioContext && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200 px-6 py-3">
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200 px-4 py-3 flex-shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-purple-600" />
             <span className="text-sm font-semibold text-gray-900">
               Chatting about: {portfolioContext.name}
             </span>
             {portfolioContext.goal && (
-              <span className="text-xs text-gray-600">• {portfolioContext.goal}</span>
+              <span className="text-xs text-gray-600 truncate">• {portfolioContext.goal}</span>
             )}
           </div>
         </div>
       )}
       
       {/* Messages Area */}
-      <div className="h-[600px] overflow-y-auto p-6 space-y-6 bg-gray-50" data-testid="chat-messages">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" data-testid="chat-messages">
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 mt-32 fade-in">
             <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
