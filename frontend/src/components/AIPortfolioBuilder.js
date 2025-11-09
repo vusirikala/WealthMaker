@@ -623,13 +623,13 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             </div>
           )}
 
-          {/* Step 2: Sectors & Strategies with AI Recommendations */}
+          {/* Step 2: Investment Sectors with AI Recommendations */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Preferences</h3>
-                  <p className="text-gray-600">Let AI recommend sectors and strategies based on your profile</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Sectors</h3>
+                  <p className="text-gray-600">Let AI recommend optimal sector allocation based on your profile</p>
                 </div>
                 <Button
                   onClick={fetchRecommendations}
@@ -666,15 +666,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Investment Sectors & Allocation (%) *
                 </label>
-                <div className="space-y-2">
-                  {[
-                    { id: "stocks", label: "Stocks", emoji: "📈" },
-                    { id: "bonds", label: "Bonds", emoji: "💰" },
-                    { id: "crypto", label: "Crypto", emoji: "₿" },
-                    { id: "real_estate", label: "Real Estate", emoji: "🏢" },
-                    { id: "commodities", label: "Commodities", emoji: "🥇" },
-                    { id: "forex", label: "Forex", emoji: "💱" },
-                  ].map((sector) => (
+                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                  {sectorInfo.map((sector) => (
                     <div
                       key={sector.id}
                       className={`p-3 border-2 rounded-lg transition-all duration-200 ${
@@ -683,11 +676,11 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                           : "border-gray-200 bg-gray-50"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-start gap-3">
                         <button
                           type="button"
                           onClick={() => handleSectorToggle(sector.id)}
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
                             sectorPreferences[sector.id]?.enabled ? "bg-purple-100" : "bg-gray-100"
                           }`}
                         >
@@ -697,9 +690,14 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                             <div className="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
                           )}
                         </button>
-                        <span className="text-xl">{sector.emoji}</span>
-                        <span className="font-semibold text-gray-900 flex-1">{sector.label}</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xl">{sector.emoji}</span>
+                            <span className="font-semibold text-gray-900">{sector.label}</span>
+                          </div>
+                          <p className="text-xs text-gray-600">{sector.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           <Input
                             type="number"
                             value={sectorPreferences[sector.id]?.allocation || 0}
@@ -711,6 +709,47 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                             className="w-20 text-center"
                           />
                           <span className="text-sm font-medium text-gray-600">%</span>
+                          <TooltipProvider delayDuration={200}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="p-1.5 hover:bg-purple-100 rounded-full transition-colors"
+                                >
+                                  <HelpCircle className="w-4 h-4 text-purple-600" />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent side="left" className="max-w-sm p-4 bg-gray-900 text-white border-gray-700">
+                                <div className="space-y-3">
+                                  <div>
+                                    <p className="font-bold text-sm text-purple-400 mb-1">{sector.label}</p>
+                                    <p className="text-xs text-gray-300 leading-relaxed">{sector.details}</p>
+                                  </div>
+                                  <div className="pt-2 border-t border-gray-700 space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-xs text-gray-400">Risk Level:</span>
+                                        <span className="text-xs font-semibold text-white">{sector.risk}</span>
+                                      </div>
+                                      <p className="text-xs text-gray-400 italic">{sector.riskFactors}</p>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-400">Expected ROI:</span>
+                                      <span className="text-xs font-semibold text-purple-400">{sector.roiExpectation}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-400">Volatility:</span>
+                                      <span className="text-xs font-semibold text-white">{sector.volatility}</span>
+                                    </div>
+                                    <div className="pt-1 border-t border-gray-700">
+                                      <p className="text-xs text-gray-400"><span className="font-semibold text-white">Best for:</span> {sector.bestFor}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </div>
                     </div>
@@ -724,6 +763,20 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                     }
                   </p>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Investment Strategies */}
+          {step === 3 && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Investment Strategies</h3>
+                <p className="text-gray-600">
+                  {recommendations 
+                    ? "Based on your profile, we've recommended some strategies. You can adjust these as needed."
+                    : "Select investment strategies that align with your goals"}
+                </p>
               </div>
 
               {/* Investment Strategies */}
