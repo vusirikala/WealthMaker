@@ -74,8 +74,10 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
     return null;
   }
 
-  const { time_series, return_percentage, period_stats } = performanceData;
+  const { merged_time_series, return_percentage, period_stats, sp500_comparison } = performanceData;
   const isPositive = return_percentage >= 0;
+  const sp500Return = sp500_comparison?.current_return || 0;
+  const outperforming = return_percentage > sp500Return;
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload }) => {
