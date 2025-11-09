@@ -387,7 +387,7 @@ export default function PortfolioTab() {
                   key={idx} 
                   onClick={() => {
                     setSelectedStock(alloc.ticker);
-                    setSelectedHolding(alloc);
+                    setSelectedHolding(alloc.holdingData || alloc); // Pass full holding data
                     setShowStockDetail(true);
                   }}
                   className="border-b border-gray-100 hover:bg-cyan-50 smooth-transition cursor-pointer"
