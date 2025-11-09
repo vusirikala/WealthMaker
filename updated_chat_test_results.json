@@ -1,0 +1,162 @@
+{
+  "timestamp": "2025-11-09T00:23:17.327981+00:00",
+  "test_type": "updated_chat_auto_initiation",
+  "total_tests": 18,
+  "passed_tests": 17,
+  "success_rate": 94.44444444444444,
+  "test_details": [
+    {
+      "test": "Initial message is under 300 characters",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_length": 203
+      }
+    },
+    {
+      "test": "Initial message asks only ONE question",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "question_count": 1
+      }
+    },
+    {
+      "test": "Initial message asks about financial goal",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_financial_keywords": true
+      }
+    },
+    {
+      "test": "Initial message is friendly and conversational",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "is_friendly": true
+      }
+    },
+    {
+      "test": "Initial message saved to chat_messages",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "AI acknowledges user's retirement goal",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "acknowledges_answer": true
+      }
+    },
+    {
+      "test": "AI asks ONE follow-up question",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "follow_up_questions": 1
+      }
+    },
+    {
+      "test": "Follow-up question is relevant to retirement",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "retirement_relevant": true
+      }
+    },
+    {
+      "test": "Retirement goal extracted to liquidity_requirements",
+      "success": false,
+      "details": "Found 0 goals, no retirement goal",
+      "response_data": {
+        "goals_count": 0,
+        "has_retirement": false
+      }
+    },
+    {
+      "test": "Relevant context fields populated",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "populated_fields": [
+          "user_id",
+          "updated_at"
+        ]
+      }
+    },
+    {
+      "test": "Turn 1 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 1,
+        "questions": 1
+      }
+    },
+    {
+      "test": "Turn 2 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 2,
+        "questions": 1
+      }
+    },
+    {
+      "test": "Turn 3 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 3,
+        "questions": 1
+      }
+    },
+    {
+      "test": "Context progressively built up",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "context_fields_count": 10
+      }
+    },
+    {
+      "test": "Previous context retained",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "age_info": true,
+        "investment_info": true,
+        "risk_info": true
+      }
+    },
+    {
+      "test": "AI follows 'one question at a time' rule",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "question_count": 1
+      }
+    },
+    {
+      "test": "AI avoids listing multiple questions",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_question_list": false
+      }
+    },
+    {
+      "test": "Response is conversational and natural",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "is_conversational": true
+      }
+    }
+  ]
+}

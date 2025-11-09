@@ -36,6 +36,29 @@ export default function ChatTab() {
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
+        
+        // If no messages, try to initialize chat with AI greeting
+        if (data.length === 0) {
+          try {
+            const initResponse = await fetch(`${API}/chat/init`, {
+              credentials: "include",
+            });
+            if (initResponse.ok) {
+              const initData = await initResponse.json();
+              if (initData.message) {
+                // Add the initial AI message to the chat
+                const aiMessage = {
+                  role: "assistant",
+                  message: initData.message,
+                  timestamp: initData.timestamp || new Date().toISOString(),
+                };
+                setMessages([aiMessage]);
+              }
+            }
+          } catch (initError) {
+            console.error("Failed to initialize chat:", initError);
+          }
+        }
       }
     } catch (error) {
       console.error("Failed to load chat history:", error);
@@ -88,11 +111,13 @@ export default function ChatTab() {
           }));
         }
       } else {
-        toast.error("Failed to send message");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Failed to send message:", response.status, errorData);
+        toast.error(`Failed to send message: ${errorData.detail || response.statusText}`);
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Something went wrong");
+      toast.error(`Something went wrong: ${error.message}`);
     } finally {
       setIsLoading(false);
     }

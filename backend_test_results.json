@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-08T23:35:16.996461+00:00",
-  "total_tests": 46,
-  "passed_tests": 43,
-  "success_rate": 93.47826086956522,
+  "timestamp": "2025-11-09T00:18:56.447450+00:00",
+  "total_tests": 15,
+  "passed_tests": 15,
+  "success_rate": 100.0,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762644912",
-        "email": "test.user.1762644912@example.com",
-        "name": "Test User 1762644912",
+        "_id": "test-user-1762647526",
+        "email": "test.user.1762647526@example.com",
+        "name": "Test User 1762647526",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-08T23:35:13.723000"
+        "created_at": "2025-11-09T00:18:46.791000"
       }
     },
     {
@@ -712,6 +712,43 @@
       "details": "",
       "response_data": {
         "detail": "Not authenticated"
+      "test": "GET /chat/init (new user)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_length": 375
+      }
+    },
+    {
+      "test": "Chat init message saved to history",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "GET /chat/init (idempotency)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message": null
+      }
+    },
+    {
+      "test": "No duplicate messages created",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "message_count": 1
+      }
+    },
+    {
+      "test": "first_chat_initiated flag set",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "first_chat_initiated": true
       }
     },
     {
@@ -719,15 +756,15 @@
       "success": true,
       "details": "",
       "response_data": {
-        "message_count": 0
+        "message_count": 1
       }
     },
     {
       "test": "POST /chat/send",
-      "success": false,
-      "details": "Status: 500",
+      "success": true,
+      "details": "",
       "response_data": {
-        "has_response": false
+        "has_response": true
       }
     },
     {
@@ -735,7 +772,7 @@
       "success": false,
       "details": "Status: 200, Messages: 1",
       "response_data": {
-        "message_count": 1
+        "message_count": 3
       }
     },
     {

@@ -214,9 +214,24 @@ def build_context_string(user_context):
     if user_context['portfolio_type'] == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
-            dob = datetime.fromisoformat(user_context['date_of_birth'].replace('Z', '+00:00'))
+            dob_str = user_context['date_of_birth']
+            # Handle both string dates (YYYY-MM-DD) and datetime objects
+            if isinstance(dob_str, str):
+                # Parse string date and ensure it's timezone-aware
+                if 'T' in dob_str or 'Z' in dob_str or '+' in dob_str:
+                    dob = datetime.fromisoformat(dob_str.replace('Z', '+00:00'))
+                else:
+                    # Simple date string like "1990-01-01"
+                    dob = datetime.strptime(dob_str, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+            else:
+                dob = dob_str
+            
+            # Ensure both datetimes are timezone-aware for comparison
+            if dob.tzinfo is None:
+                dob = dob.replace(tzinfo=timezone.utc)
+            
             age = relativedelta(datetime.now(timezone.utc), dob).years
-            context_info += f"\n- Age: {age} (DOB: {user_context['date_of_birth'][:10]})"
+            context_info += f"\n- Age: {age} (DOB: {str(dob)[:10]})"
         if user_context.get('retirement_age'):
             context_info += f"\n- Retirement Age: {user_context['retirement_age']}"
         if user_context.get('retirement_plans'):
@@ -359,16 +374,29 @@ INITIAL ASSESSMENT:
 
 You are in INFORMATION GATHERING mode. Your primary task is to collect essential information before making any portfolio recommendations.
 
-RULES FOR THIS MODE:
+CRITICAL RULES FOR THIS MODE:
 1. DO NOT suggest any portfolio allocations yet - you don't have enough information
-2. Ask ONE focused question at a time to gather missing information
-3. Be conversational and friendly, not robotic
-4. Acknowledge user's answers before asking the next question
-5. Explain briefly WHY you need each piece of information
-6. Adapt your questions based on their previous answers
-7. If user asks about portfolios, explain you need more information first
+2. **ASK EXACTLY ONE (1) QUESTION PER MESSAGE** - This is mandatory, not a suggestion
+3. NEVER list multiple questions in one response (no bullet points with multiple questions)
+4. If you need multiple pieces of information, ask for them ONE AT A TIME across multiple messages
+5. Keep your messages SHORT and CONVERSATIONAL (2-4 sentences max before your single question)
+6. Acknowledge the user's previous answer briefly (1 sentence), then ask your next question
+7. If the user mentions a complex goal (like retirement), give a brief 1-2 sentence acknowledgment, then ask the FIRST most important question only
+8. If user asks about portfolios, explain you need more information first, then ask your next single question
+
+CONVERSATION FLOW EXAMPLE:
+- User: "I want to retire"
+- You: "Great! Retirement planning is one of the most important goals. To help you create a solid plan, I need to understand a few key details. Let's start with the first one: What age are you hoping to retire at?"
+- [Wait for response]
+- User: "Age 65"
+- You: "Perfect, age 65 gives us a clear timeline to work with. Next question: What annual income would you need in retirement to maintain your desired lifestyle?"
+- [Continue one question at a time...]
 
 YOUR NEXT QUESTION SHOULD BE ABOUT: {context_analysis['next_question']['field'] if context_analysis['next_question'] else 'general financial situation'}
+
+DO NOT write lists like:
+❌ "Here are the questions I need to ask: 1) ... 2) ... 3) ..."
+✅ Instead, give brief context (1-2 sentences) and ask ONE question only
 """
     else:
         conversation_mode = """
@@ -394,8 +422,10 @@ Your role:
 1. Understand user's investment preferences and continuously build their context/memory
 2. Extract and remember key information about their financial situation, goals, and preferences
 3. Ask smart, contextual questions based on what information is missing
-4. ONLY recommend portfolios when you have sufficient information (Ready for Portfolio Creation: YES)
-5. Explain your recommendations in clear, simple terms
+4. **CRITICAL: Ask ONLY ONE question per response when gathering information** - Never list multiple questions
+5. ONLY recommend portfolios when you have sufficient information (Ready for Portfolio Creation: YES)
+6. Explain your recommendations in clear, simple terms
+7. Keep responses concise and conversational (avoid long paragraphs or lists of questions)
 
 When recommending portfolios:
 - For LOW risk: 60-70% bonds, 20-30% blue-chip stocks, 5-10% index funds
@@ -428,8 +458,15 @@ IMPORTANT INSTRUCTIONS:
 
 3. For general questions, portfolio discussions, or clarifications, respond normally WITHOUT the portfolio suggestion marker.
 
+**FORMATTING RULES:**
+- When gathering information: Brief context (1-2 sentences) + ONE single question
+- Never use numbered lists of questions (e.g., "1) What is... 2) When do... 3) How much...")
+- Never say "Quick questions:" or "Key questions:" followed by multiple questions
+- If you have many things to ask about, choose the MOST IMPORTANT one and ask only that
+- Wait for the user's answer before asking the next question
+
 Always provide specific ticker symbols (e.g., AAPL, MSFT, BTC-USD, SPY) and allocation percentages when making recommendations.
 
-Respond in a friendly, professional tone. Keep responses concise but informative."""
+Respond in a friendly, professional tone. Keep responses SHORT and CONVERSATIONAL - avoid overwhelming users with information."""
     
     return system_message

@@ -45,10 +45,9 @@ export default function Dashboard({ user, setIsAuthenticated }) {
         const context = await response.json();
         setUserContext(context);
         
-        // Show onboarding if critical fields are missing
-        const needsOnboarding = !context.portfolio_type || 
-                                !context.risk_tolerance || 
-                                (!context.monthly_investment && !context.annual_investment);
+        // Show onboarding if user hasn't completed it yet
+        // Check the dedicated onboarding_completed flag
+        const needsOnboarding = !context.onboarding_completed;
         
         setShowOnboarding(needsOnboarding);
       }
@@ -59,9 +58,21 @@ export default function Dashboard({ user, setIsAuthenticated }) {
     }
   };
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = async () => {
     setShowOnboarding(false);
-    checkUserContext(); // Refresh context
+    // Refresh context without re-checking if onboarding is needed
+    try {
+      const response = await fetch(`${API}/context`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const context = await response.json();
+        setUserContext(context);
+      }
+    } catch (error) {
+      console.error("Error refreshing context:", error);
+    }
     toast.success("Great! Now let's chat to refine your portfolio.");
   };
 
