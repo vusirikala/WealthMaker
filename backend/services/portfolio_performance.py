@@ -196,7 +196,7 @@ def calculate_portfolio_historical_returns(
     if sp500_data is not None and len(sp500_data) > 0:
         # Add to DataFrame
         df['SP500'] = sp500_data
-        df['SP500'] = df['SP500'].fillna(method='ffill')
+        df['SP500'] = df['SP500'].ffill()
         
         # Normalize S&P 500 to start at 100
         sp500_normalized = (df['SP500'] / df['SP500'].iloc[0]) * 100
