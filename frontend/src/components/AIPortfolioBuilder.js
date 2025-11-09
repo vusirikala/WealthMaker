@@ -432,7 +432,12 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">AI Portfolio Builder</h2>
-              <p className="text-sm text-gray-600">Step {step} of 3</p>
+              <p className="text-sm text-gray-600">
+                {step === 1 && "Step 1: Basic Information"}
+                {step === 2 && "Step 2: Investment Sectors"}
+                {step === 3 && "Step 3: Investment Strategies"}
+                {step === 4 && "Step 4: Review & Create"}
+              </p>
             </div>
           </div>
           <button
@@ -447,7 +452,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
         <div className="h-2 bg-gray-200">
           <div
             className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-            style={{ width: `${(step / 3) * 100}%` }}
+            style={{ width: `${(step / 4) * 100}%` }}
           ></div>
         </div>
 
