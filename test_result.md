@@ -412,6 +412,18 @@ metadata:
         agent: "main"
         comment: "Reorganized performance metrics to display all key information in a single clean line. Updated layout to show Portfolio Return, S&P 500 Return, and Outperforming/Underperforming percentage side by side with vertical dividers. Each metric has a label above and large bold value below. Added Calendar icon with period label at the end of the metrics line. Removed separate S&P 500 comparison card to consolidate all metrics in header. Time period selector remains on the right side. Frontend restarted successfully."
 
+  - task: "Advanced Portfolio Analytics Suite"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/services/portfolio_analytics.py, /app/backend/routes/portfolio_management.py, /app/frontend/src/components/RiskMetricsDashboard.js, /app/frontend/src/components/CorrelationHeatmap.js, /app/frontend/src/components/PortfolioDistributions.js, /app/frontend/src/components/DividendTracker.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented comprehensive advanced portfolio analytics suite with 5 major features: 1) Risk Metrics Dashboard - displays Beta (vs S&P 500), Sharpe Ratio, Volatility, and Max Drawdown with color-coded cards and explanations. 2) Correlation Heatmap - visual matrix showing correlation between all stocks with color coding (green=low/good diversification, red=high/poor diversification). 3) Geographic Distribution - pie chart showing US vs International Developed vs Emerging Markets exposure. 4) Market Cap Distribution - pie chart showing Mega/Large/Mid/Small cap breakdown. 5) Dividend/Income Tracker - displays total annual income, monthly income, portfolio yield, and breakdown by dividend-paying stocks. Backend: Created portfolio_analytics.py service with async functions for all calculations using yfinance data. Added 4 new API endpoints: /api/portfolios-v2/{id}/risk-metrics, /correlations, /distributions, /dividends. Frontend: Created 4 new components with full UI, loading states, and error handling. Integrated all components into PortfolioView.js. All services restarted successfully."
+
 test_plan:
   current_focus:
     - "Asset Type Allocation Chart and Sector/Type Display"
