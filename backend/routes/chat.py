@@ -274,6 +274,14 @@ def build_context_string(user_context):
     if user_context.get('liquidity_requirements'):
         context_info += "\n\n- FINANCIAL GOALS & LIQUIDITY NEEDS:"
         for req in user_context['liquidity_requirements']:
+            # Handle both dict and string formats
+            if isinstance(req, str):
+                context_info += f"\n  * {req}"
+                continue
+            
+            if not isinstance(req, dict):
+                continue
+                
             goal_name = req.get('goal_name', req.get('goal', 'Goal'))
             target_amount = req.get('target_amount', req.get('amount', 0))
             amount_saved = req.get('amount_saved', 0)
