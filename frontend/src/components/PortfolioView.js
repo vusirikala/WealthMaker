@@ -367,6 +367,18 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
                       <div className="text-xs text-gray-600">
                         {holding.shares.toFixed(4)} shares @ ${holding.purchase_price.toFixed(2)}
                       </div>
+                      <div className="text-xs text-gray-600 flex items-center gap-2 mt-1">
+                        {holding.asset_type && (
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">
+                            {holding.asset_type}
+                          </span>
+                        )}
+                        {holding.sector && (
+                          <span className="text-gray-500">
+                            {holding.sector}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-gray-900">
