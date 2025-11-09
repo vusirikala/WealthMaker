@@ -165,6 +165,21 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Modified loadChatHistory function to call /api/chat/init endpoint when no messages exist. If init returns a message, it's displayed as the first AI message automatically when user opens chat tab."
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed 'Body is disturbed or locked' error in ChatTab.js. Issue was trying to read response.json() multiple times. Updated error handling in handleSendMessage and handleAcceptPortfolio functions to properly parse JSON errors only once."
+  
+  - task: "Fix backend liquidity_requirements type handling"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/chat.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed AttributeError in build_context_string function. Added type checking to handle both string and dict formats in liquidity_requirements list. Prevents 'str' object has no attribute 'get' error."
 
 metadata:
   created_by: "main_agent"
