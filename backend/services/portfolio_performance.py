@@ -188,7 +188,8 @@ async def calculate_portfolio_historical_returns(
         if db is not None:
             try:
                 sp500_data = await get_cached_price_data('^GSPC', max_start_date, end_date, db)
-            except:
+            except Exception as e:
+                logger.warning(f"Cache failed for S&P 500: {e}, falling back to direct fetch")
                 sp500 = yf.Ticker('^GSPC')
                 sp500_hist = sp500.history(start=max_start_date, end=end_date)
                 sp500_data = sp500_hist['Close'] if not sp500_hist.empty else None
