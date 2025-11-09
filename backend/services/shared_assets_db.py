@@ -111,10 +111,10 @@ class SharedAssetsService:
                 # ═══════════════════════════════════════
                 "fundamentals": {
                     # Common fields
-                    "sector": info.get('sector', 'Unknown'),
-                    "industry": info.get('industry', 'Unknown'),
-                    "description": info.get('longBusinessSummary', ''),
-                    "longBusinessSummary": info.get('longBusinessSummary', ''),
+                    "sector": info.get('sector', info.get('sectorKey', 'Unknown')),
+                    "industry": info.get('industry', info.get('industryKey', 'Unknown')),
+                    "description": info.get('longBusinessSummary', info.get('description', '')),
+                    "longBusinessSummary": info.get('longBusinessSummary', info.get('description', '')),
                     "marketCap": info.get('marketCap', 0),
                     "employees": info.get('fullTimeEmployees', 0),
                     "website": info.get('website', ''),
@@ -122,15 +122,18 @@ class SharedAssetsService:
                     "quoteType": info.get('quoteType', ''),
                     
                     # Fund-specific fields (for ETFs, Index Funds, Bond Funds)
-                    "category": info.get('category', ''),
-                    "totalAssets": info.get('totalAssets', 0),
-                    "expenseRatio": info.get('annualReportExpenseRatio', 0),
-                    "yield": info.get('yield', 0),
+                    "category": info.get('category', info.get('fundFamily', '')),
+                    "totalAssets": info.get('totalAssets', info.get('navPrice', 0)),
+                    "expenseRatio": info.get('annualReportExpenseRatio', info.get('yield', 0)),
+                    "yield": info.get('yield', info.get('trailingAnnualDividendYield', 0)),
                     "ytdReturn": info.get('ytdReturn', 0),
                     "threeYearAverageReturn": info.get('threeYearAverageReturn', 0),
                     "fiveYearAverageReturn": info.get('fiveYearAverageReturn', 0),
                     "fundFamily": info.get('fundFamily', ''),
                     "fundInceptionDate": info.get('fundInceptionDate', ''),
+                    
+                    # Top holdings for funds/ETFs
+                    "topHoldings": self._get_fund_holdings(ticker, info),
                 },
                 
                 # ═══════════════════════════════════════
