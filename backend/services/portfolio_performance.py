@@ -189,6 +189,8 @@ async def calculate_portfolio_historical_returns(
     # Calculate portfolio returns (portfolio starts at 100, so return is (current - 100))
     portfolio_returns = ((portfolio_values - 100) / 100) * 100
     
+    logger.info(f"Total data points available: {len(portfolio_returns)} (need 1260 for 5-year return)")
+    
     # Calculate S&P 500 returns for comparison
     sp500_returns = None
     if sp500_data is not None and len(sp500_data) > 0:
