@@ -37,9 +37,40 @@ export default function ManualPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     setAllocations(newAllocations);
   };
 
-  const updateAllocation = (index, field, value) => {
+  const fetchStockInfo = async (ticker) => {
+    if (!ticker || ticker.length < 1) return null;
+    
+    try {
+      const response = await fetch(`${API}/data/asset/${ticker.toUpperCase()}`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          sector: data.fundamentals?.sector || "Unknown",
+          asset_type: data.assetType || "stock"
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching stock info:", error);
+    }
+    return null;
+  };
+
+  const updateAllocation = async (index, field, value) => {
     const newAllocations = [...allocations];
     newAllocations[index][field] = value;
+    
+    // If ticker is updated and it's valid, fetch stock info
+    if (field === 'ticker' && value && value.length >= 1) {
+      const stockInfo = await fetchStockInfo(value);
+      if (stockInfo) {
+        newAllocations[index].sector = stockInfo.sector;
+        newAllocations[index].asset_type = stockInfo.asset_type;
+      }
+    }
+    
     setAllocations(newAllocations);
   };
 
