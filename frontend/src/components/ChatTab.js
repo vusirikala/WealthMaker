@@ -266,17 +266,17 @@ export default function ChatTab({ portfolioId = null }) {
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" data-testid="chat-messages">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500 mt-32 fade-in">
-            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
-              <Bot className="w-8 h-8 text-white" />
+          <div className="text-center text-gray-500 mt-20 fade-in px-4">
+            <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center">
+              <Bot className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              {portfolioContext ? `Chat about ${portfolioContext.name}` : 'Welcome to Your AI Financial Advisor!'}
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              {portfolioContext ? `Chat about ${portfolioContext.name}` : 'Welcome to Your AI Advisor!'}
             </h3>
-            <p className="text-base text-gray-600 max-w-md mx-auto">
+            <p className="text-sm text-gray-600 max-w-sm mx-auto">
               {portfolioContext 
-                ? `Ask me anything about your ${portfolioContext.name} portfolio or request adjustments to your allocations.`
-                : 'Tell me about your investment preferences, risk tolerance, and financial goals.'}
+                ? `Ask me anything about your ${portfolioContext.name} portfolio or request adjustments.`
+                : 'Ask me about your investment preferences, risk tolerance, and financial goals.'}
             </p>
           </div>
         ) : (
