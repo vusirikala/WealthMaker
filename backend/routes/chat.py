@@ -707,12 +707,23 @@ STRATEGY ALIGNMENT:
 
 OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
 {{
-  "reasoning": "2-3 sentences explaining how this portfolio matches the user's {sector_allocation_str.replace(chr(10), ' ')} sector allocation, implements their {strategy_str} strategies, and targets {roi_expectations}% returns with {risk_tolerance} risk over {time_horizon} years.",
+  "reasoning": "2-3 sentences stating: 1) How you matched EXACT sector percentages (e.g., 'Allocated 60% to stocks through AAPL 20% + MSFT 15% + NVDA 10% + SPY 15%, 30% to bonds via AGG 20% + BND 10%, and 10% to crypto via BITO'), 2) How this implements {strategy_str} strategies, 3) How it targets {roi_expectations}% returns.",
   "allocations": [
-    {{"ticker": "SPY", "allocation_percentage": 30.0, "sector": "Stocks", "asset_type": "etf"}},
-    {{"ticker": "BND", "allocation_percentage": 25.0, "sector": "Bonds", "asset_type": "etf"}}
+    {{"ticker": "AAPL", "allocation_percentage": 20.0, "sector": "stocks", "asset_type": "stock"}},
+    {{"ticker": "MSFT", "allocation_percentage": 15.0, "sector": "stocks", "asset_type": "stock"}},
+    {{"ticker": "AGG", "allocation_percentage": 20.0, "sector": "bonds", "asset_type": "etf"}},
+    {{"ticker": "BITO", "allocation_percentage": 10.0, "sector": "crypto", "asset_type": "etf"}}
   ]
 }}
+
+VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
+□ Calculate sum of all stock allocations = Should equal user's stocks %
+□ Calculate sum of all bond allocations = Should equal user's bonds %
+□ Calculate sum of all crypto allocations = Should equal user's crypto %
+□ Calculate sum of all real_estate allocations = Should equal user's real_estate %
+□ Calculate sum of all commodity allocations = Should equal user's commodities %
+□ Calculate total sum = Should equal 100%
+□ If ANY sector doesn't match, RECALCULATE before responding"""
 
 CRITICAL REQUIREMENTS - STRICTLY ENFORCE:
 1. ⚠️ MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the user's specified percentage
