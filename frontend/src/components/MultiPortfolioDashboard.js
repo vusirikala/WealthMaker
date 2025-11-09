@@ -13,6 +13,12 @@ export default function MultiPortfolioDashboard() {
   const [showAIBuilder, setShowAIBuilder] = useState(false);
   const [showChat, setShowChat] = useState(false);
 
+  // Close chat when portfolio changes
+  const handlePortfolioSelect = (portfolioId) => {
+    setSelectedPortfolioId(portfolioId);
+    setShowChat(false); // Close chat to force reload with new portfolio
+  };
+
   const handlePortfolioTypeSelect = (type) => {
     if (type === 'manual') {
       setShowManualBuilder(true);
