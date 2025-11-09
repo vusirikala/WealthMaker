@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { X, ArrowRight, ArrowLeft, Sparkles, CheckCircle } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, Sparkles, CheckCircle, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
