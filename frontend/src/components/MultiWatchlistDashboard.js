@@ -262,9 +262,44 @@ export default function MultiWatchlistDashboard() {
           <>
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {watchlistData?.name || "Loading..."}
-              </h2>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  {watchlistData?.name || "Loading..."}
+                </h2>
+                {/* Time Period Selector */}
+                <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setTimePeriod("24h")}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      timePeriod === "24h"
+                        ? "bg-white text-cyan-600 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    24 Hours
+                  </button>
+                  <button
+                    onClick={() => setTimePeriod("1m")}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      timePeriod === "1m"
+                        ? "bg-white text-cyan-600 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    1 Month
+                  </button>
+                  <button
+                    onClick={() => setTimePeriod("1y")}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                      timePeriod === "1y"
+                        ? "bg-white text-cyan-600 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    1 Year
+                  </button>
+                </div>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={loadWatchlistData}
