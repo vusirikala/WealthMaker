@@ -1068,11 +1068,9 @@ async def initialize_chat(user: User = Depends(require_auth)):
         # Generate personalized initial message - simple and conversational
         initial_message = f"""Hi {user.name}! 👋 Welcome to WealthMaker!
 
-I'm your AI financial advisor, and I'm excited to help you build a personalized investment portfolio tailored to your needs.
+I'm your AI financial advisor, and I'm excited to help you build a personalized investment portfolio.
 
-To get started, let me ask you: **What's your main financial goal right now?** 
-
-For example, are you saving for retirement, planning to buy a home, building an emergency fund, or something else? 💼"""
+**What's your main financial goal right now?** 💼"""
 
         # Save the initial message to chat history
         ai_msg_doc = {
