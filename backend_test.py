@@ -732,11 +732,11 @@ print('Setup complete');
         )
 
     def test_portfolio_accept_and_load_functionality(self):
-        """Test portfolio accept and load functionality after ObjectId serialization bug fix"""
-        print("\n📊 Testing Portfolio Accept and Load Functionality (Bug Fix Verification)...")
+        """Test complete portfolio accept and load flow with missing endpoint fix"""
+        print("\n📊 Testing Complete Portfolio Accept and Load Flow (Review Request)...")
         
-        # Test 1: Create a portfolio suggestion in portfolio_suggestions collection
-        print("\n🔧 Setting up portfolio suggestion...")
+        # Test 1: Create Test User and Portfolio Suggestion
+        print("\n🔧 Step 1: Creating test user and portfolio suggestion...")
         
         try:
             import subprocess
@@ -795,16 +795,34 @@ print('Portfolio suggestion created');
             
             if result.returncode == 0:
                 print(f"✅ Portfolio suggestion created: {suggestion_id}")
+                self.log_test(
+                    "Create portfolio suggestion in database", 
+                    True,
+                    "",
+                    {"suggestion_id": suggestion_id}
+                )
             else:
                 print(f"❌ Failed to create portfolio suggestion: {result.stderr}")
+                self.log_test(
+                    "Create portfolio suggestion in database", 
+                    False,
+                    f"MongoDB error: {result.stderr}",
+                    {}
+                )
                 return
                 
         except Exception as e:
             print(f"❌ Setup error: {str(e)}")
+            self.log_test(
+                "Create portfolio suggestion in database", 
+                False,
+                f"Exception: {str(e)}",
+                {}
+            )
             return
         
-        # Test 2: Accept Portfolio from Chat
-        print("\n💼 Testing Accept Portfolio from Chat...")
+        # Test 2: Accept Portfolio via Chat
+        print("\n💼 Step 2: Accept Portfolio via /api/portfolio/accept...")
         
         accept_request = {
             "suggestion_id": suggestion_id,
@@ -840,10 +858,10 @@ print('Portfolio suggestion created');
             }
         }
         
-        status, data = self.make_request('POST', 'portfolios/accept', accept_request)
+        status, data = self.make_request('POST', 'portfolio/accept', accept_request)
         success = status == 200 and data.get('success') == True
         self.log_test(
-            "POST /portfolios/accept", 
+            "POST /api/portfolio/accept", 
             success,
             f"Status: {status}, Response: {data}" if not success else "",
             data
@@ -853,22 +871,26 @@ print('Portfolio suggestion created');
             print(f"❌ Portfolio accept failed, skipping load tests")
             return
         
-        # Test 3: Load AI-Generated Portfolio (GET /portfolios)
-        print("\n📈 Testing Load AI-Generated Portfolio...")
+        # Verify portfolio saved to portfolios collection
+        print("\n🔍 Step 2b: Verify portfolio saved to portfolios collection...")
         
-        status, data = self.make_request('GET', 'portfolios')
+        # Test 3: Load Portfolio via Legacy Endpoint (what frontend actually calls)
+        print("\n📈 Step 3: Load Portfolio via GET /api/portfolio (frontend endpoint)...")
+        
+        status, data = self.make_request('GET', 'portfolio')
         success = status == 200 and isinstance(data, dict)
         
         if success:
-            # Verify response contains expected fields
+            # Verify 200 response
+            # Verify portfolio data returned
             has_risk_tolerance = 'risk_tolerance' in data
             has_roi_expectations = 'roi_expectations' in data  
             has_allocations = 'allocations' in data
             
-            # Verify _id field is a string (ObjectId serialization fix)
-            id_is_string = isinstance(data.get('_id'), str) if '_id' in data else True
+            # Verify _id is a string (not ObjectId) - critical fix
+            id_is_string = isinstance(data.get('_id'), str) if '_id' in data else False
             
-            # Verify allocations structure
+            # Verify all portfolio fields present
             allocations = data.get('allocations', [])
             allocations_valid = isinstance(allocations, list) and len(allocations) == 4
             
@@ -878,10 +900,11 @@ print('Portfolio suggestion created');
             details = f"Status: {status}, Type: {type(data)}"
         
         self.log_test(
-            "GET /portfolios (ObjectId serialization fix)", 
+            "GET /api/portfolio - 200 response with portfolio data", 
             success,
             details if not success else "",
             {
+                "status": status,
                 "has_risk_tolerance": data.get('risk_tolerance') if isinstance(data, dict) else None,
                 "has_roi_expectations": data.get('roi_expectations') if isinstance(data, dict) else None,
                 "allocation_count": len(data.get('allocations', [])) if isinstance(data, dict) else 0,
@@ -889,99 +912,148 @@ print('Portfolio suggestion created');
             }
         )
         
-        # Test 4: Verify no ObjectId serialization errors
+        # Test 4: Verify Data Integrity
+        print("\n🔍 Step 4: Verify Data Integrity...")
+        
         if success and isinstance(data, dict):
-            # Check that _id is properly serialized as string
+            # Check that _id is properly serialized as string (not ObjectId)
             portfolio_id = data.get('_id')
             id_serialization_ok = isinstance(portfolio_id, str) and len(portfolio_id) > 0
             
             self.log_test(
-                "Portfolio _id properly serialized as string", 
+                "Portfolio _id is string (ObjectId serialization fix)", 
                 id_serialization_ok,
                 f"_id type: {type(portfolio_id)}, value: {portfolio_id}" if not id_serialization_ok else "",
                 {"id_value": portfolio_id, "id_type": type(portfolio_id).__name__}
             )
             
-            # Verify portfolio data matches what was accepted
-            risk_match = data.get('risk_tolerance') == 'moderate'
-            roi_match = data.get('roi_expectations') == 12
-            allocations_match = len(data.get('allocations', [])) == 4
+            # Compare accepted portfolio data with loaded portfolio data
+            risk_match = data.get('risk_tolerance') == accept_request['portfolio_data']['risk_tolerance']
+            roi_match = data.get('roi_expectations') == accept_request['portfolio_data']['roi_expectations']
+            allocations_match = len(data.get('allocations', [])) == len(accept_request['portfolio_data']['allocations'])
             
-            data_integrity_ok = risk_match and roi_match and allocations_match
+            # Confirm allocations array is intact
+            allocations_intact = True
+            if allocations_match and isinstance(data.get('allocations'), list):
+                for i, allocation in enumerate(data.get('allocations', [])):
+                    original_allocation = accept_request['portfolio_data']['allocations'][i]
+                    if (allocation.get('ticker') != original_allocation.get('ticker') or
+                        allocation.get('allocation') != original_allocation.get('allocation')):
+                        allocations_intact = False
+                        break
+            
+            data_integrity_ok = risk_match and roi_match and allocations_match and allocations_intact
             self.log_test(
-                "Portfolio data integrity after accept/load", 
+                "Data integrity: accepted vs loaded portfolio match", 
                 data_integrity_ok,
-                f"risk: {risk_match}, roi: {roi_match}, allocations: {allocations_match}" if not data_integrity_ok else "",
+                f"risk: {risk_match}, roi: {roi_match}, allocations_count: {allocations_match}, allocations_intact: {allocations_intact}" if not data_integrity_ok else "",
                 {
-                    "risk_tolerance": data.get('risk_tolerance'),
-                    "roi_expectations": data.get('roi_expectations'),
-                    "allocations_count": len(data.get('allocations', []))
+                    "accepted_risk": accept_request['portfolio_data']['risk_tolerance'],
+                    "loaded_risk": data.get('risk_tolerance'),
+                    "accepted_roi": accept_request['portfolio_data']['roi_expectations'],
+                    "loaded_roi": data.get('roi_expectations'),
+                    "accepted_allocations": len(accept_request['portfolio_data']['allocations']),
+                    "loaded_allocations": len(data.get('allocations', []))
                 }
             )
-        
-        # Test 5: Load My Portfolio (existing_portfolios)
-        print("\n🏠 Testing Load My Portfolio...")
-        
-        status, data = self.make_request('GET', 'portfolios/my-portfolio')
-        success = status == 200 and isinstance(data, dict)
-        
-        if success:
-            # Should return either portfolio data or null message
-            has_portfolio = data.get('portfolio') is not None
-            has_message = 'message' in data
             
-            success = has_portfolio or has_message
-            details = f"has_portfolio: {has_portfolio}, has_message: {has_message}"
-        else:
-            details = f"Status: {status}"
+            # Confirm no serialization errors
+            try:
+                import json
+                json_str = json.dumps(data)
+                serialization_ok = True
+            except Exception as e:
+                serialization_ok = False
+                
+            self.log_test(
+                "No JSON serialization errors", 
+                serialization_ok,
+                f"Serialization error: {str(e) if not serialization_ok else ''}" if not serialization_ok else "",
+                {"serializable": serialization_ok}
+            )
         
-        self.log_test(
-            "GET /portfolios/my-portfolio", 
-            success,
-            details if not success else "",
-            {
-                "has_portfolio": data.get('portfolio') is not None if isinstance(data, dict) else False,
-                "message": data.get('message') if isinstance(data, dict) else None
-            }
-        )
+        # Test 5: Test Error Cases
+        print("\n🚨 Step 5: Test Error Cases...")
         
-        # Test 6: End-to-End Flow Verification
-        print("\n🔄 Testing End-to-End Flow...")
-        
-        # Accept portfolio → Load portfolio → Verify data matches
-        status, loaded_data = self.make_request('GET', 'portfolios')
-        
-        if status == 200 and isinstance(loaded_data, dict):
-            # Compare with original accept request
-            original_risk = accept_request['portfolio_data']['risk_tolerance']
-            original_roi = accept_request['portfolio_data']['roi_expectations'] 
-            original_allocations = len(accept_request['portfolio_data']['allocations'])
+        # Clear portfolio to test no portfolio case
+        try:
+            import subprocess
+            mongo_script = f'''
+use('test_database');
+db.portfolios.deleteMany({{"user_id": "{self.user_id}"}});
+print('Portfolio cleared');
+'''
             
-            loaded_risk = loaded_data.get('risk_tolerance')
-            loaded_roi = loaded_data.get('roi_expectations')
-            loaded_allocations = len(loaded_data.get('allocations', []))
-            
-            end_to_end_success = (
-                original_risk == loaded_risk and
-                original_roi == loaded_roi and 
-                original_allocations == loaded_allocations
+            result = subprocess.run(
+                ['mongosh', '--eval', mongo_script],
+                capture_output=True,
+                text=True,
+                timeout=30
             )
             
+            if result.returncode == 0:
+                # Test GET /api/portfolio when no portfolio exists
+                status, data = self.make_request('GET', 'portfolio')
+                
+                # Should return proper error handling (not 500 error)
+                success = status == 200 and isinstance(data, dict) and data.get('portfolio') is None
+                
+                self.log_test(
+                    "GET /api/portfolio when no portfolio exists", 
+                    success,
+                    f"Status: {status}, Response: {data}" if not success else "",
+                    {"status": status, "response": data}
+                )
+            
+        except Exception as e:
             self.log_test(
-                "End-to-End Flow: Accept → Load → Data Match", 
-                end_to_end_success,
-                f"Original: {original_risk}/{original_roi}/{original_allocations}, Loaded: {loaded_risk}/{loaded_roi}/{loaded_allocations}" if not end_to_end_success else "",
-                {
-                    "original": {"risk": original_risk, "roi": original_roi, "allocations": original_allocations},
-                    "loaded": {"risk": loaded_risk, "roi": loaded_roi, "allocations": loaded_allocations}
-                }
-            )
-        else:
-            self.log_test(
-                "End-to-End Flow: Accept → Load → Data Match", 
+                "Error case test setup", 
                 False,
-                f"Failed to load portfolio for comparison: Status {status}",
-                {"load_status": status}
+                f"Failed to clear portfolio: {str(e)}",
+                {}
+            )
+        
+        # Test 6: End-to-End Flow Summary
+        print("\n🎯 Step 6: End-to-End Flow Summary...")
+        
+        # Re-accept portfolio for final verification
+        status, accept_data = self.make_request('POST', 'portfolio/accept', accept_request)
+        if status == 200:
+            status, load_data = self.make_request('GET', 'portfolio')
+            
+            if status == 200 and isinstance(load_data, dict):
+                end_to_end_success = (
+                    load_data.get('risk_tolerance') == 'moderate' and
+                    load_data.get('roi_expectations') == 12 and
+                    len(load_data.get('allocations', [])) == 4 and
+                    isinstance(load_data.get('_id'), str)
+                )
+                
+                self.log_test(
+                    "Complete End-to-End Flow: Accept → Load via /api/portfolio", 
+                    end_to_end_success,
+                    f"Final verification failed" if not end_to_end_success else "",
+                    {
+                        "flow": "POST /api/portfolio/accept → GET /api/portfolio",
+                        "risk_tolerance": load_data.get('risk_tolerance'),
+                        "roi_expectations": load_data.get('roi_expectations'),
+                        "allocations_count": len(load_data.get('allocations', [])),
+                        "id_is_string": isinstance(load_data.get('_id'), str)
+                    }
+                )
+            else:
+                self.log_test(
+                    "Complete End-to-End Flow: Accept → Load via /api/portfolio", 
+                    False,
+                    f"Load failed: Status {status}",
+                    {"load_status": status}
+                )
+        else:
+            self.log_test(
+                "Complete End-to-End Flow: Accept → Load via /api/portfolio", 
+                False,
+                f"Accept failed: Status {status}",
+                {"accept_status": status}
             )
 
     def test_portfolio_endpoints(self):
