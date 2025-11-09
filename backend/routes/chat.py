@@ -828,44 +828,71 @@ CRITICAL REQUIREMENTS:
             logger.error(f"Failed to parse LLM response as JSON: {e}")
             logger.error(f"LLM Response: {ai_response}")
             
-            # Fallback recommendations based on risk tolerance
+            # Sophisticated fallback recommendations based on all parameters
+            time_years = 5  # default
+            if time_horizon == "0-3":
+                time_years = 2
+            elif time_horizon == "3-5":
+                time_years = 4
+            elif time_horizon == "5-10":
+                time_years = 7
+            elif time_horizon == "10+":
+                time_years = 15
+            
+            # Calculate allocation based on multiple factors
             if risk_tolerance == "low":
+                # Conservative allocation
+                stocks_pct = min(40, 20 + time_years * 1)  # More stocks for longer horizon
+                bonds_pct = 60 - stocks_pct
                 sector_allocation = {
-                    "stocks": 30,
-                    "bonds": 50,
+                    "stocks": stocks_pct,
+                    "bonds": bonds_pct,
                     "crypto": 0,
                     "real_estate": 15,
                     "commodities": 5,
                     "forex": 0
                 }
                 strategies = ["income_investing", "dollar_cost_averaging"]
+                reason = f"Conservative allocation emphasizing bonds ({bonds_pct}%) for stability while maintaining some growth through stocks ({stocks_pct}%). Real estate (15%) provides diversification and income. Suitable for your {risk_tolerance} risk profile and {goal}."
+                
             elif risk_tolerance == "high":
+                # Aggressive allocation
+                stocks_pct = min(75, 50 + time_years * 2)  # More aggressive with longer time
+                crypto_pct = 10 if time_years >= 5 else 5
+                bonds_pct = 100 - stocks_pct - crypto_pct - 10 - 5  # remainder after other allocations
                 sector_allocation = {
-                    "stocks": 60,
-                    "bonds": 10,
-                    "crypto": 15,
+                    "stocks": stocks_pct,
+                    "bonds": max(5, bonds_pct),
+                    "crypto": crypto_pct,
                     "real_estate": 10,
                     "commodities": 5,
                     "forex": 0
                 }
-                strategies = ["growth_investing", "momentum_investing"]
+                strategies = ["growth_investing", "momentum_investing"] if monitoring_frequency in ["daily", "weekly"] else ["growth_investing", "index_funds"]
+                reason = f"Aggressive allocation with {stocks_pct}% stocks for maximum growth potential over your {time_horizon} horizon. Crypto ({crypto_pct}%) adds high-risk/high-reward exposure. Targets your {roi_expectations}% return goal with acceptance of higher volatility. Matches your {monitoring_frequency} monitoring capability."
+                
             else:  # medium
+                # Balanced allocation
+                stocks_pct = min(60, 40 + time_years * 2)
+                bonds_pct = 35 - (time_years - 5) if time_years > 5 else 35
+                crypto_pct = 5 if roi_expectations > 10 else 0
                 sector_allocation = {
-                    "stocks": 50,
-                    "bonds": 30,
-                    "crypto": 5,
+                    "stocks": stocks_pct,
+                    "bonds": bonds_pct,
+                    "crypto": crypto_pct,
                     "real_estate": 10,
                     "commodities": 5,
                     "forex": 0
                 }
                 strategies = ["index_funds", "dollar_cost_averaging"]
+                reason = f"Balanced 60/40-style allocation with {stocks_pct}% stocks for growth and {bonds_pct}% bonds for stability. Well-suited for your {time_horizon} time frame and {roi_expectations}% return target. Real estate (10%) and commodities (5%) provide additional diversification to help achieve your goal: {goal}."
             
             return {
                 "success": True,
                 "recommendations": {
                     "sector_allocation": sector_allocation,
                     "recommended_strategies": strategies,
-                    "reasoning": f"Based on your {risk_tolerance} risk tolerance and {time_horizon} year time horizon, this allocation balances growth with stability."
+                    "reasoning": reason
                 }
             }
             
