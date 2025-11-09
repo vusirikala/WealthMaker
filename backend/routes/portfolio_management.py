@@ -534,6 +534,60 @@ async def export_portfolio_json(
         portfolio['portfolio_id'] = str(portfolio['_id'])
         portfolio.pop('_id')
     
+
+
+
+@router.get("/{portfolio_id}/performance")
+async def get_portfolio_performance(
+    portfolio_id: str,
+    time_period: str = "1y",
+    user: User = Depends(require_auth)
+):
+    """
+    Get historical performance data for a portfolio
+    
+    Query params:
+    - time_period: '6m', '1y', '3y', or '5y' (default: '1y')
+    """
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    allocations = portfolio.get('allocations', [])
+    if not allocations:
+        return {
+            "return_percentage": 0,
+            "time_series": [],
+            "period_stats": {
+                '6m_return': 0,
+                '1y_return': 0,
+                '3y_return': 0,
+                '5y_return': 0
+            }
+        }
+    
+    # Calculate historical returns
+    try:
+        performance_data = calculate_portfolio_historical_returns(
+            allocations=allocations,
+            time_period=time_period
+        )
+        
+        return performance_data
+        
+    except Exception as e:
+        logger.error(f"Error calculating portfolio performance: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to calculate portfolio performance"
+        )
+
     # Convert dates to strings
     if 'created_at' in portfolio:
         portfolio['created_at'] = portfolio['created_at'].isoformat()
