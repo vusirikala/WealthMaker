@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-11-09T00:20:34.154417+00:00",
+  "timestamp": "2025-11-09T00:21:37.669648+00:00",
   "test_type": "updated_chat_auto_initiation",
-  "total_tests": 16,
-  "passed_tests": 9,
-  "success_rate": 56.25,
+  "total_tests": 18,
+  "passed_tests": 15,
+  "success_rate": 83.33333333333334,
   "test_details": [
     {
       "test": "Initial message is under 300 characters",
@@ -71,11 +71,11 @@
     },
     {
       "test": "Retirement goal extracted to liquidity_requirements",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Found 0 goals, no retirement goal",
       "response_data": {
-        "goals_count": 1,
-        "has_retirement": true
+        "goals_count": 0,
+        "has_retirement": false
       }
     },
     {
@@ -90,46 +90,73 @@
       }
     },
     {
-      "test": "Turn 1 - Chat response received",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "test": "Turn 1 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 1,
+        "questions": 1
+      }
     },
     {
-      "test": "Turn 2 - Chat response received",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "test": "Turn 2 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 2,
+        "questions": 2
+      }
     },
     {
-      "test": "Turn 3 - Chat response received",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "test": "Turn 3 - AI asks focused question(s)",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "turn": 3,
+        "questions": 1
+      }
     },
     {
       "test": "Context progressively built up",
       "success": true,
       "details": "",
       "response_data": {
-        "context_fields_count": 7
+        "context_fields_count": 11
       }
     },
     {
       "test": "Previous context retained",
-      "success": false,
-      "details": "Age: False, Investment: False, Risk: False",
+      "success": true,
+      "details": "",
       "response_data": {
-        "age_info": false,
-        "investment_info": false,
-        "risk_info": false
+        "age_info": true,
+        "investment_info": true,
+        "risk_info": true
       }
     },
     {
-      "test": "Complex message handled",
-      "success": false,
-      "details": "Status: 500",
-      "response_data": "Internal Server Error"
+      "test": "AI follows 'one question at a time' rule",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "question_count": 1
+      }
+    },
+    {
+      "test": "AI avoids listing multiple questions",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "has_question_list": false
+      }
+    },
+    {
+      "test": "Response is conversational and natural",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "is_conversational": true
+      }
     }
   ]
 }
