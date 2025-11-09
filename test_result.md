@@ -295,9 +295,21 @@ metadata:
         agent: "main"
         comment: "Redesigned chat panel to be a modern sliding sidebar instead of covering entire screen. Chat now slides in from the right side (500px width on desktop, full width on mobile) with backdrop overlay. Added professional header with gradient background, AI advisor icon, and close button. Made chat easily closable by clicking backdrop or close button. Updated ChatTab to use flex layout for proper height management. Reduced padding and spacing for more compact design. Made message bubbles smaller and more modern. Added loading spinner to send button. Portfolio view remains visible when chat is open. Frontend restarted successfully."
 
+  - task: "Portfolio-Specific Chat History"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/chat.py, /app/backend/models/chat.py, /app/frontend/src/components/ChatTab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented portfolio-specific chat history. Each portfolio now has its own separate conversation thread. Backend: Updated GET /api/chat/messages to accept portfolio_id query parameter and filter messages accordingly. Updated POST /api/chat/send to save messages with portfolio_id. Modified ChatRequest model to include optional portfolio_id field. Messages without portfolio_id are considered global chat. Frontend: Updated ChatTab to load messages filtered by portfolioId. Updated handleSendMessage to send portfolio_id with each message. Chat history is now isolated per portfolio. Backend and frontend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Redesigned Chat Panel UI"
+    - "Portfolio-Specific Chat History"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
