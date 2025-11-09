@@ -1743,7 +1743,7 @@ async def get_portfolio_legacy(user: User = Depends(require_auth)):
     return portfolio
 
 # Import and include all route modules
-from routes import auth, context, goals, portfolios, chat, news, data, admin, portfolio_management
+from routes import auth, context, goals, portfolios, chat, news, data, admin, portfolio_management, watchlists
 
 # Register all routers
 api_router.include_router(auth.router)
