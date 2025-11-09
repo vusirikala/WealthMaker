@@ -463,6 +463,18 @@ metadata:
         agent: "main"
         comment: "Made close button highly prominent and impossible to miss. Changes: 1) Increased size from 10x10 to 12x12 pixels (20% larger), 2) Changed from rounded square to circular button (rounded-full), 3) Changed from translucent white (bg-white/90) to solid white background for maximum contrast, 4) Changed icon color from cyan (text-cyan-600) to dark gray (text-gray-900) for maximum contrast against white background, 5) Increased z-index from 50 to 100 for guaranteed top layering, 6) Added 2px border with gray default and cyan hover state for better definition, 7) Enhanced shadow with inline style (0 10px 40px rgba(0,0,0,0.3)) for 3D elevation effect, 8) Increased icon size from 6x6 to 7x7, 9) Increased stroke width from 2.5 to 3 for bolder X icon. Button now appears as a large white circle with dark X icon, elevated shadow, and clear border against the cyan-emerald gradient header background. Frontend has hot reload enabled so changes should be immediately visible."
 
+  - task: "Move Portfolio Preferences to Individual Portfolio Creation"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/OnboardingForm.js, /app/frontend/src/components/ManualPortfolioBuilder.js, /app/frontend/src/components/AIPortfolioBuilder.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Restructured onboarding flow to remove portfolio-specific preferences from initial onboarding and moved them to individual portfolio creation. Changes: 1) OnboardingForm.js - Reduced from 8 steps to 4 steps by removing Step 4 (Risk Tolerance & ROI Expectations), Step 6 (Sector Preferences), and Step 7 (Investment Strategies). Updated form submission to exclude risk_tolerance, roi_expectations, sector_preferences, and investment_strategy fields. 2) ManualPortfolioBuilder.js - Added sector preferences selection with checkboxes for stocks, bonds, crypto, real estate, commodities, and forex. Updated API call to include sector_preferences in portfolio creation payload. Risk tolerance and ROI expectations were already present. 3) AIPortfolioBuilder.js - Converted sector preferences from text field to checkboxes matching ManualPortfolioBuilder. Updated handleGeneratePortfolio and handleAcceptPortfolio functions to properly format and send sector preferences. Now users complete simplified onboarding (portfolio type, personal/org details, investment capacity, financial goals) and specify risk tolerance, ROI expectations, and sector preferences when creating each individual portfolio. Frontend restarted successfully."
+
 test_plan:
   current_focus:
     - "Chat Close Button Visibility Fix"
