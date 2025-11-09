@@ -11,6 +11,7 @@ from utils.database import db
 from utils.dependencies import require_auth
 
 router = APIRouter(prefix="/portfolios", tags=["portfolios"])
+logger = logging.getLogger(__name__)
 
 
 # Existing portfolios management
