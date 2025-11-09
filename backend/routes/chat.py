@@ -714,13 +714,17 @@ OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
   ]
 }}
 
-CRITICAL REQUIREMENTS:
-1. Allocation percentages MUST sum to exactly 100%
-2. Number of allocations should match sector diversity (more sectors = more holdings)
-3. Each allocation's asset_type must match its sector category
-4. Reasoning MUST reference the specific sector percentages and strategies
-5. Use well-known, liquid tickers (no obscure stocks)
-6. For <5% allocations, combine into broader ETFs rather than individual stocks"""
+CRITICAL REQUIREMENTS - STRICTLY ENFORCE:
+1. ⚠️ MANDATORY: Sum of allocations within each sector MUST EXACTLY equal the user's specified percentage
+   - If user says Stocks 60%, your stock allocations MUST add to 60%
+   - If user says Bonds 30%, your bond allocations MUST add to 30%
+   - If user says Crypto 10%, your crypto allocations MUST add to 10%
+2. Total allocation_percentage MUST sum to exactly 100%
+3. Each allocation's asset_type must correctly identify the sector (stock/bond/crypto/real_estate/commodity/forex)
+4. Reasoning MUST explicitly state how allocations match sector percentages
+5. Use only well-known, liquid tickers (AAPL, MSFT, SPY, BND, BITO, etc.)
+6. For small percentages (<5%), use broad ETFs instead of individual stocks
+7. DOUBLE-CHECK your math before returning the JSON"""
 
     try:
         # Call LLM to generate portfolio
