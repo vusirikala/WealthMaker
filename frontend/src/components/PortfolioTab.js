@@ -434,6 +434,16 @@ export default function PortfolioTab() {
           setSelectedHolding(null);
         }}
       />
+
+      {/* Add Stock Modal */}
+      <AddStockModal
+        isOpen={showAddStockModal}
+        onClose={() => setShowAddStockModal(false)}
+        onSuccess={() => {
+          loadPortfolio();
+          setShowAddStockModal(false);
+        }}
+      />
     </div>
   );
 }
