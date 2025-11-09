@@ -343,6 +343,30 @@ metadata:
         agent: "main"
         comment: "Added stock detail modal functionality to new portfolio view. Imported StockDetailModal component. Added state variables for showStockDetail, selectedStock, and selectedHolding. Made both holdings and allocations clickable - clicking on any ticker opens the stock detail modal showing price, charts, news, and company information. Holdings pass holding data to show purchase info. Allocations pass ticker only for stock details. Frontend restarted successfully."
 
+  - task: "Portfolio Performance Chart with S&P 500 Comparison"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PortfolioPerformanceChart.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Completed portfolio performance chart to display both portfolio and S&P 500 returns. Updated chart to use merged_time_series data with portfolio_return and sp500_return. Added Legend component. Updated CustomTooltip to show both portfolio and S&P 500 returns with proper color coding (portfolio: cyan/red, S&P 500: blue/orange). Added S&P 500 comparison section showing relative performance (outperforming/underperforming) with visual indicators. Portfolio line: solid cyan (#0891b2, 3px width), S&P 500 line: dashed blue (#3b82f6, 2px, 5-5 dash pattern). Time period selector (6m, 1y, 3y, 5y) working. Backend already supports this with caching via portfolio_performance.py service. Frontend restarted successfully."
+
+  - task: "Invest $X Button Feature"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PortfolioView.js, /app/backend/routes/portfolio_management.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Verified that 'Invest $X' button feature is already fully implemented. Frontend: Invest button in portfolio header (line 165-171), investment modal with amount input (lines 363-404), handleInvest function that calls backend API (lines 72-108). Backend: /api/portfolios-v2/{portfolio_id}/invest endpoint (portfolio_management.py lines 191-350) fetches current prices for all tickers, calculates shares based on allocations and prices, supports fractional shares (4 decimal places), updates holdings (both new and existing), and updates portfolio totals (total_invested, current_value, total_return, total_return_percentage). Feature is production-ready."
+
 test_plan:
   current_focus:
     - "Stock Detail Modal in New Portfolio View"
