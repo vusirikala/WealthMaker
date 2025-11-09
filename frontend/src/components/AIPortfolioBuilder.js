@@ -288,16 +288,33 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Sector Preferences (Optional)
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Investment Sectors (Optional)
                 </label>
-                <Textarea
-                  value={sectorPreferences}
-                  onChange={(e) => setSectorPreferences(e.target.value)}
-                  placeholder="e.g., Technology, Healthcare, Clean Energy..."
-                  className="w-full resize-none"
-                  rows={2}
-                />
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {[
+                    { id: "stocks", label: "Stocks", emoji: "📈" },
+                    { id: "bonds", label: "Bonds", emoji: "💰" },
+                    { id: "crypto", label: "Crypto", emoji: "₿" },
+                    { id: "real_estate", label: "Real Estate", emoji: "🏢" },
+                    { id: "commodities", label: "Commodities", emoji: "🥇" },
+                    { id: "forex", label: "Forex", emoji: "💱" },
+                  ].map((sector) => (
+                    <button
+                      key={sector.id}
+                      type="button"
+                      onClick={() => handleSectorToggle(sector.id)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                        sectorPreferences[sector.id]
+                          ? "bg-purple-100 text-purple-700 border-2 border-purple-500"
+                          : "bg-gray-50 text-gray-600 border-2 border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <span>{sector.emoji}</span>
+                      <span>{sector.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
