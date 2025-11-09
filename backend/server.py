@@ -1065,26 +1065,14 @@ async def initialize_chat(user: User = Depends(require_auth)):
                 )
             return {"message": None}
         
-        # Generate personalized initial message
+        # Generate personalized initial message - simple and conversational
         initial_message = f"""Hi {user.name}! 👋 Welcome to WealthMaker!
 
-I'm your AI financial advisor, and I'm here to help you build a personalized investment portfolio that aligns with your goals and preferences.
+I'm your AI financial advisor, and I'm excited to help you build a personalized investment portfolio tailored to your needs.
 
-To get started, I'd love to learn more about you. Could you tell me about:
+To get started, let me ask you: **What's your main financial goal right now?** 
 
-1. **Your Financial Goals** - What are you saving or investing for? (e.g., retirement, buying a home, children's education, building wealth, etc.)
-
-2. **Investment Timeline** - When do you need this money? Are these short-term (1-3 years), medium-term (3-10 years), or long-term (10+ years) goals?
-
-3. **Risk Comfort Level** - How comfortable are you with market fluctuations? Would you describe yourself as conservative, moderate, or aggressive with your investments?
-
-4. **Existing Investments** - Do you currently have any investments or portfolios? If so, what types of assets do you own?
-
-5. **Sector Preferences** - Are there specific industries or sectors you're interested in or want to avoid? (e.g., technology, healthcare, sustainable energy, crypto, etc.)
-
-6. **Investment Approach** - Do you prefer a hands-off passive strategy (like index funds) or a more active approach?
-
-Feel free to share as much or as little as you'd like - we can always dive deeper into any area as we go! 💼📈"""
+For example, are you saving for retirement, planning to buy a home, building an emergency fund, or something else? 💼"""
 
         # Save the initial message to chat history
         ai_msg_doc = {
