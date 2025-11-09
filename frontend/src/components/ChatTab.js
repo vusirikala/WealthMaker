@@ -111,11 +111,13 @@ export default function ChatTab() {
           }));
         }
       } else {
-        toast.error("Failed to send message");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Failed to send message:", response.status, errorData);
+        toast.error(`Failed to send message: ${errorData.detail || response.statusText}`);
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Something went wrong");
+      toast.error(`Something went wrong: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
