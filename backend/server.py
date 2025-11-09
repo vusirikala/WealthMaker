@@ -1706,6 +1706,19 @@ async def accept_portfolio(request: AcceptPortfolioRequest, user: User = Depends
         logger.error(f"Error accepting portfolio: {e}")
         raise HTTPException(status_code=500, detail="Failed to update portfolio")
 
+@api_router.get("/portfolio")
+async def get_portfolio_legacy(user: User = Depends(require_auth)):
+    """Get user's AI-generated portfolio (legacy endpoint for frontend compatibility)"""
+    portfolio = await db.portfolios.find_one({"user_id": user.id})
+    if not portfolio:
+        return {"portfolio": None, "message": "No portfolio found"}
+    
+    # Convert ObjectId to string for JSON serialization
+    if '_id' in portfolio:
+        portfolio['_id'] = str(portfolio['_id'])
+    
+    return portfolio
+
 # Import and include all route modules
 from routes import auth, context, goals, portfolios, chat, news, data, admin
 
