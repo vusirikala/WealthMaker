@@ -9,7 +9,7 @@ import time
 from datetime import datetime, timezone
 
 class FiftyTwoWeekTester:
-    def __init__(self, base_url="https://code-preview-54.preview.emergentagent.com"):
+    def __init__(self, base_url="https://wealth-dashboard-77.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.session_token = "test_session_1762659524"  # Use new session
