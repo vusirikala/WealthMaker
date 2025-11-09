@@ -46,7 +46,15 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
   const handleSectorToggle = (sector) => {
     setSectorPreferences((prev) => ({
       ...prev,
-      [sector]: !prev[sector],
+      [sector]: { ...prev[sector], enabled: !prev[sector].enabled },
+    }));
+  };
+
+  const handleSectorAllocationChange = (sector, value) => {
+    const numValue = parseFloat(value) || 0;
+    setSectorPreferences((prev) => ({
+      ...prev,
+      [sector]: { ...prev[sector], allocation: Math.min(100, Math.max(0, numValue)) },
     }));
   };
 
@@ -56,6 +64,60 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
         ? prev.filter((s) => s !== strategyId)
         : [...prev, strategyId]
     );
+  };
+
+  const fetchRecommendations = async () => {
+    if (!portfolioGoal || !riskTolerance) {
+      toast.error("Please fill in portfolio goal and risk tolerance first");
+      return;
+    }
+
+    setLoadingRecommendations(true);
+    try {
+      const response = await fetch(`${API}/chat/portfolio-recommendations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          goal: portfolioGoal,
+          risk_tolerance: riskTolerance,
+          roi_expectations: roiExpectations,
+          time_horizon: timeHorizon,
+          investment_amount: parseFloat(investmentAmount) || 0,
+          monitoring_frequency: monitoringFrequency,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.recommendations) {
+        setRecommendations(data.recommendations);
+        
+        // Apply recommended sector allocations
+        const newSectorPrefs = { ...sectorPreferences };
+        Object.keys(data.recommendations.sector_allocation).forEach((sector) => {
+          if (newSectorPrefs[sector]) {
+            newSectorPrefs[sector] = {
+              enabled: data.recommendations.sector_allocation[sector] > 0,
+              allocation: data.recommendations.sector_allocation[sector],
+            };
+          }
+        });
+        setSectorPreferences(newSectorPrefs);
+        
+        // Apply recommended strategies
+        setInvestmentStrategies(data.recommendations.recommended_strategies || []);
+        
+        toast.success("AI recommendations applied! You can adjust them as needed.");
+      }
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+      toast.error("Failed to fetch recommendations");
+    } finally {
+      setLoadingRecommendations(false);
+    }
   };
 
   const strategies = [
