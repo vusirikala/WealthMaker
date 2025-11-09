@@ -292,20 +292,23 @@ async def calculate_portfolio_historical_returns(
     
     # Build S&P 500 time series for comparison
     sp500_time_series = []
-    if sp500_returns is not None:
+    sp500_current_return = 0
+    
+    if sp500_returns is not None and len(sp500_returns_display) > 0:
         for date, return_pct in sp500_returns_display.items():
             sp500_time_series.append({
                 'date': date.strftime('%Y-%m-%d'),
-                'return_percentage': round(float(return_pct), 2)
+                'return_percentage': sanitize_float(return_pct)
             })
+        sp500_current_return = sanitize_float(sp500_returns_display.iloc[-1])
     
     return {
-        'return_percentage': round(current_return, 2),
+        'return_percentage': current_return,
         'time_series': time_series,
         'period_stats': period_stats,
         'sp500_comparison': {
             'time_series': sp500_time_series,
-            'current_return': round(float(sp500_returns_display.iloc[-1]), 2) if sp500_returns is not None else None
+            'current_return': sp500_current_return
         },
         'start_date': display_start_date.strftime('%Y-%m-%d'),
         'end_date': end_date.strftime('%Y-%m-%d')
