@@ -417,3 +417,131 @@ async def update_portfolio_values(portfolio: Dict[str, Any]):
     portfolio['current_value'] = total_current_value
     portfolio['total_return'] = total_return
     portfolio['total_return_percentage'] = total_return_pct
+
+
+
+@router.get("/{portfolio_id}/export/csv")
+async def export_portfolio_csv(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """Export portfolio to CSV format"""
+    from fastapi.responses import StreamingResponse
+    import io
+    import csv
+    
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    # Update current values
+    await update_portfolio_values(portfolio)
+    
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow(['Portfolio Report'])
+    writer.writerow(['Name', portfolio.get('name', 'Unnamed Portfolio')])
+    writer.writerow(['Goal', portfolio.get('goal', 'N/A')])
+    writer.writerow(['Risk Tolerance', portfolio.get('risk_tolerance', 'N/A')])
+    writer.writerow(['Expected ROI', f"{portfolio.get('roi_expectations', 0)}%"])
+    writer.writerow(['Created', portfolio.get('created_at', 'N/A')])
+    writer.writerow([])
+    
+    # Summary statistics
+    writer.writerow(['Portfolio Summary'])
+    writer.writerow(['Total Invested', f"${portfolio.get('total_invested', 0):,.2f}"])
+    writer.writerow(['Current Value', f"${portfolio.get('current_value', 0):,.2f}"])
+    writer.writerow(['Total Return', f"${portfolio.get('total_return', 0):,.2f}"])
+    writer.writerow(['Return %', f"{portfolio.get('total_return_percentage', 0):.2f}%"])
+    writer.writerow([])
+    
+    # Holdings
+    if portfolio.get('holdings'):
+        writer.writerow(['Holdings'])
+        writer.writerow(['Ticker', 'Shares', 'Purchase Price', 'Current Price', 'Cost Basis', 'Current Value', 'Gain/Loss', 'Return %'])
+        
+        for holding in portfolio['holdings']:
+            gain_loss = holding['current_value'] - holding['cost_basis']
+            return_pct = (gain_loss / holding['cost_basis'] * 100) if holding['cost_basis'] > 0 else 0
+            
+            writer.writerow([
+                holding['ticker'],
+                f"{holding['shares']:.4f}",
+                f"${holding['purchase_price']:.2f}",
+                f"${holding['current_price']:.2f}",
+                f"${holding['cost_basis']:.2f}",
+                f"${holding['current_value']:.2f}",
+                f"${gain_loss:.2f}",
+                f"{return_pct:.2f}%"
+            ])
+    
+    # Allocations
+    writer.writerow([])
+    writer.writerow(['Target Allocations'])
+    writer.writerow(['Ticker', 'Allocation %', 'Sector', 'Asset Type'])
+    
+    for alloc in portfolio.get('allocations', []):
+        writer.writerow([
+            alloc['ticker'],
+            f"{alloc['allocation_percentage']}%",
+            alloc.get('sector', 'Unknown'),
+            alloc.get('asset_type', 'stock')
+        ])
+    
+    # Prepare response
+    output.seek(0)
+    filename = f"{portfolio.get('name', 'portfolio').replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.csv"
+    
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+@router.get("/{portfolio_id}/export/json")
+async def export_portfolio_json(
+    portfolio_id: str,
+    user: User = Depends(require_auth)
+):
+    """Export portfolio to JSON format (for PDF generation on frontend)"""
+    # Get portfolio
+    portfolio = await db.user_portfolios.find_one({
+        "_id": portfolio_id,
+        "user_id": user.id,
+        "is_active": True
+    })
+    
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+    
+    # Update current values
+    await update_portfolio_values(portfolio)
+    
+    # Convert ObjectId to string
+    if '_id' in portfolio:
+        portfolio['portfolio_id'] = str(portfolio['_id'])
+        portfolio.pop('_id')
+    
+    # Convert dates to strings
+    if 'created_at' in portfolio:
+        portfolio['created_at'] = portfolio['created_at'].isoformat()
+    if 'updated_at' in portfolio:
+        portfolio['updated_at'] = portfolio['updated_at'].isoformat()
+    if 'last_invested_at' in portfolio and portfolio['last_invested_at']:
+        portfolio['last_invested_at'] = portfolio['last_invested_at'].isoformat()
+    
+    return {
+        "portfolio": portfolio,
+        "export_date": datetime.now(timezone.utc).isoformat()
+    }
+
