@@ -885,6 +885,7 @@ CRITICAL REQUIREMENTS:
                 }
                 strategies = ["income_investing", "dollar_cost_averaging"]
                 reason = f"Conservative allocation emphasizing bonds ({bonds_pct}%) for stability while maintaining some growth through stocks ({stocks_pct}%). Real estate (15%) provides diversification and income. Suitable for your {risk_tolerance} risk profile and {goal}."
+                strategy_reason = f"Income investing generates steady returns from dividends, perfect for your conservative approach. Dollar-cost averaging reduces timing risk with your {monitoring_frequency} monitoring schedule."
                 
             elif risk_tolerance == "high":
                 # Aggressive allocation
