@@ -449,9 +449,215 @@ print('Setup complete');
             {"message_count": final_count}
         )
 
+    def test_chat_send_message_comprehensive(self):
+        """Test chat send message functionality - comprehensive test for bug fixes"""
+        print("\n💬 Testing Chat Send Message (Bug Fix Verification)...")
+        
+        # Test 1: Basic chat send message
+        test_message = {
+            "message": "I'm 35 years old, looking for a moderate risk portfolio with 10% ROI expectations. I want to invest $2000 monthly in technology stocks and some bonds for retirement planning."
+        }
+        
+        status, data = self.make_request('POST', 'chat/send', test_message)
+        success = status == 200 and 'message' in data
+        self.log_test(
+            "POST /chat/send (basic message)", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"has_response": 'message' in data if isinstance(data, dict) else False}
+        )
+        
+        # Verify message was saved to chat_messages collection
+        if success:
+            status, messages = self.make_request('GET', 'chat/messages')
+            user_messages = [msg for msg in messages if msg.get('role') == 'user'] if isinstance(messages, list) else []
+            ai_messages = [msg for msg in messages if msg.get('role') == 'assistant'] if isinstance(messages, list) else []
+            
+            success = len(user_messages) > 0 and len(ai_messages) > 0
+            self.log_test(
+                "Message saved to chat_messages collection", 
+                success,
+                f"User messages: {len(user_messages)}, AI messages: {len(ai_messages)}" if not success else "",
+                {"user_messages": len(user_messages), "ai_messages": len(ai_messages)}
+            )
+        
+        # Test 2: Verify AI response is generated and returned
+        if success and isinstance(data, dict) and 'message' in data:
+            ai_response = data['message']
+            success = len(ai_response) > 50  # AI should provide substantial response
+            self.log_test(
+                "AI response generated and returned", 
+                success,
+                f"Response length: {len(ai_response)}" if not success else "",
+                {"response_length": len(ai_response)}
+            )
+        
+        # Test 3: Verify no "Body is disturbed or locked" errors occur
+        # This error was caused by reading response.json() multiple times
+        if isinstance(data, dict):
+            error_message = data.get('detail', '') or data.get('error', '') or str(data)
+            has_body_error = 'body is disturbed' in error_message.lower() or 'locked' in error_message.lower()
+            success = not has_body_error
+            self.log_test(
+                "No 'Body is disturbed or locked' error", 
+                success,
+                f"Found body error in response: {error_message}" if not success else "",
+                {"has_body_error": has_body_error}
+            )
+
+    def test_context_building_mixed_data_types(self):
+        """Test context building with mixed data types in liquidity_requirements"""
+        print("\n🔧 Testing Context Building with Mixed Data Types...")
+        
+        # First, create a user context with mixed liquidity_requirements
+        mixed_context = {
+            "liquidity_requirements": [
+                "Retirement planning",  # String format
+                {
+                    "goal_name": "House Down Payment", 
+                    "target_amount": 50000,
+                    "goal_type": "house_purchase",
+                    "priority": "high"
+                }  # Dict format
+            ],
+            "risk_tolerance": "moderate",
+            "annual_income": 75000
+        }
+        
+        # Update user context with mixed data
+        status, data = self.make_request('PUT', 'context', mixed_context)
+        success = status == 200
+        self.log_test(
+            "Update context with mixed liquidity_requirements", 
+            success,
+            f"Status: {status}" if not success else "",
+            data
+        )
+        
+        # Test sending a chat message that should trigger context building
+        test_message = {
+            "message": "Can you help me understand my current financial goals and suggest a portfolio based on my retirement and house purchase plans?"
+        }
+        
+        status, data = self.make_request('POST', 'chat/send', test_message)
+        success = status == 200 and 'message' in data
+        
+        # Verify no AttributeError occurs (the bug was 'str' object has no attribute 'get')
+        if not success and isinstance(data, dict):
+            error_message = str(data.get('detail', '')) + str(data.get('error', ''))
+            has_attribute_error = 'attributeerror' in error_message.lower() or "has no attribute 'get'" in error_message.lower()
+            success = not has_attribute_error
+            details = f"AttributeError found: {error_message}" if has_attribute_error else f"Status: {status}"
+        else:
+            details = f"Status: {status}" if not success else ""
+        
+        self.log_test(
+            "No AttributeError in build_context_string", 
+            success,
+            details,
+            {"has_response": 'message' in data if isinstance(data, dict) else False}
+        )
+        
+        # Verify AI response includes context properly
+        if success and isinstance(data, dict) and 'message' in data:
+            ai_response = data['message'].lower()
+            mentions_retirement = 'retirement' in ai_response
+            mentions_house = 'house' in ai_response or 'home' in ai_response
+            
+            success = mentions_retirement or mentions_house
+            self.log_test(
+                "AI response includes context from mixed data types", 
+                success,
+                f"Mentions retirement: {mentions_retirement}, Mentions house: {mentions_house}" if not success else "",
+                {"mentions_retirement": mentions_retirement, "mentions_house": mentions_house}
+            )
+
+    def test_error_response_handling(self):
+        """Test that error responses return proper JSON format"""
+        print("\n🚨 Testing Error Response Handling...")
+        
+        # Test 1: Send invalid message format
+        invalid_message = {"invalid_field": "test"}
+        status, data = self.make_request('POST', 'chat/send', invalid_message)
+        
+        # Should return proper JSON error, not "Body is disturbed or locked"
+        success = status in [400, 422] and isinstance(data, dict)
+        if success:
+            error_message = str(data.get('detail', '')) + str(data.get('error', ''))
+            has_body_error = 'body is disturbed' in error_message.lower() or 'locked' in error_message.lower()
+            success = not has_body_error
+            details = f"Found body error: {error_message}" if has_body_error else ""
+        else:
+            details = f"Status: {status}, Type: {type(data)}"
+        
+        self.log_test(
+            "Invalid message returns proper JSON error", 
+            success,
+            details,
+            data
+        )
+        
+        # Test 2: Send empty message
+        empty_message = {"message": ""}
+        status, data = self.make_request('POST', 'chat/send', empty_message)
+        
+        success = status in [400, 422] and isinstance(data, dict)
+        if success:
+            error_message = str(data.get('detail', '')) + str(data.get('error', ''))
+            has_body_error = 'body is disturbed' in error_message.lower() or 'locked' in error_message.lower()
+            success = not has_body_error
+            details = f"Found body error: {error_message}" if has_body_error else ""
+        else:
+            details = f"Status: {status}, Type: {type(data)}"
+        
+        self.log_test(
+            "Empty message returns proper JSON error", 
+            success,
+            details,
+            data
+        )
+        
+        # Test 3: Test with malformed JSON (if possible)
+        # This tests the frontend bug fix where response.json() was called multiple times
+        try:
+            import requests
+            url = f"{self.api_url}/chat/send"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {self.session_token}'
+            }
+            
+            # Send malformed JSON
+            response = requests.post(url, data='{"message": "test"', headers=headers, timeout=30)
+            
+            # Should not get "Body is disturbed or locked" error
+            try:
+                response_data = response.json()
+                error_message = str(response_data.get('detail', '')) + str(response_data.get('error', ''))
+            except:
+                error_message = response.text
+            
+            has_body_error = 'body is disturbed' in error_message.lower() or 'locked' in error_message.lower()
+            success = not has_body_error
+            
+            self.log_test(
+                "Malformed JSON doesn't cause 'Body is disturbed' error", 
+                success,
+                f"Found body error: {error_message}" if has_body_error else "",
+                {"status": response.status_code, "has_body_error": has_body_error}
+            )
+            
+        except Exception as e:
+            self.log_test(
+                "Malformed JSON test", 
+                False,
+                f"Test failed with exception: {str(e)}",
+                {"error": str(e)}
+            )
+
     def test_chat_endpoints(self):
-        """Test chat functionality"""
-        print("\n💬 Testing Chat Endpoints...")
+        """Test chat functionality - updated for bug fix verification"""
+        print("\n💬 Testing Chat Endpoints (Updated for Bug Fixes)...")
         
         # Test get chat messages
         status, data = self.make_request('GET', 'chat/messages')
@@ -463,30 +669,24 @@ print('Setup complete');
             {"message_count": len(data) if isinstance(data, list) else 0}
         )
         
-        # Test send message
-        test_message = {
-            "message": "I'm 35 years old, looking for a moderate risk portfolio with 10% ROI expectations. I want to invest $2000 monthly in technology stocks and some bonds for retirement planning."
-        }
+        # Run comprehensive chat send tests
+        self.test_chat_send_message_comprehensive()
         
-        status, data = self.make_request('POST', 'chat/send', test_message)
-        success = status == 200 and 'message' in data
-        self.log_test(
-            "POST /chat/send", 
-            success,
-            f"Status: {status}" if not success else "",
-            {"has_response": 'message' in data if isinstance(data, dict) else False}
-        )
+        # Test context building with mixed data types
+        self.test_context_building_mixed_data_types()
+        
+        # Test error response handling
+        self.test_error_response_handling()
         
         # Wait a moment for AI processing
-        if success:
-            print("⏳ Waiting for AI response processing...")
-            time.sleep(3)
+        print("⏳ Waiting for AI response processing...")
+        time.sleep(3)
         
         # Test get messages again to verify persistence
         status, data = self.make_request('GET', 'chat/messages')
         success = status == 200 and isinstance(data, list) and len(data) >= 2
         self.log_test(
-            "GET /chat/messages (after send)", 
+            "GET /chat/messages (after comprehensive tests)", 
             success,
             f"Status: {status}, Messages: {len(data) if isinstance(data, list) else 0}" if not success else "",
             {"message_count": len(data) if isinstance(data, list) else 0}
