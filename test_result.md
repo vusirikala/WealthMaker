@@ -489,7 +489,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Move Portfolio Preferences to Individual Portfolio Creation"
+    - "Add Investment Strategies to Portfolio Creation with Help Tooltips"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
