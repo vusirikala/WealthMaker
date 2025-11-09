@@ -211,7 +211,7 @@ def calculate_portfolio_historical_returns(
     
     # Build time series for charting
     time_series = []
-    for date, return_pct in returns.items():
+    for date, return_pct in portfolio_returns_display.items():
         time_series.append({
             'date': date.strftime('%Y-%m-%d'),
             'return_percentage': round(float(return_pct), 2)
