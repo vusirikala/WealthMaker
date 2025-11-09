@@ -360,7 +360,21 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
                     }}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors group"
                   >
-                    <div className="font-bold text-gray-900">{alloc.ticker}</div>
+                    <div>
+                      <div className="font-bold text-gray-900">{alloc.ticker}</div>
+                      <div className="text-xs text-gray-600 flex items-center gap-2 mt-1">
+                        {alloc.asset_type && (
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">
+                            {alloc.asset_type}
+                          </span>
+                        )}
+                        {alloc.sector && (
+                          <span className="text-gray-500">
+                            {alloc.sector}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                     <div className="text-right flex items-center gap-2">
                       <div className="font-bold gradient-text">
                         {alloc.allocation_percentage}%
