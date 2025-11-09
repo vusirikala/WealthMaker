@@ -706,16 +706,15 @@ STRATEGY ALIGNMENT:
 - Dollar-Cost Averaging → Suitable for any allocation, stable picks
 - Momentum → Recent high performers, growth stocks (NVDA, TSLA, high flyers)
 
-OUTPUT FORMAT (JSON ONLY, NO MARKDOWN):
+RETURN THIS JSON (NO EXTRA TEXT):
 {{
-  "reasoning": "2-3 sentences stating: 1) How you matched EXACT sector percentages (e.g., 'Allocated 60% to stocks through AAPL 20% + MSFT 15% + NVDA 10% + SPY 15%, 30% to bonds via AGG 20% + BND 10%, and 10% to crypto via BITO'), 2) How this implements {strategy_str} strategies, 3) How it targets {roi_expectations}% returns.",
+  "reasoning": "How sector allocations match requirements and implement {strategy_str}",
   "allocations": [
-    {{"ticker": "AAPL", "allocation_percentage": 20.0, "sector": "stocks", "asset_type": "stock"}},
-    {{"ticker": "MSFT", "allocation_percentage": 15.0, "sector": "stocks", "asset_type": "stock"}},
-    {{"ticker": "AGG", "allocation_percentage": 20.0, "sector": "bonds", "asset_type": "etf"}},
-    {{"ticker": "BITO", "allocation_percentage": 10.0, "sector": "crypto", "asset_type": "etf"}}
+    {{"ticker": "SYMBOL", "allocation_percentage": X.X, "sector": "stocks/bonds/crypto/etc", "asset_type": "stock/etf"}}
   ]
 }}
+
+CALCULATION CHECK BEFORE RESPONDING:
 
 VERIFICATION CHECKLIST (DO THIS BEFORE RESPONDING):
 - Calculate sum of all stock allocations = Should equal users stocks percentage
