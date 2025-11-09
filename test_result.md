@@ -436,6 +436,18 @@ metadata:
         agent: "main"
         comment: "Cleaned up top navigation by removing Chat and Legacy (old Portfolio) tabs. Now only shows 3 main tabs: Portfolios, Watchlist, and News. Updated color palette to be uniform - all tabs now use the same cyan-to-emerald gradient (data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500) when selected. Changed grid layout from grid-cols-5 to grid-cols-3. Removed unused imports (MessageSquare, PieChart, ChatTab, PortfolioTab components). Frontend restarted successfully."
 
+  - task: "Context-Aware Stock Detail Modal for Funds"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/StockDetailModal.js, /app/backend/services/shared_assets_db.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated StockDetailModal to show contextually relevant information based on asset type. For company stocks: shows sector, industry, market cap, employees, company description. For ETFs/Index Funds/Bond Funds: shows fund type, total assets, expense ratio, YTD return, 3-year avg return, 5-year avg return, fund description. For bond funds specifically: also shows yield. Backend updated to fetch fund-specific data from yfinance including category, totalAssets, expenseRatio, yield, ytdReturn, threeYearAverageReturn, fiveYearAverageReturn, fundFamily, fundInceptionDate. Modal now detects asset type and renders appropriate sections - no more showing irrelevant 'employees' field for funds. All services restarted successfully."
+
 test_plan:
   current_focus:
     - "Advanced Portfolio Analytics Suite"
