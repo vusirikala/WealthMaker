@@ -283,17 +283,18 @@ def build_context_string(user_context):
                 continue
                 
             goal_name = req.get('goal_name', req.get('goal', 'Goal'))
-            target_amount = req.get('target_amount', req.get('amount', 0))
-            amount_saved = req.get('amount_saved', 0)
-            amount_needed = req.get('amount_needed', target_amount - amount_saved)
+            target_amount = req.get('target_amount', req.get('amount', 0)) or 0
+            amount_saved = req.get('amount_saved', 0) or 0
+            amount_needed = req.get('amount_needed', target_amount - amount_saved) or 0
             target_date = req.get('target_date', req.get('when', 'TBD'))
             priority = req.get('priority', 'medium')
-            progress = req.get('progress_percentage', 0)
+            progress = req.get('progress_percentage', 0) or 0
             
             context_info += f"\n  * {goal_name} ({priority} priority)"
-            context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
-            context_info += f"\n    - Saved: ${amount_saved:,.0f} ({progress:.1f}%)"
-            context_info += f"\n    - Still Needed: ${amount_needed:,.0f}"
+            if target_amount > 0:
+                context_info += f"\n    - Target: ${target_amount:,.0f} by {target_date}"
+                context_info += f"\n    - Saved: ${amount_saved:,.0f} ({progress:.1f}%)"
+                context_info += f"\n    - Still Needed: ${amount_needed:,.0f}"
             
             if req.get('monthly_allocation'):
                 context_info += f"\n    - Monthly Allocation: ${req['monthly_allocation']:,.0f}"
