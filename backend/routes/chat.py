@@ -162,11 +162,20 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     if portfolio_doc:
         context_info += f"\n\nCurrent Portfolio:\n- Risk Tolerance: {portfolio_doc.get('risk_tolerance', 'Not set')}\n- ROI Expectations: {portfolio_doc.get('roi_expectations', 'Not set')}%\n- Allocations: {len(portfolio_doc.get('allocations', []))} assets"
     
-    # Check if we should ask a smart question
-    smart_question = await generate_smart_question(user.id, user_context, chat_history)
+    # Check if we should ask a smart question (only for global chat)
+    smart_question = None
+    if not portfolio_doc:
+        smart_question = await generate_smart_question(user.id, user_context, chat_history)
     
     # Build system message
-    system_message = build_system_message(context_info, context_analysis, user_context)
+    if portfolio_doc:
+        # Portfolio-specific system message
+        logger.info("Using portfolio-specific system message")
+        system_message = build_portfolio_system_message(context_info)
+    else:
+        # Global chat system message
+        logger.info("Using global chat system message")
+        system_message = build_system_message(context_info, context_analysis, user_context)
     
     try:
         # Special handling for first message or if smart question needed
