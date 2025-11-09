@@ -471,6 +471,10 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "user"
+    message: "The chatbot's close button is not visible despite previous attempts to make it prominent. (Chat Message 557)"
+  - agent: "main"
+    message: "Fixed chat close button visibility issue. Made the button highly prominent with multiple enhancements: increased size to 12x12 pixels, changed to circular shape (rounded-full), solid white background instead of translucent, dark icon for maximum contrast, z-index 100, added border with hover effect, enhanced shadow with inline styles for 3D elevation, larger and bolder X icon. Button should now be impossible to miss against the gradient header background. Frontend hot reload enabled - changes should be immediately visible. Ready for user verification."
   - agent: "main"
     message: "Implemented auto-initiate chat feature. Added first_chat_initiated tracking field to UserContext model. Created /api/chat/init endpoint that generates personalized greeting message for first-time chat users. Modified frontend ChatTab to call init endpoint when no messages exist. Backend restarted successfully. Ready for testing."
   - agent: "user"
