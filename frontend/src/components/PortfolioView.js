@@ -353,7 +353,7 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               {hasHoldings ? 'Holdings' : 'Allocations'}
             </h3>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {hasHoldings ? (
                 portfolio.holdings.map((holding, idx) => (
                   <div 
