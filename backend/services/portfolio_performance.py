@@ -90,9 +90,12 @@ def calculate_portfolio_historical_returns(
     
     logger.info(f"Fetching max history from {max_start_date.date()}, displaying from {display_start_date.date()} to {end_date.date()}")
     
-    # Fetch historical data for all tickers
+    # Fetch historical data for all tickers (with caching if db available)
     ticker_data = {}
     valid_allocations = []
+    
+    # Use synchronous approach since yfinance is synchronous
+    import asyncio
     
     for alloc in allocations:
         ticker = alloc['ticker']
@@ -100,15 +103,26 @@ def calculate_portfolio_historical_returns(
         
         try:
             logger.info(f"Fetching data for {ticker}")
-            stock = yf.Ticker(ticker)
-            hist = stock.history(start=start_date, end=end_date)
             
-            if hist.empty:
+            # Try to use cache if db is available
+            if db:
+                try:
+                    price_series = asyncio.run(get_cached_price_data(ticker, max_start_date, end_date, db))
+                except:
+                    # Fallback to direct fetch
+                    stock = yf.Ticker(ticker)
+                    hist = stock.history(start=max_start_date, end=end_date)
+                    price_series = hist['Close'] if not hist.empty else None
+            else:
+                stock = yf.Ticker(ticker)
+                hist = stock.history(start=max_start_date, end=end_date)
+                price_series = hist['Close'] if not hist.empty else None
+            
+            if price_series is None or len(price_series) == 0:
                 logger.warning(f"No data for {ticker}, skipping")
                 continue
             
-            # Use adjusted close for accurate returns
-            ticker_data[ticker] = hist['Close']
+            ticker_data[ticker] = price_series
             valid_allocations.append({
                 'ticker': ticker,
                 'allocation': allocation_pct
@@ -117,6 +131,24 @@ def calculate_portfolio_historical_returns(
         except Exception as e:
             logger.error(f"Error fetching data for {ticker}: {e}")
             continue
+    
+    # Fetch S&P 500 for comparison
+    sp500_data = None
+    try:
+        logger.info("Fetching S&P 500 benchmark data")
+        if db:
+            try:
+                sp500_data = asyncio.run(get_cached_price_data('^GSPC', max_start_date, end_date, db))
+            except:
+                sp500 = yf.Ticker('^GSPC')
+                sp500_hist = sp500.history(start=max_start_date, end=end_date)
+                sp500_data = sp500_hist['Close'] if not sp500_hist.empty else None
+        else:
+            sp500 = yf.Ticker('^GSPC')
+            sp500_hist = sp500.history(start=max_start_date, end=end_date)
+            sp500_data = sp500_hist['Close'] if not sp500_hist.empty else None
+    except Exception as e:
+        logger.error(f"Error fetching S&P 500 data: {e}")
     
     if not ticker_data:
         logger.error("No valid ticker data available")
