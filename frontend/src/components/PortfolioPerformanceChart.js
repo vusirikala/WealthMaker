@@ -148,6 +148,32 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
         </div>
       </div>
 
+      {/* S&P 500 Comparison */}
+      {sp500_comparison && (
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-600 mb-1">S&P 500 Return</p>
+              <div className={`flex items-center gap-2 ${sp500Return >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
+                {sp500Return >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                <span className="text-xl font-bold">
+                  {sp500Return >= 0 ? '+' : ''}{sp500Return.toFixed(2)}%
+                </span>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-gray-600 mb-1">vs. Your Portfolio</p>
+              <div className={`text-lg font-bold ${outperforming ? 'text-green-600' : 'text-red-600'}`}>
+                {outperforming ? '↑' : '↓'} {Math.abs(return_percentage - sp500Return).toFixed(2)}%
+              </div>
+              <p className="text-xs text-gray-500">
+                {outperforming ? 'Outperforming' : 'Underperforming'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Period Returns Summary */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-50 rounded-lg p-3">
