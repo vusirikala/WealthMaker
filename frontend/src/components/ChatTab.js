@@ -108,8 +108,13 @@ export default function ChatTab({ portfolioId = null }) {
     setMessages((prev) => [...prev, tempUserMsg]);
 
     try {
-      // Include portfolio context if available
-      const requestBody = { message: userMessage };
+      // Include portfolio_id if available
+      const requestBody = { 
+        message: userMessage,
+        portfolio_id: portfolioId || null
+      };
+      
+      // Also include portfolio context for AI awareness
       if (portfolioContext) {
         requestBody.portfolio_context = {
           portfolio_id: portfolioContext.portfolio_id,
