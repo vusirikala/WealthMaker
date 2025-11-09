@@ -110,13 +110,27 @@ class SharedAssetsService:
                 # FUNDAMENTALS (Static)
                 # ═══════════════════════════════════════
                 "fundamentals": {
+                    # Common fields
                     "sector": info.get('sector', 'Unknown'),
                     "industry": info.get('industry', 'Unknown'),
                     "description": info.get('longBusinessSummary', ''),
+                    "longBusinessSummary": info.get('longBusinessSummary', ''),
                     "marketCap": info.get('marketCap', 0),
                     "employees": info.get('fullTimeEmployees', 0),
                     "website": info.get('website', ''),
                     "country": info.get('country', ''),
+                    "quoteType": info.get('quoteType', ''),
+                    
+                    # Fund-specific fields (for ETFs, Index Funds, Bond Funds)
+                    "category": info.get('category', ''),
+                    "totalAssets": info.get('totalAssets', 0),
+                    "expenseRatio": info.get('annualReportExpenseRatio', 0),
+                    "yield": info.get('yield', 0),
+                    "ytdReturn": info.get('ytdReturn', 0),
+                    "threeYearAverageReturn": info.get('threeYearAverageReturn', 0),
+                    "fiveYearAverageReturn": info.get('fiveYearAverageReturn', 0),
+                    "fundFamily": info.get('fundFamily', ''),
+                    "fundInceptionDate": info.get('fundInceptionDate', ''),
                 },
                 
                 # ═══════════════════════════════════════
