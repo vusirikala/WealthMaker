@@ -324,25 +324,39 @@ class SharedAssetsService:
                 info.get('fiftyTwoWeekHigh') or 
                 info.get('52WeekHigh') or 
                 info.get('yearHigh') or 
-                0
+                None
             )
             fifty_two_week_low = (
                 info.get('fiftyTwoWeekLow') or 
                 info.get('52WeekLow') or 
                 info.get('yearLow') or 
-                0
+                None
             )
             
             # Convert to float, handle None values
             try:
-                fifty_two_week_high = float(fifty_two_week_high) if fifty_two_week_high else 0
+                fifty_two_week_high = float(fifty_two_week_high) if fifty_two_week_high else None
             except (ValueError, TypeError):
-                fifty_two_week_high = 0
+                fifty_two_week_high = None
                 
             try:
-                fifty_two_week_low = float(fifty_two_week_low) if fifty_two_week_low else 0
+                fifty_two_week_low = float(fifty_two_week_low) if fifty_two_week_low else None
             except (ValueError, TypeError):
-                fifty_two_week_low = 0
+                fifty_two_week_low = None
+            
+            # Calculate from historical data if not available from API
+            if (fifty_two_week_high is None or fifty_two_week_low is None) and hist_52w is not None and not hist_52w.empty:
+                try:
+                    if fifty_two_week_high is None:
+                        fifty_two_week_high = float(hist_52w['High'].max())
+                    if fifty_two_week_low is None:
+                        fifty_two_week_low = float(hist_52w['Low'].min())
+                except Exception as e:
+                    logger.warning(f"Could not calculate 52-week high/low from history for {symbol}: {e}")
+            
+            # Set to 0 if still None
+            fifty_two_week_high = fifty_two_week_high or 0
+            fifty_two_week_low = fifty_two_week_low or 0
             
             live_data = {
                 "currentPrice": {
