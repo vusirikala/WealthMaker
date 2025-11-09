@@ -153,13 +153,6 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => setShowEditAllocationModal(true)}
-              variant="outline"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Edit
-            </Button>
-            <Button
               onClick={() => setShowInvestModal(true)}
               className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white"
             >
@@ -173,6 +166,37 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
               <MessageSquare className="w-4 h-4 mr-2" />
               Chat
             </Button>
+            
+            {/* More Actions Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => setShowEditInfoModal(true)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Portfolio Info
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowEditAllocationModal(true)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Allocations
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowExportModal(true)}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Portfolio
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => setShowDeleteModal(true)}
+                  className="text-red-600 focus:text-red-600"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Portfolio
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
