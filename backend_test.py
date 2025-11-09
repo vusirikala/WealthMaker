@@ -1321,6 +1321,10 @@ print('Portfolio cleared');
         self.test_auth_endpoints()
         self.test_admin_endpoints()
         self.test_data_endpoints()
+        
+        # Test stock detail auto-initialization fix (PRIORITY TEST)
+        self.test_stock_detail_auto_initialization()
+        
         self.test_authentication_requirements()
         
         # Test chat auto-initiation feature
