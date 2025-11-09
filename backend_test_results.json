@@ -1,784 +1,260 @@
 {
-  "timestamp": "2025-11-09T00:18:56.447450+00:00",
-  "total_tests": 15,
-  "passed_tests": 15,
-  "success_rate": 100.0,
+  "timestamp": "2025-11-09T02:33:09.577799+00:00",
+  "total_tests": 41,
+  "passed_tests": 1,
+  "success_rate": 2.4390243902439024,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 408",
       "response_data": {
-        "_id": "test-user-1762647526",
-        "email": "test.user.1762647526@example.com",
-        "name": "Test User 1762647526",
-        "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T00:18:46.791000"
+        "error": "Request timeout"
       }
     },
     {
       "test": "GET /auth/me (unauthenticated)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Expected 401, got 408",
       "response_data": {
-        "detail": "Not authenticated"
+        "error": "Request timeout"
       }
     },
     {
       "test": "GET /admin/database-stats",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 408",
       "response_data": {
-        "total_assets": 6,
-        "by_type": {
-          "stocks": 4,
-          "crypto": 1,
-          "commodities": 1
-        },
-        "last_updated": "2025-11-08T23:34:36.551351+00:00",
-        "status": "active"
+        "error": "Request timeout"
       }
     },
     {
       "test": "POST /admin/initialize-database",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message": "Database already initialized",
-        "stats": {
-          "total_assets": 6,
-          "by_type": {
-            "stocks": 4,
-            "crypto": 1,
-            "commodities": 1
-          },
-          "last_updated": "2025-11-08T23:34:36.551351+00:00",
-          "status": "active"
-        },
-        "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "GET /admin/list-assets",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "asset_count": 6
+        "asset_count": 0
       }
     },
     {
       "test": "POST /admin/add-asset (TSLA)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message": "TSLA already exists in database",
-        "asset": {
-          "symbol": "TSLA",
-          "assetType": "stock",
-          "fundamentals": {
-            "sector": "Consumer Cyclical",
-            "industry": "Auto Manufacturers",
-            "description": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, China, and internationally. The company operates in two segments, Automotive; and Energy Generation and Storage. The Automotive segment offers electric vehicles, as well as sells automotive regulatory credits; and non-warranty after-sales vehicle, used vehicles, body shop and parts, supercharging, retail merchandise, and vehicle insurance services. This segment also provides sedans and sport utility vehicles through direct and used vehicle sales, a network of Tesla Superchargers, and in-app upgrades; purchase financing and leasing services; services for electric vehicles through its company-owned service locations and Tesla mobile service technicians; and vehicle limited warranties and extended service plans. The Energy Generation and Storage segment engages in the design, manufacture, installation, sale, and leasing of solar energy generation and energy storage products, and related services to residential, commercial, and industrial customers and utilities through its website, stores, and galleries, as well as through a network of channel partners. This segment also provides services and repairs to its energy product customers, including under warranty; and various financing options to its residential customers. The company was formerly known as Tesla Motors, Inc. and changed its name to Tesla, Inc. in February 2017. Tesla, Inc. was incorporated in 2003 and is headquartered in Austin, Texas.",
-            "marketCap": 1428505755648,
-            "employees": 125665,
-            "website": "https://www.tesla.com",
-            "country": "United States"
-          },
-          "historical": {
-            "lastUpdated": "2025-11-08T23:34:35.837022+00:00",
-            "earnings": [],
-            "priceHistory": {
-              "threeYearReturn": 125.21,
-              "oneYearReturn": 48.86,
-              "sixMonthReturn": 34.91,
-              "volatility": 0.6187456296992299,
-              "beta": 1.872,
-              "allTimeHigh": {
-                "price": 488.5400085449219,
-                "date": "2024-12-18T00:00:00-05:00"
-              },
-              "allTimeLow": {
-                "price": 101.80999755859375,
-                "date": "2023-01-06T00:00:00-05:00"
-              },
-              "monthlyPrices": [
-                {
-                  "month": "2022-11",
-                  "close": 194.6999969482422
-                },
-                {
-                  "month": "2022-12",
-                  "close": 123.18000030517578
-                },
-                {
-                  "month": "2023-01",
-                  "close": 173.22000122070312
-                },
-                {
-                  "month": "2023-02",
-                  "close": 205.7100067138672
-                },
-                {
-                  "month": "2023-03",
-                  "close": 207.4600067138672
-                },
-                {
-                  "month": "2023-04",
-                  "close": 164.30999755859375
-                },
-                {
-                  "month": "2023-05",
-                  "close": 203.92999267578125
-                },
-                {
-                  "month": "2023-06",
-                  "close": 261.7699890136719
-                },
-                {
-                  "month": "2023-07",
-                  "close": 267.42999267578125
-                },
-                {
-                  "month": "2023-08",
-                  "close": 258.0799865722656
-                },
-                {
-                  "month": "2023-09",
-                  "close": 250.22000122070312
-                },
-                {
-                  "month": "2023-10",
-                  "close": 200.83999633789062
-                },
-                {
-                  "month": "2023-11",
-                  "close": 240.0800018310547
-                },
-                {
-                  "month": "2023-12",
-                  "close": 248.47999572753906
-                },
-                {
-                  "month": "2024-01",
-                  "close": 187.2899932861328
-                },
-                {
-                  "month": "2024-02",
-                  "close": 201.8800048828125
-                },
-                {
-                  "month": "2024-03",
-                  "close": 175.7899932861328
-                },
-                {
-                  "month": "2024-04",
-                  "close": 183.27999877929688
-                },
-                {
-                  "month": "2024-05",
-                  "close": 178.0800018310547
-                },
-                {
-                  "month": "2024-06",
-                  "close": 197.8800048828125
-                },
-                {
-                  "month": "2024-07",
-                  "close": 232.07000732421875
-                },
-                {
-                  "month": "2024-08",
-                  "close": 214.11000061035156
-                },
-                {
-                  "month": "2024-09",
-                  "close": 261.6300048828125
-                },
-                {
-                  "month": "2024-10",
-                  "close": 249.85000610351562
-                },
-                {
-                  "month": "2024-11",
-                  "close": 345.1600036621094
-                },
-                {
-                  "month": "2024-12",
-                  "close": 403.8399963378906
-                },
-                {
-                  "month": "2025-01",
-                  "close": 404.6000061035156
-                },
-                {
-                  "month": "2025-02",
-                  "close": 292.9800109863281
-                },
-                {
-                  "month": "2025-03",
-                  "close": 259.1600036621094
-                },
-                {
-                  "month": "2025-04",
-                  "close": 282.1600036621094
-                },
-                {
-                  "month": "2025-05",
-                  "close": 346.4599914550781
-                },
-                {
-                  "month": "2025-06",
-                  "close": 317.6600036621094
-                },
-                {
-                  "month": "2025-07",
-                  "close": 308.2699890136719
-                },
-                {
-                  "month": "2025-08",
-                  "close": 333.8699951171875
-                },
-                {
-                  "month": "2025-09",
-                  "close": 444.7200012207031
-                },
-                {
-                  "month": "2025-10",
-                  "close": 456.55999755859375
-                },
-                {
-                  "month": "2025-11",
-                  "close": 429.5199890136719
-                }
-              ]
-            },
-            "majorEvents": [],
-            "patterns": []
-          },
-          "lastUpdated": "2025-11-08T23:34:36.551351+00:00",
-          "live": {
-            "currentPrice": {
-              "price": 429.52,
-              "change": -16.39,
-              "changePercent": -3.68,
-              "volume": 101472744,
-              "timestamp": "2025-11-08T23:34:36.551260+00:00",
-              "dayHigh": 437.9425,
-              "dayLow": 421.88,
-              "fiftyTwoWeekHigh": 488.54,
-              "fiftyTwoWeekLow": 214.25
-            },
-            "recentNews": [],
-            "analystRatings": {
-              "lastUpdated": "2025-11-08T23:34:36.551274+00:00",
-              "targetPrice": 392.04977,
-              "recommendation": "hold",
-              "numberOfAnalysts": 41
-            },
-            "upcomingEvents": []
-          },
-          "name": "Tesla, Inc."
-        }
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "POST /admin/update-live-data",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message": "Live data update started",
-        "status": "processing",
-        "note": "Updates running in background. Check /admin/database-stats for completion"
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/search?q=AAPL",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "result_count": 1
+        "result_count": 0
       }
     },
     {
       "test": "GET /data/asset/AAPL",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "has_fundamentals": true,
-        "has_historical": true,
-        "has_live": true
+        "has_fundamentals": false,
+        "has_historical": false,
+        "has_live": false
       }
     },
     {
-      "test": "Asset has symbol",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Asset has name",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Asset has assetType",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Fundamentals has sector",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Fundamentals has industry",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Fundamentals has description",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Fundamentals has marketCap",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Historical has earnings",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Historical has priceHistory",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Historical has majorEvents",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Historical has patterns",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Live has currentPrice",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Live has recentNews",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Live has analystRatings",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
-      "test": "Live has upcomingEvents",
-      "success": true,
-      "details": "",
-      "response_data": null
-    },
-    {
       "test": "POST /data/assets/batch",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "assets_returned": 2
+        "assets_returned": 0
       }
     },
     {
       "test": "POST /data/track?symbol=AAPL",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "success": true,
-        "symbol": "AAPL",
-        "message": "Now tracking Apple Inc.",
-        "asset": {
-          "symbol": "AAPL",
-          "assetType": "stock",
-          "fundamentals": {
-            "sector": "Technology",
-            "industry": "Consumer Electronics",
-            "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhone, a line of smartphones; Mac, a line of personal computers; iPad, a line of multi-purpose tablets; and wearables, home, and accessories comprising AirPods, Apple Vision Pro, Apple TV, Apple Watch, Beats products, and HomePod, as well as Apple branded and third-party accessories. It also provides AppleCare support and cloud services; and operates various platforms, including the App Store that allow customers to discover and download applications and digital content, such as books, music, video, games, and podcasts, as well as advertising services include third-party licensing arrangements and its own advertising platforms. In addition, the company offers various subscription-based services, such as Apple Arcade, a game subscription service; Apple Fitness+, a personalized fitness service; Apple Music, which offers users a curated listening experience with on-demand radio stations; Apple News+, a subscription news and magazine service; Apple TV, which offers exclusive original content and live sports; Apple Card, a co-branded credit card; and Apple Pay, a cashless payment service, as well as licenses its intellectual property. The company serves consumers, and small and mid-sized businesses; and the education, enterprise, and government markets. It distributes third-party applications for its products through the App Store. The company also sells its products through its retail and online stores, and direct sales force; and third-party cellular network carriers and resellers. The company was formerly known as Apple Computer, Inc. and changed its name to Apple Inc. in January 2007. Apple Inc. was founded in 1976 and is headquartered in Cupertino, California.",
-            "marketCap": 3967007326208,
-            "employees": 166000,
-            "website": "https://www.apple.com",
-            "country": "United States"
-          },
-          "historical": {
-            "lastUpdated": "2025-11-08T23:34:05.900455+00:00",
-            "earnings": [],
-            "priceHistory": {
-              "threeYearReturn": 85.37,
-              "oneYearReturn": 21.1,
-              "sixMonthReturn": 27.51,
-              "volatility": 0.2637772980898056,
-              "beta": 1.109,
-              "allTimeHigh": {
-                "price": 277.32000732421875,
-                "date": "2025-10-31T00:00:00-04:00"
-              },
-              "allTimeLow": {
-                "price": 122.44314998227297,
-                "date": "2023-01-03T00:00:00-05:00"
-              },
-              "monthlyPrices": [
-                {
-                  "month": "2022-11",
-                  "close": 145.9713592529297
-                },
-                {
-                  "month": "2022-12",
-                  "close": 128.12306213378906
-                },
-                {
-                  "month": "2023-01",
-                  "close": 142.2833709716797
-                },
-                {
-                  "month": "2023-02",
-                  "close": 145.58187866210938
-                },
-                {
-                  "month": "2023-03",
-                  "close": 162.85499572753906
-                },
-                {
-                  "month": "2023-04",
-                  "close": 167.5757293701172
-                },
-                {
-                  "month": "2023-05",
-                  "close": 175.2939910888672
-                },
-                {
-                  "month": "2023-06",
-                  "close": 191.82945251464844
-                },
-                {
-                  "month": "2023-07",
-                  "close": 194.28208923339844
-                },
-                {
-                  "month": "2023-08",
-                  "close": 186.04766845703125
-                },
-                {
-                  "month": "2023-09",
-                  "close": 169.5492706298828
-                },
-                {
-                  "month": "2023-10",
-                  "close": 169.11355590820312
-                },
-                {
-                  "month": "2023-11",
-                  "close": 188.35531616210938
-                },
-                {
-                  "month": "2023-12",
-                  "close": 190.91368103027344
-                },
-                {
-                  "month": "2024-01",
-                  "close": 182.8518829345703
-                },
-                {
-                  "month": "2024-02",
-                  "close": 179.46128845214844
-                },
-                {
-                  "month": "2024-03",
-                  "close": 170.2573699951172
-                },
-                {
-                  "month": "2024-04",
-                  "close": 169.11553955078125
-                },
-                {
-                  "month": "2024-05",
-                  "close": 191.13818359375
-                },
-                {
-                  "month": "2024-06",
-                  "close": 209.40191650390625
-                },
-                {
-                  "month": "2024-07",
-                  "close": 220.795654296875
-                },
-                {
-                  "month": "2024-08",
-                  "close": 227.9391632080078
-                },
-                {
-                  "month": "2024-09",
-                  "close": 231.92063903808594
-                },
-                {
-                  "month": "2024-10",
-                  "close": 224.8634796142578
-                },
-                {
-                  "month": "2024-11",
-                  "close": 236.490478515625
-                },
-                {
-                  "month": "2024-12",
-                  "close": 249.5341796875
-                },
-                {
-                  "month": "2025-01",
-                  "close": 235.16519165039062
-                },
-                {
-                  "month": "2025-02",
-                  "close": 241.24948120117188
-                },
-                {
-                  "month": "2025-03",
-                  "close": 221.58761596679688
-                },
-                {
-                  "month": "2025-04",
-                  "close": 211.9811248779297
-                },
-                {
-                  "month": "2025-05",
-                  "close": 200.622314453125
-                },
-                {
-                  "month": "2025-06",
-                  "close": 204.93740844726562
-                },
-                {
-                  "month": "2025-07",
-                  "close": 207.33470153808594
-                },
-                {
-                  "month": "2025-08",
-                  "close": 232.13999938964844
-                },
-                {
-                  "month": "2025-09",
-                  "close": 254.6300048828125
-                },
-                {
-                  "month": "2025-10",
-                  "close": 270.3699951171875
-                },
-                {
-                  "month": "2025-11",
-                  "close": 268.4700012207031
-                }
-              ]
-            },
-            "majorEvents": [],
-            "patterns": []
-          },
-          "lastUpdated": "2025-11-08T23:35:14.621947+00:00",
-          "live": {
-            "currentPrice": {
-              "price": 268.47,
-              "change": -1.3,
-              "changePercent": -0.48,
-              "volume": 45140079,
-              "timestamp": "2025-11-08T23:35:14.621808+00:00",
-              "dayHigh": 272.29,
-              "dayLow": 266.78,
-              "fiftyTwoWeekHigh": 277.32,
-              "fiftyTwoWeekLow": 169.21
-            },
-            "recentNews": [],
-            "analystRatings": {
-              "lastUpdated": "2025-11-08T23:35:14.621827+00:00",
-              "targetPrice": 280.45538,
-              "recommendation": "buy",
-              "numberOfAnalysts": 41
-            },
-            "upcomingEvents": []
-          },
-          "name": "Apple Inc."
-        }
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/tracked",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "tracked_count": 1
+        "tracked_count": 0
       }
     },
     {
       "test": "DELETE /data/track/AAPL",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "success": true,
-        "symbol": "AAPL",
-        "message": "Stopped tracking AAPL"
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "GET /admin/database-stats (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /admin/initialize-database (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "GET /admin/list-assets (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /admin/update-live-data (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/search?q=AAPL (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/asset/AAPL (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /data/assets/batch (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/tracked (no auth)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not authenticated"
-      }
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /data/track?symbol=AAPL (no auth)",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Expected 401, got 502",
+      "response_data": ""
+    },
+    {
+      "test": "GET /chat/init (new user) - generates initial message",
+      "success": false,
+      "details": "Status: 502, No message returned",
       "response_data": {
-        "detail": "Not authenticated"
-      "test": "GET /chat/init (new user)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_length": 375
+        "message_length": 0
       }
     },
     {
       "test": "Chat init message saved to history",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Messages before: 0, after: 0",
       "response_data": {
-        "message_count": 1
+        "message_count": 0
       }
     },
     {
       "test": "GET /chat/init (idempotency)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message": null
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     },
     {
       "test": "No duplicate messages created",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Messages before: 0, after: 0",
       "response_data": {
-        "message_count": 1
+        "message_count": 0
       }
     },
     {
       "test": "first_chat_initiated flag set",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502",
       "response_data": {
-        "first_chat_initiated": true
+        "first_chat_initiated": null
       }
     },
     {
       "test": "GET /chat/messages",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "message_count": 1
-      }
-    },
-    {
-      "test": "POST /chat/send",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "has_response": true
-      }
-    },
-    {
-      "test": "GET /chat/messages (after send)",
       "success": false,
-      "details": "Status: 200, Messages: 1",
+      "details": "Status: 502, Type: <class 'str'>",
       "response_data": {
-        "message_count": 3
+        "message_count": 0
+      }
+    },
+    {
+      "test": "POST /chat/send (basic message)",
+      "success": false,
+      "details": "Status: 502",
+      "response_data": {
+        "has_response": false
+      }
+    },
+    {
+      "test": "Update context with mixed liquidity_requirements",
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
+    },
+    {
+      "test": "No AttributeError in build_context_string",
+      "success": false,
+      "details": "Status: 502",
+      "response_data": {
+        "has_response": false
+      }
+    },
+    {
+      "test": "Invalid message returns proper JSON error",
+      "success": false,
+      "details": "Status: 502, Type: <class 'str'>",
+      "response_data": ""
+    },
+    {
+      "test": "Empty message returns proper JSON error",
+      "success": false,
+      "details": "Status: 502, Type: <class 'str'>",
+      "response_data": ""
+    },
+    {
+      "test": "Malformed JSON doesn't cause 'Body is disturbed' error",
+      "success": true,
+      "details": "",
+      "response_data": {
+        "status": 502,
+        "has_body_error": false
+      }
+    },
+    {
+      "test": "GET /chat/messages (after comprehensive tests)",
+      "success": false,
+      "details": "Status: 502, Messages: 0",
+      "response_data": {
+        "message_count": 0
       }
     },
     {
       "test": "GET /portfolio",
       "success": false,
-      "details": "Status: 404",
+      "details": "Status: 502",
       "response_data": {
         "risk_tolerance": null,
         "roi_expectations": null,
@@ -787,55 +263,35 @@
     },
     {
       "test": "GET /news",
-      "success": true,
-      "details": "",
+      "success": false,
+      "details": "Status: 502, Type: <class 'str'>",
       "response_data": {
         "news_count": 0
       }
     },
     {
       "test": "GET /invalid/endpoint",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Not Found"
-      }
+      "success": false,
+      "details": "Expected 404, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /data/assets/batch (malformed)",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": [
-          {
-            "type": "list_type",
-            "loc": [
-              "body"
-            ],
-            "msg": "Input should be a valid list",
-            "input": {
-              "invalid": "data"
-            },
-            "url": "https://errors.pydantic.dev/2.12/v/list_type"
-          }
-        ]
-      }
+      "success": false,
+      "details": "Expected 400/422, got 502",
+      "response_data": ""
     },
     {
       "test": "GET /data/asset/NONEXISTENT",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "detail": "Asset NONEXISTENT not found in database. Admin needs to add it."
-      }
+      "success": false,
+      "details": "Expected 404, got 502",
+      "response_data": ""
     },
     {
       "test": "POST /auth/logout",
-      "success": true,
-      "details": "",
-      "response_data": {
-        "success": true
-      }
+      "success": false,
+      "details": "Status: 502",
+      "response_data": ""
     }
   ]
 }
