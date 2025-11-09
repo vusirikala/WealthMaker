@@ -8,6 +8,7 @@ import EditAllocationModal from "./EditAllocationModal";
 import EditPortfolioInfoModal from "./EditPortfolioInfoModal";
 import DeletePortfolioModal from "./DeletePortfolioModal";
 import ExportPortfolioModal from "./ExportPortfolioModal";
+import StockDetailModal from "./StockDetailModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
