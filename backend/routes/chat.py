@@ -25,10 +25,22 @@ logger = logging.getLogger(__name__)
 
 
 @router.get("/messages")
-async def get_chat_messages(user: User = Depends(require_auth)):
-    """Get chat history for user"""
+async def get_chat_messages(
+    portfolio_id: str = None,
+    user: User = Depends(require_auth)
+):
+    """Get chat history for user, optionally filtered by portfolio_id"""
+    query = {"user_id": user.id}
+    
+    # Filter by portfolio_id if provided
+    if portfolio_id:
+        query["portfolio_id"] = portfolio_id
+    else:
+        # Get global chat messages (messages without portfolio_id)
+        query["portfolio_id"] = {"$exists": False}
+    
     messages = await db.chat_messages.find(
-        {"user_id": user.id},
+        query,
         {"_id": 0}
     ).sort("timestamp", 1).to_list(1000)
     
