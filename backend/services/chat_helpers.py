@@ -290,26 +290,26 @@ def get_default_allocations(risk_tolerance: str) -> List[Dict[str, Any]]:
     """Generate default portfolio allocations based on risk tolerance"""
     if risk_tolerance == 'low':
         return [
-            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 60, "sector": "Fixed Income"},
-            {"asset_type": "Stocks", "ticker": "AAPL", "allocation": 15, "sector": "Technology"},
-            {"asset_type": "Stocks", "ticker": "JNJ", "allocation": 15, "sector": "Healthcare"},
-            {"asset_type": "Index", "ticker": "SPY", "allocation": 10, "sector": "Diversified"}
+            {"asset_type": "bond", "ticker": "AGG", "allocation_percentage": 60, "sector": "Fixed Income"},
+            {"asset_type": "stock", "ticker": "AAPL", "allocation_percentage": 15, "sector": "Technology"},
+            {"asset_type": "stock", "ticker": "JNJ", "allocation_percentage": 15, "sector": "Healthcare"},
+            {"asset_type": "etf", "ticker": "SPY", "allocation_percentage": 10, "sector": "Diversified"}
         ]
     elif risk_tolerance == 'high':
         return [
-            {"asset_type": "Stocks", "ticker": "TSLA", "allocation": 25, "sector": "Technology"},
-            {"asset_type": "Stocks", "ticker": "NVDA", "allocation": 25, "sector": "Technology"},
-            {"asset_type": "Crypto", "ticker": "BTC-USD", "allocation": 20, "sector": "Cryptocurrency"},
-            {"asset_type": "Stocks", "ticker": "PLTR", "allocation": 15, "sector": "Technology"},
-            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 10, "sector": "Fixed Income"},
-            {"asset_type": "Index", "ticker": "QQQ", "allocation": 5, "sector": "Technology"}
+            {"asset_type": "stock", "ticker": "TSLA", "allocation_percentage": 25, "sector": "Technology"},
+            {"asset_type": "stock", "ticker": "NVDA", "allocation_percentage": 25, "sector": "Technology"},
+            {"asset_type": "crypto", "ticker": "BTC-USD", "allocation_percentage": 20, "sector": "Cryptocurrency"},
+            {"asset_type": "stock", "ticker": "PLTR", "allocation_percentage": 15, "sector": "Technology"},
+            {"asset_type": "bond", "ticker": "AGG", "allocation_percentage": 10, "sector": "Fixed Income"},
+            {"asset_type": "etf", "ticker": "QQQ", "allocation_percentage": 5, "sector": "Technology"}
         ]
     else:  # medium
         return [
-            {"asset_type": "Stocks", "ticker": "AAPL", "allocation": 20, "sector": "Technology"},
-            {"asset_type": "Stocks", "ticker": "MSFT", "allocation": 15, "sector": "Technology"},
-            {"asset_type": "Bonds", "ticker": "AGG", "allocation": 30, "sector": "Fixed Income"},
-            {"asset_type": "Index", "ticker": "SPY", "allocation": 20, "sector": "Diversified"},
-            {"asset_type": "Stocks", "ticker": "V", "allocation": 10, "sector": "Financial"},
-            {"asset_type": "Index", "ticker": "VTI", "allocation": 5, "sector": "Diversified"}
+            {"asset_type": "stock", "ticker": "AAPL", "allocation_percentage": 20, "sector": "Technology"},
+            {"asset_type": "stock", "ticker": "MSFT", "allocation_percentage": 15, "sector": "Technology"},
+            {"asset_type": "bond", "ticker": "AGG", "allocation_percentage": 30, "sector": "Fixed Income"},
+            {"asset_type": "etf", "ticker": "SPY", "allocation_percentage": 20, "sector": "Diversified"},
+            {"asset_type": "stock", "ticker": "V", "allocation_percentage": 10, "sector": "Financial"},
+            {"asset_type": "etf", "ticker": "VTI", "allocation_percentage": 5, "sector": "Diversified"}
         ]
