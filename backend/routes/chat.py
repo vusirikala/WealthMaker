@@ -923,13 +923,15 @@ CRITICAL REQUIREMENTS:
                 }
                 strategies = ["index_funds", "dollar_cost_averaging"]
                 reason = f"Balanced 60/40-style allocation with {stocks_pct}% stocks for growth and {bonds_pct}% bonds for stability. Well-suited for your {time_horizon} time frame and {roi_expectations}% return target. Real estate (10%) and commodities (5%) provide additional diversification to help achieve your goal: {goal}."
+                strategy_reason = f"Index funds provide broad market exposure matching your balanced allocation, while dollar-cost averaging smooths volatility with {monitoring_frequency} monitoring. Both are proven, low-maintenance strategies for moderate risk investors."
             
             return {
                 "success": True,
                 "recommendations": {
                     "sector_allocation": sector_allocation,
                     "recommended_strategies": strategies,
-                    "reasoning": reason
+                    "reasoning": reason,
+                    "strategy_reasoning": strategy_reason
                 }
             }
             
