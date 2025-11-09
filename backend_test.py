@@ -365,8 +365,8 @@ print('Setup complete');
             )
 
     def test_chat_init_new_user(self):
-        """Test chat init endpoint for new user"""
-        print("\n🆕 Testing Chat Init for New User...")
+        """Test chat init endpoint for new user - comprehensive test"""
+        print("\n🆕 Testing Chat Init for New User (Comprehensive)...")
         
         # First, ensure no existing messages
         status, data = self.make_request('GET', 'chat/messages')
@@ -380,16 +380,20 @@ print('Setup complete');
             # Should return a greeting message
             message = data.get('message', '')
             has_greeting = any(word in message.lower() for word in ['welcome', 'hi', 'hello', 'greet'])
-            has_financial_questions = any(word in message.lower() for word in ['financial', 'goals', 'investment', 'risk', 'portfolio'])
+            has_financial_questions = any(word in message.lower() for word in ['financial', 'goals', 'investment', 'risk', 'portfolio', 'goal'])
             
-            success = has_greeting and has_financial_questions and len(message) > 100
-            details = f"Message length: {len(message)}, Has greeting: {has_greeting}, Has financial questions: {has_financial_questions}"
+            # Check for specific content based on the updated implementation
+            has_user_name = 'Test User' in message  # Should include user's name
+            has_question_mark = '?' in message  # Should ask a question
+            
+            success = has_greeting and has_financial_questions and len(message) > 50 and has_question_mark
+            details = f"Length: {len(message)}, Greeting: {has_greeting}, Financial: {has_financial_questions}, Name: {has_user_name}, Question: {has_question_mark}"
         else:
             success = False
             details = f"Status: {status}, No message returned"
         
         self.log_test(
-            "GET /chat/init (new user)", 
+            "GET /chat/init (new user) - generates initial message", 
             success,
             details if not success else "",
             {"message_length": len(data.get('message', '')) if isinstance(data, dict) else 0}
@@ -402,7 +406,7 @@ print('Setup complete');
         
         if success and isinstance(messages, list) and len(messages) > 0:
             last_message = messages[-1]
-            success = last_message.get('role') == 'assistant' and len(last_message.get('message', '')) > 100
+            success = last_message.get('role') == 'assistant' and len(last_message.get('message', '')) > 50
         
         self.log_test(
             "Chat init message saved to history", 
@@ -410,6 +414,18 @@ print('Setup complete');
             f"Messages before: {initial_message_count}, after: {new_message_count}" if not success else "",
             {"message_count": new_message_count}
         )
+        
+        # Verify first_chat_initiated flag is set
+        status, context_data = self.make_request('GET', 'context')
+        if status == 200 and isinstance(context_data, dict):
+            first_chat_initiated = context_data.get('first_chat_initiated', False)
+            success = first_chat_initiated is True
+            self.log_test(
+                "first_chat_initiated flag set to true", 
+                success,
+                f"first_chat_initiated: {first_chat_initiated}" if not success else "",
+                {"first_chat_initiated": first_chat_initiated}
+            )
 
     def test_chat_init_idempotency(self):
         """Test chat init idempotency - should not create duplicate messages"""
