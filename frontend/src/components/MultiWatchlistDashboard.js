@@ -440,25 +440,88 @@ export default function MultiWatchlistDashboard() {
       {/* Add Ticker Modal */}
       {showAddTickerModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">
               Add Stock to Watchlist
             </h3>
             <form onSubmit={handleAddTicker}>
-              <input
-                type="text"
-                value={newTicker}
-                onChange={(e) => setNewTicker(e.target.value.toUpperCase())}
-                placeholder="Ticker symbol (e.g., AAPL)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent mb-4"
-                autoFocus
-              />
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  value={newTicker}
+                  onChange={(e) => handleTickerInputChange(e.target.value)}
+                  placeholder="Search ticker symbol or company name..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  autoFocus
+                  autoComplete="off"
+                />
+                
+                {/* Dropdown */}
+                {showDropdown && searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.symbol}
+                        type="button"
+                        onClick={() => handleSelectTicker(result.symbol)}
+                        className="w-full px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 text-left"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <span className="font-bold text-gray-900 text-lg">
+                                {result.symbol}
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                {result.name}
+                              </span>
+                            </div>
+                            {result.sector && result.sector !== 'Unknown' && (
+                              <div className="text-xs text-gray-500 mt-1">
+                                {result.sector}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-right ml-4">
+                            {result.current_price > 0 && (
+                              <>
+                                <div className="font-semibold text-gray-900">
+                                  ${result.current_price.toFixed(2)}
+                                </div>
+                                <div
+                                  className={`text-sm font-semibold ${
+                                    result.price_change_pct >= 0
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }`}
+                                >
+                                  {result.price_change_pct >= 0 ? "+" : ""}
+                                  {result.price_change_pct.toFixed(2)}%
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600"></div>
+                  </div>
+                )}
+              </div>
+              
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     setShowAddTickerModal(false);
                     setNewTicker("");
+                    setSearchResults([]);
+                    setShowDropdown(false);
                   }}
                   className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
                 >
@@ -467,6 +530,7 @@ export default function MultiWatchlistDashboard() {
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-white rounded-lg transition-colors"
+                  disabled={!newTicker.trim()}
                 >
                   Add
                 </button>
