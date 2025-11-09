@@ -201,6 +201,16 @@ async def calculate_portfolio_historical_returns(
         sp500_returns = ((sp500_normalized - 100) / 100) * 100
     
     # Filter to display range
+    # Ensure timezone compatibility
+    if df.index.tz is not None:
+        # DataFrame index is timezone-aware, make display_start_date timezone-aware too
+        if display_start_date.tzinfo is None:
+            display_start_date = display_start_date.replace(tzinfo=df.index.tz)
+    else:
+        # DataFrame index is naive, make display_start_date naive too
+        if display_start_date.tzinfo is not None:
+            display_start_date = display_start_date.replace(tzinfo=None)
+    
     display_mask = df.index >= display_start_date
     portfolio_returns_display = portfolio_returns[display_mask]
     
