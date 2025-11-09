@@ -424,7 +424,31 @@ export default function OnboardingForm({ onComplete }) {
               id="date_of_birth"
               type="date"
               value={formData.date_of_birth}
-              onChange={(e) => handleInputChange("date_of_birth", e.target.value)}
+              onChange={(e) => {
+                const selectedDate = e.target.value;
+                handleInputChange("date_of_birth", selectedDate);
+                
+                // Real-time validation
+                if (selectedDate) {
+                  const birthDate = new Date(selectedDate);
+                  const today = new Date();
+                  
+                  if (birthDate > today) {
+                    toast.error("Date of birth cannot be in the future");
+                    return;
+                  }
+                  
+                  const age = calculateAge(selectedDate);
+                  
+                  if (age < 13) {
+                    toast.error("You must be at least 13 years old to use this product");
+                  } else if (age > 120) {
+                    toast.error("Please enter a valid date of birth. Age cannot exceed 120 years.");
+                  }
+                }
+              }}
+              max={new Date().toISOString().split('T')[0]}
+              min={new Date(new Date().setFullYear(new Date().getFullYear() - 120)).toISOString().split('T')[0]}
               className="mt-2 border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500"
             />
             <p className="text-xs text-gray-600 mt-2">This helps us understand your investment timeline</p>
