@@ -207,41 +207,6 @@ export default function OnboardingForm({ onComplete }) {
     return true;
   };
 
-  const validateStep4 = () => {
-    // Validate ROI expectations
-    if (formData.roi_expectations) {
-      const roi = parseFloat(formData.roi_expectations);
-      
-      if (roi < 0) {
-        toast.error("Target annual return cannot be negative");
-        return false;
-      }
-
-      if (roi > 200) {
-        toast.error("Target annual return of more than 200% is unrealistic. Please enter a reasonable value.");
-        return false;
-      }
-
-      // Warn about unrealistic expectations based on risk tolerance
-      if (formData.risk_tolerance === "conservative" && roi > 15) {
-        toast.error("Conservative portfolios typically achieve 3-15% annual returns. Your target seems too high for this risk level.");
-        return false;
-      }
-
-      if (formData.risk_tolerance === "moderate" && roi > 30) {
-        toast.error("Moderate portfolios typically achieve 8-30% annual returns. Your target seems too high for this risk level.");
-        return false;
-      }
-
-      if (formData.risk_tolerance === "aggressive" && roi > 100) {
-        toast.error("Even aggressive portfolios rarely exceed 100% annual returns. Please enter a more realistic target.");
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     try {
