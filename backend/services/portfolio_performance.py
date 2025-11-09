@@ -12,41 +12,83 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
+async def get_cached_price_data(ticker: str, start_date: datetime, end_date: datetime, db):
+    """Get cached price data or fetch from Yahoo Finance"""
+    from utils.database import db as database
+    
+    # Check cache
+    cache_key = f"{ticker}_{start_date.date()}_{end_date.date()}"
+    cached = await database.price_cache.find_one({"cache_key": cache_key})
+    
+    if cached and (datetime.now() - cached['updated_at']).days < 1:
+        logger.info(f"Using cached data for {ticker}")
+        # Convert to DataFrame
+        data = cached['data']
+        df = pd.DataFrame(data)
+        df['Date'] = pd.to_datetime(df['Date'])
+        df.set_index('Date', inplace=True)
+        return df['Close']
+    
+    # Fetch from Yahoo Finance
+    logger.info(f"Fetching fresh data for {ticker} from Yahoo Finance")
+    stock = yf.Ticker(ticker)
+    hist = stock.history(start=start_date, end=end_date)
+    
+    if not hist.empty:
+        # Cache the data
+        cache_doc = {
+            "cache_key": cache_key,
+            "ticker": ticker,
+            "start_date": start_date,
+            "end_date": end_date,
+            "data": hist['Close'].reset_index().to_dict('records'),
+            "updated_at": datetime.now()
+        }
+        await database.price_cache.update_one(
+            {"cache_key": cache_key},
+            {"$set": cache_doc},
+            upsert=True
+        )
+        logger.info(f"Cached data for {ticker}")
+    
+    return hist['Close']
+
+
 def calculate_portfolio_historical_returns(
     allocations: List[Dict[str, Any]],
-    time_period: str = "1y"
+    time_period: str = "1y",
+    db = None
 ) -> Dict[str, Any]:
     """
     Calculate historical portfolio returns based on allocations
+    Includes S&P 500 benchmark comparison
     
     Args:
         allocations: List of {ticker, allocation_percentage} dicts
         time_period: '6m', '1y', '3y', or '5y'
+        db: Database instance for caching
         
     Returns:
-        Dict with return_percentage, time_series data, and period stats
+        Dict with return_percentage, time_series data, period stats, and S&P 500 comparison
     """
     
-    # Determine date range
+    # Always fetch maximum history (5 years) for accurate period calculations
     end_date = datetime.now()
+    max_start_date = end_date - timedelta(days=1825)  # 5 years
     
+    # Determine display range based on time_period
     if time_period == '6m':
-        start_date = end_date - timedelta(days=180)
-        days = 180
+        display_start_date = end_date - timedelta(days=180)
     elif time_period == '1y':
-        start_date = end_date - timedelta(days=365)
-        days = 365
+        display_start_date = end_date - timedelta(days=365)
     elif time_period == '3y':
-        start_date = end_date - timedelta(days=1095)
-        days = 1095
+        display_start_date = end_date - timedelta(days=1095)
     elif time_period == '5y':
-        start_date = end_date - timedelta(days=1825)
-        days = 1825
+        display_start_date = max_start_date
     else:
-        start_date = end_date - timedelta(days=365)
-        days = 365
+        display_start_date = end_date - timedelta(days=365)
     
-    logger.info(f"Calculating returns from {start_date.date()} to {end_date.date()}")
+    logger.info(f"Fetching max history from {max_start_date.date()}, displaying from {display_start_date.date()} to {end_date.date()}")
     
     # Fetch historical data for all tickers
     ticker_data = {}
