@@ -388,6 +388,18 @@ metadata:
         agent: "testing"
         comment: "COMPREHENSIVE 5-YEAR RETURN FIX TESTING COMPLETE: ✅ All test scenarios from review request successfully validated with 15/16 tests passing (93.8% success rate). ✅ CREATED TEST PORTFOLIO: AAPL 50%, GOOGL 50% allocation for comprehensive testing. ✅ ALL TIME PERIODS TESTED: 1y, 6m, 3y, 5y all return valid period_stats with 5y_return as valid number (not null). ✅ 5-YEAR SPECIFIC VIEW: return_percentage valid, time_series has data, period_stats['5y_return'] is NOT null. ✅ BACKEND LOGS CONFIRMED: System has 1255 data points (< 1260 required), fix is active - calculating from beginning instead of returning None. ✅ ALL PERIOD_STATS VALID: All returns (6m_return, 1y_return, 3y_return, 5y_return) are valid numbers across all time periods. ✅ KEY FIX VERIFIED: 5y_return shows valid percentage instead of N/A, resolving the user's reported issue. The 5-year return calculation fix is working perfectly and production-ready."
 
+  - task: "Asset Type Allocation Chart and Sector/Type Display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/PortfolioView.js, /app/frontend/src/components/ManualPortfolioBuilder.js, /app/backend/routes/portfolio_management.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added asset type allocation chart showing breakdown by asset types (stocks, bonds, ETFs, etc.) using pie chart. Updated allocations and holdings display to show sector and asset_type for each ticker with visual badges. Frontend: Added assetTypeData calculation to aggregate allocations by asset_type, added second pie chart for asset type allocation, updated allocation and holding cards to display sector (text) and asset_type (blue badge). Backend: Updated invest endpoint to preserve sector and asset_type when updating existing holdings. ManualPortfolioBuilder: Added auto-fetch of stock info (sector, asset_type) when user enters ticker using /api/data/asset endpoint, displays fetched info as badges below ticker input. Both frontend and backend restarted successfully."
+
 test_plan:
   current_focus:
     - "5-Year Return Calculation Fix"
