@@ -124,8 +124,8 @@ class SharedAssetsService:
                     # Fund-specific fields (for ETFs, Index Funds, Bond Funds)
                     "category": info.get('category', info.get('fundFamily', '')),
                     "totalAssets": info.get('totalAssets', info.get('navPrice', 0)),
-                    "expenseRatio": info.get('annualReportExpenseRatio', info.get('yield', 0)),
-                    "yield": info.get('yield', info.get('trailingAnnualDividendYield', 0)),
+                    "expenseRatio": info.get('annualReportExpenseRatio', info.get('annualHoldingsTurnover', 0)),
+                    "yield": self._calculate_dividend_yield(info),
                     "ytdReturn": info.get('ytdReturn', 0),
                     "threeYearAverageReturn": info.get('threeYearAverageReturn', 0),
                     "fiveYearAverageReturn": info.get('fiveYearAverageReturn', 0),
