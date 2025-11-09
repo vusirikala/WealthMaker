@@ -425,6 +425,18 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
         onClose={() => setShowExportModal(false)}
         portfolio={portfolio}
       />
+
+      {/* Stock Detail Modal */}
+      <StockDetailModal
+        symbol={selectedStock}
+        holding={selectedHolding}
+        isOpen={showStockDetail}
+        onClose={() => {
+          setShowStockDetail(false);
+          setSelectedStock(null);
+          setSelectedHolding(null);
+        }}
+      />
     </div>
   );
 }
