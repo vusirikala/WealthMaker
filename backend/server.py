@@ -1160,7 +1160,7 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     if user_context.get('portfolio_type'):
         context_info += f"\n- Portfolio Type: {user_context['portfolio_type']}"
     
-    if user_context['portfolio_type'] == 'personal':
+    if user_context.get('portfolio_type') == 'personal':
         if user_context.get('date_of_birth'):
             # Calculate age from date of birth
             from dateutil.relativedelta import relativedelta
