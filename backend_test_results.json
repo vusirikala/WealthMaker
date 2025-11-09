@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-09T08:53:40.686545+00:00",
+  "timestamp": "2025-11-09T08:57:13.730505+00:00",
   "total_tests": 110,
-  "passed_tests": 98,
-  "success_rate": 89.0909090909091,
+  "passed_tests": 104,
+  "success_rate": 94.54545454545455,
   "test_details": [
     {
       "test": "GET /auth/me (authenticated)",
       "success": true,
       "details": "",
       "response_data": {
-        "_id": "test-user-1762678304",
-        "email": "test.user.1762678304@example.com",
-        "name": "Test User 1762678304",
+        "_id": "test-user-1762678565",
+        "email": "test.user.1762678565@example.com",
+        "name": "Test User 1762678565",
         "picture": "https://via.placeholder.com/150",
-        "created_at": "2025-11-09T08:51:44.522000"
+        "created_at": "2025-11-09T08:56:06.111000"
       }
     },
     {
@@ -35,7 +35,7 @@
           "crypto": 1,
           "commodities": 1
         },
-        "last_updated": "2025-11-09T08:22:36.872899+00:00",
+        "last_updated": "2025-11-09T08:51:56.347687+00:00",
         "status": "active"
       }
     },
@@ -52,7 +52,7 @@
             "crypto": 1,
             "commodities": 1
           },
-          "last_updated": "2025-11-09T08:22:36.872899+00:00",
+          "last_updated": "2025-11-09T08:51:56.347687+00:00",
           "status": "active"
         },
         "hint": "Use /admin/update-live-data to refresh live data, or provide specific symbols to add more assets"
@@ -255,20 +255,97 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T04:55:15.191323+00:00",
+          "lastUpdated": "2025-11-09T08:51:48.516658+00:00",
           "live": {
             "currentPrice": {
               "price": 429.52,
               "change": -16.39,
               "changePercent": -3.68,
               "volume": 101472744,
-              "timestamp": "2025-11-09T04:55:15.190393+00:00",
+              "timestamp": "2025-11-09T08:51:48.515846+00:00",
               "dayHigh": 437.9425,
               "dayLow": 421.88,
               "fiftyTwoWeekHigh": 488.54,
               "fiftyTwoWeekLow": 214.25
             },
             "recentNews": [
+              {
+                "headline": "This Is How I Earn $2,000 A Month From Covered Call ETFs",
+                "title": "This Is How I Earn $2,000 A Month From Covered Call ETFs",
+                "summary": "Discover why covered call ETFs are key for income investors. See a real $190K portfolio example generating $2K monthly.",
+                "source": "SeekingAlpha",
+                "url": "https://finnhub.io/api/news?id=4df617012332432b715b9b1688b162b608b71720dbaf40d8b67d327147c9e644",
+                "image": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/2178434029/image_2178434029.jpg?io=getty-c-w1536",
+                "datetime": "2025-11-09T00:28:40+00:00",
+                "timestamp": "2025-11-09T00:28:40+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Prediction: EV Stocks Will Be Your Best Investment in 2026. Here's Why.",
+                "title": "Prediction: EV Stocks Will Be Your Best Investment in 2026. Here's Why.",
+                "summary": "Three EV stocks could experience major growth in 2026.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=062acf5354f009af1a4d165de584252ba746f2da85c1b4a9c402e45830cbbdf4",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T23:14:00+00:00",
+                "timestamp": "2025-11-08T23:14:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk Says Optimus Robot Will Replace Jobs and Enable Universal Income",
+                "title": "Elon Musk Says Optimus Robot Will Replace Jobs and Enable Universal Income",
+                "summary": "Elon Musk, CEO of Tesla Inc. (NASDAQ:TSLA), has predicted that the company's humanoid robot Optimus could revolutionize the global economy even if it significantly reduces the need for human labor. Despite the technical challenges surrounding the robot's production, Musk's ambitious vision for Optimus continues to unfold. Although not yet ready for mass production, Tesla has demonstrated its capabilities at events, including handing out candy on Halloween and performing Kung Fu with actor Jared",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=4406e48989e0322d4869bbadc68e72ee632ac35d46c1e5adb64d4d6267113c95",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T19:47:13+00:00",
+                "timestamp": "2025-11-08T19:47:13+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Clearwater Wellness Launches World-First Thermoelectric Ice Bath, with Tim Paine Joining as Founding Partner",
+                "title": "Clearwater Wellness Launches World-First Thermoelectric Ice Bath, with Tim Paine Joining as Founding Partner",
+                "summary": "Clearwater Wellness Co launched the SnowCap, the world\u2019s first thermoelectric ice bath requiring no ice or plumbing. Backed by $700,000 in pre-sales and a $1.84 million funding round, the company welcomes cricket legend Tim Paine as a founding partner to spearhead global expansion and innovation. VICTORIA, Australia, Nov. 08, 2025 (GLOBE NEWSWIRE) -- Australian wellness technology company Clearwater Wellness Co has unveiled the SnowCap, the world\u2019s first thermoelectric ice bath that requires no",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=ce0e4fe1042870a6c1e12c74bd9beb9c99ff7a61134aefe60d579e7ad9ec135b",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T19:03:00+00:00",
+                "timestamp": "2025-11-08T19:03:00+00:00",
+                "sentiment": "neutral"
+              },
+              {
+                "headline": "Elon Musk Says Tesla's Optimus Will Be An 'Infinite Money Glitch' That Ends Poverty, Performs Surgery, And Looks So Real 'You'll Need To Poke It'",
+                "title": "Elon Musk Says Tesla's Optimus Will Be An 'Infinite Money Glitch' That Ends Poverty, Performs Surgery, And Looks So Real 'You'll Need To Poke It'",
+                "summary": "Forget margins. Elon Musk wants to reinvent society with a robot that can walk, work, operate without sleep, and\u2014according to him\u2014perform surgery with precision so humanlike, you'll need to poke it just to make sure it's not a person in a suit. Speaking on Tesla Inc.'s (NASDAQ:TSLA) Q3 2025 earnings call last month, Musk doubled down on his sky-high ambitions for Optimus, the company's humanoid robot project. The Tesla CEO called it \"an infinite money glitch,\" predicting it would not only become",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=b4320efa92ac7ca47f70a992854afba3ccab0b5c1be294c56a8f1ddf58441fbb",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T16:01:30+00:00",
+                "timestamp": "2025-11-08T16:01:30+00:00",
+                "sentiment": "positive"
+              },
+              {
+                "headline": "These American Politicians Are Buying Tesla (TSLA)",
+                "title": "These American Politicians Are Buying Tesla (TSLA)",
+                "summary": "We recently published 10 Best AI Stocks to Buy According to American Politicians. Tesla Inc (NASDAQ:TSLA) is one of the best AI stocks to buy. According to disclosures made on Oct. 22, Congresswoman Lisa C. McClain\u2019s spouse bought Tesla Inc (NASDAQ:TSLA) shares worth between $1,001 \u2013 $15,000 on Sept. 11. The stock has gained about [\u2026]",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=bb18517f0f219b356ce34a61dc47d5968f550dbb5906d5eb8cd70c65a9d98b91",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T15:49:30+00:00",
+                "timestamp": "2025-11-08T15:49:30+00:00",
+                "sentiment": "positive"
+              },
+              {
+                "headline": "The Weekend: Markets tank as AI bubble fears grow, while Musk celebrates record pay day",
+                "title": "The Weekend: Markets tank as AI bubble fears grow, while Musk celebrates record pay day",
+                "summary": "Key moments from the last seven days, plus a glimpse at the week ahead.",
+                "source": "Yahoo",
+                "url": "https://finnhub.io/api/news?id=95d1bf7345755541b9af51b3596cae25d5b4415d284edf4b06ded627e68e0069",
+                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
+                "datetime": "2025-11-08T13:55:21+00:00",
+                "timestamp": "2025-11-08T13:55:21+00:00",
+                "sentiment": "neutral"
+              },
               {
                 "headline": "Today's AI boom is 'very different' from the 90s dot-com bubble",
                 "title": "Today's AI boom is 'very different' from the 90s dot-com bubble",
@@ -301,87 +378,10 @@
                 "datetime": "2025-11-08T11:05:13+00:00",
                 "timestamp": "2025-11-08T11:05:13+00:00",
                 "sentiment": "neutral"
-              },
-              {
-                "headline": "$878B pay package for Elon Musk approved. What to know about Tesla, Boring Co CEO",
-                "title": "$878B pay package for Elon Musk approved. What to know about Tesla, Boring Co CEO",
-                "summary": "Elon Musk, whose Boring Co is preparing to construct a high-speed transit tunnel in Nashville, is on track to become the world\u2019s first trillionaire.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=a17ac573d75cccf508ee649dd702462827c710c04c6d4ac2eee7b4b7bb63f339",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T11:01:32+00:00",
-                "timestamp": "2025-11-08T11:01:32+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
-                "title": "Elon Musk's pay package is a clear signal that Tesla is done being just a car company",
-                "summary": "We've seen Amazon without Jeff Bezos, Apple without Steve Jobs, and Microsoft without Bill Gates, but for the time being, we're not going to see Tesla without Musk.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=15e841ddb2b3751b98b7d86472de17d9357585c285eb873fb32c42f9d6173c2d",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T11:00:58+00:00",
-                "timestamp": "2025-11-08T11:00:58+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Here\u2019s What It Costs To Charge a Tesla Monthly vs. Using Gas for a Ram 1500",
-                "title": "Here\u2019s What It Costs To Charge a Tesla Monthly vs. Using Gas for a Ram 1500",
-                "summary": "Is charging a Tesla really cheaper than filling up a Ram 1500? We break down the monthly costs of electricity vs. gas so you can see the real savings.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=1cd345430e70401d79b98cb4544460eed5ada4f5c5babc5f650e84243ccf5db3",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T10:55:07+00:00",
-                "timestamp": "2025-11-08T10:55:07+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Elon Musk Has One Trillion Reasons to Finish His Robot Story",
-                "title": "Elon Musk Has One Trillion Reasons to Finish His Robot Story",
-                "summary": "When Tesla shareholders approved Musk\u2019s 10-year, $1 trillion pay package, they voted to effectively remake the electric-car company into a robot powerhouse.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=21868ac2311f3e910c3df39a2fded0cbb2a693ac6e2e82f6ac6158fd3a8345f6",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T10:30:00+00:00",
-                "timestamp": "2025-11-08T10:30:00+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Investing.com\u2019s stocks of the week",
-                "title": "Investing.com\u2019s stocks of the week",
-                "summary": "Investing.com \u2013 U.S. equities were extremely volatile this week, as investor concerns regarding valuations led to declines, especially among technology stocks. However, there were some names that managed to make solid gains.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=400e2993eb27f9cae68fb28e55623864f8a898d7532c308016b2b68e248636f7",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T08:57:50+00:00",
-                "timestamp": "2025-11-08T08:57:50+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Elon Musk says Optimus will 'eliminate poverty' in speech after his $1 trillion pay package was approved",
-                "title": "Elon Musk says Optimus will 'eliminate poverty' in speech after his $1 trillion pay package was approved",
-                "summary": "Elon Musk has spent the last few weeks outlining a future with Optimus \u2014 one that will \"eliminate\" poverty, work, and require a universal income.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=ad716b818a68fc7d4cb0ed4e1f0e18259486bf37998436a32d588a06c2788b9d",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T04:30:55+00:00",
-                "timestamp": "2025-11-08T04:30:55+00:00",
-                "sentiment": "neutral"
-              },
-              {
-                "headline": "Riding in a Chinese Robotaxi Is Pretty Smooth\u2014That\u2019s a Problem for Waymo",
-                "title": "Riding in a Chinese Robotaxi Is Pretty Smooth\u2014That\u2019s a Problem for Waymo",
-                "summary": "While U.S. companies dominate their home market, other countries are looking to China for driverless technology.",
-                "source": "Yahoo",
-                "url": "https://finnhub.io/api/news?id=989dd56913ff386406b0842ac52ebd5fb31bed42dfd51145d72896b1a8d1274c",
-                "image": "https://s.yimg.com/rz/stage/p/yahoo_finance_en-US_h_p_finance_2.png",
-                "datetime": "2025-11-08T04:00:00+00:00",
-                "timestamp": "2025-11-08T04:00:00+00:00",
-                "sentiment": "neutral"
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T04:55:15.190396+00:00",
+              "lastUpdated": "2025-11-09T08:51:48.515849+00:00",
               "targetPrice": 392.04977,
               "recommendation": "hold",
               "numberOfAnalysts": 41
@@ -709,14 +709,14 @@
             "majorEvents": [],
             "patterns": []
           },
-          "lastUpdated": "2025-11-09T08:51:46.031051+00:00",
+          "lastUpdated": "2025-11-09T08:56:06.974023+00:00",
           "live": {
             "currentPrice": {
               "price": 268.47,
               "change": -1.3,
               "changePercent": -0.48,
               "volume": 45140079,
-              "timestamp": "2025-11-09T08:51:46.030093+00:00",
+              "timestamp": "2025-11-09T08:56:06.973173+00:00",
               "dayHigh": 272.29,
               "dayLow": 266.78,
               "fiftyTwoWeekHigh": 277.32,
@@ -835,7 +835,7 @@
               }
             ],
             "analystRatings": {
-              "lastUpdated": "2025-11-09T08:51:46.030096+00:00",
+              "lastUpdated": "2025-11-09T08:56:06.973176+00:00",
               "targetPrice": 280.45538,
               "recommendation": "buy",
               "numberOfAnalysts": 41
@@ -1030,7 +1030,7 @@
       "details": "",
       "response_data": {
         "symbol": "AAPL",
-        "response_time": 0.03952360153198242,
+        "response_time": 0.03650712966918945,
         "fast_response": true
       }
     },
@@ -1081,7 +1081,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.036004066467285156,
+        "response_time": 0.0366363525390625,
         "cached": true
       }
     },
@@ -1090,7 +1090,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03633928298950195,
+        "response_time": 0.03765225410461426,
         "cached": true
       }
     },
@@ -1099,16 +1099,16 @@
       "success": true,
       "details": "",
       "response_data": {
-        "response_time": 0.03352761268615723,
+        "response_time": 0.03628206253051758,
         "cached": true
       }
     },
     {
       "test": "POST /api/portfolios-v2/create (manual portfolio)",
-      "success": "868b479f-4978-4f37-844b-5562411c4e93",
+      "success": "4f9eef1d-3952-461f-8185-228b75d72459",
       "details": "",
       "response_data": {
-        "portfolio_id": "868b479f-4978-4f37-844b-5562411c4e93",
+        "portfolio_id": "4f9eef1d-3952-461f-8185-228b75d72459",
         "allocations_count": 3
       }
     },
@@ -1121,7 +1121,7 @@
       }
     },
     {
-      "test": "GET /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93",
+      "test": "GET /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459",
       "success": true,
       "details": "",
       "response_data": {
@@ -1129,7 +1129,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93",
+      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459",
       "success": true,
       "details": "",
       "response_data": {
@@ -1137,7 +1137,7 @@
       }
     },
     {
-      "test": "POST /api/portfolios-v2/95fc442e-c5cf-4e36-a5e3-0973ea25c888/invest ($10,000)",
+      "test": "POST /api/portfolios-v2/d4b8a5fd-198e-43f5-9ed2-4a62260a3501/invest ($10,000)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1166,7 +1166,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93/allocations (valid - sums to 100%)",
+      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459/allocations (valid - sums to 100%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1174,7 +1174,7 @@
       }
     },
     {
-      "test": "PUT /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93/allocations (invalid - sums to 110%)",
+      "test": "PUT /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459/allocations (invalid - sums to 110%)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1182,7 +1182,7 @@
       }
     },
     {
-      "test": "DELETE /api/portfolios-v2/868b479f-4978-4f37-844b-5562411c4e93 (soft delete)",
+      "test": "DELETE /api/portfolios-v2/4f9eef1d-3952-461f-8185-228b75d72459 (soft delete)",
       "success": true,
       "details": "",
       "response_data": {
@@ -1336,15 +1336,13 @@
     {
       "test": "Update context with mixed liquidity_requirements",
       "success": false,
-      "details": "Status: 408",
-      "response_data": {
-        "error": "Request timeout"
-      }
+      "details": "Status: 500",
+      "response_data": "Internal Server Error"
     },
     {
       "test": "No AttributeError in build_context_string",
-      "success": true,
-      "details": "Status: 408",
+      "success": false,
+      "details": "Status: 500",
       "response_data": {
         "has_response": false
       }
@@ -1398,7 +1396,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "suggestion_id": "544e56d8-92e2-4cef-969e-0e68190504bf"
+        "suggestion_id": "3c6893a3-e3e2-437b-9e9a-9fdb1754c8ef"
       }
     },
     {
@@ -1427,7 +1425,7 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id_value": "d6fbaacf-180d-44f1-8222-856bbacc76bb",
+        "id_value": "1e4341e3-c2c6-42e1-8bcb-89ee5b049e70",
         "id_type": "str"
       }
     },
@@ -1477,67 +1475,67 @@
       "success": true,
       "details": "",
       "response_data": {
-        "portfolio_id": "038b1558-9468-46cc-8e09-f8d1bb1bdf62"
+        "portfolio_id": "d88d1ff2-494b-41ab-a80f-70eeaa8846d1"
       }
     },
     {
       "test": "GET /portfolios-v2/{id}/performance?time_period=1y - Complete response structure",
-      "success": false,
-      "details": "return_percentage: True (valid: True), time_series: True, period_stats: True, sp500_comparison: False, sp500_time_series: False, sp500_current_return: False (valid: False), dates: False",
+      "success": true,
+      "details": "",
       "response_data": {
         "status": 200,
-        "return_percentage": 0,
-        "time_series_length": 0,
-        "sp500_time_series_length": 0,
-        "sp500_current_return": null
+        "return_percentage": 169.52,
+        "time_series_length": 249,
+        "sp500_time_series_length": 249,
+        "sp500_current_return": 89.78
       }
     },
     {
       "test": "GET /portfolios-v2/{id}/performance?time_period=6m - Shorter time range",
-      "success": false,
-      "details": "6m length: 0, 1y length: 0, shorter: True, has_data: False",
+      "success": true,
+      "details": "",
       "response_data": {
-        "6m_length": 0,
-        "1y_length": 0,
-        "shorter_range": false
+        "6m_length": 124,
+        "1y_length": 249,
+        "shorter_range": true
       }
     },
     {
       "test": "GET /portfolios-v2/{id}/performance?time_period=3y - Longer time range",
-      "success": false,
-      "details": "3y length: 0, 1y length: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "3y_length": 0,
-        "longer_range": false
+        "3y_length": 750,
+        "longer_range": true
       }
     },
     {
       "test": "GET /portfolios-v2/{id}/performance?time_period=5y - Maximum time range",
-      "success": false,
-      "details": "5y length: 0",
+      "success": true,
+      "details": "",
       "response_data": {
-        "5y_length": 0,
-        "longest_range": false
+        "5y_length": 1254,
+        "longest_range": true
       }
     },
     {
       "test": "Portfolio and S&P 500 time series have matching lengths and aligned dates",
-      "success": false,
-      "details": "No 1y data available for comparison",
+      "success": true,
+      "details": "",
       "response_data": {
-        "portfolio_length": 0,
-        "sp500_length": 0,
-        "aligned": false
+        "portfolio_length": 249,
+        "sp500_length": 249,
+        "aligned": true
       }
     },
     {
       "test": "Caching reduces response time for repeated requests",
-      "success": false,
-      "details": "First request: 0.04s, Second request: 0.08s, Effective: False",
+      "success": true,
+      "details": "",
       "response_data": {
-        "first_request_time": 0.04,
-        "second_request_time": 0.08,
-        "caching_effective": false
+        "first_request_time": 0.05,
+        "second_request_time": 0.05,
+        "caching_effective": true
       }
     },
     {
@@ -1550,8 +1548,8 @@
     },
     {
       "test": "Invalid time_period parameter handled gracefully (defaults to 1y)",
-      "success": false,
-      "details": "Status: 200, Has data: False",
+      "success": true,
+      "details": "",
       "response_data": {
         "status": 200
       }
