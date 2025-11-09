@@ -55,10 +55,18 @@ async def get_chat_messages(
 async def send_message(chat_request: ChatRequest, user: User = Depends(require_auth)):
     """Send a message and get AI response"""
     user_message = chat_request.message
+    portfolio_id = chat_request.portfolio_id
+    
+    # Build query for chat history (portfolio-specific or global)
+    history_query = {"user_id": user.id}
+    if portfolio_id:
+        history_query["portfolio_id"] = portfolio_id
+    else:
+        history_query["portfolio_id"] = {"$exists": False}
     
     # Get chat history FIRST to check if this is first message
     chat_history = await db.chat_messages.find(
-        {"user_id": user.id},
+        history_query,
         {"_id": 0}
     ).sort("timestamp", 1).to_list(100)
     
@@ -70,6 +78,11 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
         "message": user_message,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+    
+    # Add portfolio_id if provided
+    if portfolio_id:
+        user_msg_doc["portfolio_id"] = portfolio_id
+    
     await db.chat_messages.insert_one(user_msg_doc)
     
     # Get user context
