@@ -465,7 +465,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Advanced Portfolio Analytics Suite"
+    - "Chat Close Button Visibility Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
