@@ -255,6 +255,13 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-6">
+        {/* Performance Chart - Full Width */}
+        {hasAllocations && (
+          <div className="mb-6">
+            <PortfolioPerformanceChart portfolioId={portfolioId} />
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-6">
           {/* Allocation Chart */}
           {chartData.length > 0 && (
