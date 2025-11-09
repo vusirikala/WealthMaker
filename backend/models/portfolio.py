@@ -27,6 +27,7 @@ class UserPortfolio(BaseModel):
     name: str  # Portfolio name (e.g., "Retirement Fund", "Growth Portfolio")
     goal: Optional[str] = None  # Portfolio goal/purpose
     type: str = "manual"  # 'manual' or 'ai'
+    investment_type: str = "investment"  # 'investment' or 'analysis' - NEW FIELD
     
     # Portfolio characteristics
     risk_tolerance: str = "medium"  # 'low', 'medium', 'high'
@@ -59,8 +60,14 @@ class CreatePortfolioRequest(BaseModel):
     name: str
     goal: Optional[str] = None
     type: str = "manual"  # 'manual' or 'ai'
+    investment_type: str = "investment"  # 'investment' or 'analysis' - NEW FIELD
     risk_tolerance: str = "medium"
     roi_expectations: float = 10.0
+    time_horizon: Optional[str] = None
+    monitoring_frequency: Optional[str] = None
+    sector_preferences: Optional[Dict[str, Any]] = None
+    investment_strategy: Optional[List[str]] = None
+    investment_amount: Optional[float] = None
     allocations: List[Dict[str, Any]] = Field(default_factory=list)
 
 
