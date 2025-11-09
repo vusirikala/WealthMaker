@@ -140,6 +140,13 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
           </div>
           <div className="flex gap-2">
             <Button
+              onClick={() => setShowEditAllocationModal(true)}
+              variant="outline"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+            <Button
               onClick={() => setShowInvestModal(true)}
               className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white"
             >
