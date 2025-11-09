@@ -94,7 +94,10 @@ export default function CorrelationHeatmap({ portfolioId }) {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">🔗 Correlation Heatmap</h3>
+      <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+        🔗 Correlation Heatmap
+        <InfoTooltip text="Shows how stocks in your portfolio move together. Values range from -1 to 1. High correlation (red, near 1) means stocks move together - poor diversification. Low correlation (green, near 0) means stocks move independently - good diversification. Better to have more green." />
+      </h3>
       
       <div className="overflow-x-auto">
         <div className="inline-block min-w-full">
