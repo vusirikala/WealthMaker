@@ -34,6 +34,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     commodities: false,
     forex: false,
   });
+  const [investmentStrategies, setInvestmentStrategies] = useState([]);
   
   // AI suggestions
   const [aiSuggestion, setAiSuggestion] = useState(null);
@@ -45,6 +46,71 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
       [sector]: !prev[sector],
     }));
   };
+
+  const handleStrategyToggle = (strategyId) => {
+    setInvestmentStrategies((prev) =>
+      prev.includes(strategyId)
+        ? prev.filter((s) => s !== strategyId)
+        : [...prev, strategyId]
+    );
+  };
+
+  const strategies = [
+    {
+      id: "value_investing",
+      name: "Value Investing",
+      description: "Buy undervalued stocks for long-term growth",
+      details: "Focus on stocks trading below their intrinsic value. Requires patience and thorough fundamental analysis.",
+      risk: "Low to Medium",
+      roiExpectation: "8-15% annually",
+      timeHorizon: "Long-term (3-10 years)"
+    },
+    {
+      id: "growth_investing",
+      name: "Growth Investing",
+      description: "Invest in high-growth potential companies",
+      details: "Target companies with strong earnings growth prospects, even if current valuations are high. Focus on future potential rather than current metrics.",
+      risk: "Medium to High",
+      roiExpectation: "15-30% annually",
+      timeHorizon: "Medium to Long-term (3-7 years)"
+    },
+    {
+      id: "income_investing",
+      name: "Income/Dividend Investing",
+      description: "Focus on dividend-paying stocks and bonds",
+      details: "Prioritize investments that generate regular income through dividends or interest payments. Suitable for conservative investors seeking steady cash flow.",
+      risk: "Low to Medium",
+      roiExpectation: "5-10% annually (plus dividends)",
+      timeHorizon: "Long-term (5+ years)"
+    },
+    {
+      id: "index_funds",
+      name: "Index Fund Investing",
+      description: "Passive investing through market index funds",
+      details: "Invest in funds that track major market indices like S&P 500. Low-cost, diversified approach with minimal management required.",
+      risk: "Low to Medium",
+      roiExpectation: "8-12% annually (market average)",
+      timeHorizon: "Long-term (5+ years)"
+    },
+    {
+      id: "dollar_cost_averaging",
+      name: "Dollar-Cost Averaging",
+      description: "Invest fixed amounts regularly over time",
+      details: "Reduce market timing risk by investing consistent amounts at regular intervals. Smooths out market volatility and reduces emotional decision-making.",
+      risk: "Low",
+      roiExpectation: "Matches underlying asset returns",
+      timeHorizon: "Long-term (5+ years)"
+    },
+    {
+      id: "momentum_investing",
+      name: "Momentum Investing",
+      description: "Follow market trends and price momentum",
+      details: "Invest in assets showing strong recent performance, expecting the trend to continue. Requires active monitoring and quick decision-making.",
+      risk: "High",
+      roiExpectation: "20-50% annually (volatile)",
+      timeHorizon: "Short to Medium-term (6 months - 3 years)"
+    },
+  ];
 
   useEffect(() => {
     if (isOpen) {
