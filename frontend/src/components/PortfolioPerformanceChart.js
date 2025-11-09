@@ -116,17 +116,59 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-1">Historical Performance</h3>
-          <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-2 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-              <span className="text-2xl font-bold">
-                {isPositive ? '+' : ''}{return_percentage.toFixed(2)}%
+          <h3 className="text-lg font-bold text-gray-900 mb-3">Historical Performance</h3>
+          
+          {/* All metrics in one line */}
+          <div className="flex items-center gap-6">
+            {/* Portfolio Return */}
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-600 mb-1">Your Portfolio</span>
+              <div className={`flex items-center gap-2 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+                <span className="text-2xl font-bold">
+                  {isPositive ? '+' : ''}{return_percentage.toFixed(2)}%
+                </span>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="h-12 w-px bg-gray-300"></div>
+
+            {/* S&P 500 Return */}
+            {sp500_comparison && (
+              <>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-600 mb-1">S&P 500</span>
+                  <div className={`flex items-center gap-2 ${sp500Return >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
+                    {sp500Return >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+                    <span className="text-2xl font-bold">
+                      {sp500Return >= 0 ? '+' : ''}{sp500Return.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="h-12 w-px bg-gray-300"></div>
+
+                {/* Outperformance */}
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-600 mb-1">{outperforming ? 'Outperforming' : 'Underperforming'}</span>
+                  <div className={`flex items-center gap-2 ${outperforming ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className="text-2xl font-bold">
+                      {outperforming ? '↑' : '↓'} {Math.abs(return_percentage - sp500Return).toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Period Label */}
+            <div className="flex items-center gap-2 ml-auto">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600">
+                {TIME_PERIODS.find(p => p.value === selectedPeriod)?.label}
               </span>
             </div>
-            <span className="text-sm text-gray-500">
-              {TIME_PERIODS.find(p => p.value === selectedPeriod)?.label}
-            </span>
           </div>
         </div>
 
@@ -147,32 +189,6 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
           ))}
         </div>
       </div>
-
-      {/* S&P 500 Comparison */}
-      {sp500_comparison && (
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-600 mb-1">S&P 500 Return</p>
-              <div className={`flex items-center gap-2 ${sp500Return >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
-                {sp500Return >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                <span className="text-xl font-bold">
-                  {sp500Return >= 0 ? '+' : ''}{sp500Return.toFixed(2)}%
-                </span>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-600 mb-1">vs. Your Portfolio</p>
-              <div className={`text-lg font-bold ${outperforming ? 'text-green-600' : 'text-red-600'}`}>
-                {outperforming ? '↑' : '↓'} {Math.abs(return_percentage - sp500Return).toFixed(2)}%
-              </div>
-              <p className="text-xs text-gray-500">
-                {outperforming ? 'Outperforming' : 'Underperforming'}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Period Returns Summary */}
       <div className="grid grid-cols-4 gap-4 mb-6">
