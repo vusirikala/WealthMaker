@@ -436,6 +436,34 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
             </div>
           </div>
         </div>
+
+        {/* Risk Metrics Dashboard - Full Width */}
+        {hasAllocations && (
+          <div className="mb-6">
+            <RiskMetricsDashboard portfolioId={portfolioId} />
+          </div>
+        )}
+
+        {/* Correlation Heatmap - Full Width */}
+        {hasAllocations && (
+          <div className="mb-6">
+            <CorrelationHeatmap portfolioId={portfolioId} />
+          </div>
+        )}
+
+        {/* Portfolio Distributions - 2 columns */}
+        {hasAllocations && (
+          <div className="mb-6">
+            <PortfolioDistributions portfolioId={portfolioId} />
+          </div>
+        )}
+
+        {/* Dividend Tracker - Full Width */}
+        {hasAllocations && (
+          <div className="mb-6">
+            <DividendTracker portfolioId={portfolioId} />
+          </div>
+        )}
       </div>
 
       {/* Investment Modal */}
