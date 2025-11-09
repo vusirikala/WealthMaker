@@ -340,10 +340,10 @@ export default function MultiWatchlistDashboard() {
                         Price
                       </th>
                       <th className="text-right py-3 px-4 font-semibold text-gray-700">
-                        24h Change
-                      </th>
-                      <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         % Change
+                      </th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                        52-Week Range
                       </th>
                       <th className="text-right py-3 px-4 font-semibold text-gray-700">
                         Actions
@@ -351,70 +351,89 @@ export default function MultiWatchlistDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {watchlistData.tickers.map((stock) => (
-                      <tr
-                        key={stock.ticker}
-                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
-                        onClick={() => {
-                          setSelectedStock(stock.ticker);
-                          setShowStockDetail(true);
-                        }}
-                      >
-                        <td className="py-4 px-4">
-                          <span className="font-bold text-gray-900">
-                            {stock.ticker}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="text-gray-600">{stock.name}</span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="font-semibold text-gray-900">
-                            ${stock.current_price.toFixed(2)}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span
-                            className={`font-semibold ${
-                              stock.price_change >= 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {stock.price_change >= 0 ? "+" : ""}
-                            {stock.price_change.toFixed(2)}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <div
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-semibold ${
-                              stock.price_change_pct >= 0
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {stock.price_change_pct >= 0 ? (
-                              <TrendingUp className="w-4 h-4" />
-                            ) : (
-                              <TrendingDown className="w-4 h-4" />
-                            )}
-                            {stock.price_change_pct >= 0 ? "+" : ""}
-                            {stock.price_change_pct.toFixed(2)}%
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveTicker(stock.ticker);
-                            }}
-                            className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {watchlistData.tickers.map((stock) => {
+                      // Get the right percentage change based on selected period
+                      const percentChange = 
+                        timePeriod === "24h" ? stock.price_change_pct_24h :
+                        timePeriod === "1m" ? stock.price_change_pct_1m :
+                        stock.price_change_pct_1y;
+                      
+                      return (
+                        <tr
+                          key={stock.ticker}
+                          className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                          onClick={() => {
+                            setSelectedStock(stock.ticker);
+                            setShowStockDetail(true);
+                          }}
+                        >
+                          <td className="py-4 px-4">
+                            <span className="font-bold text-gray-900">
+                              {stock.ticker}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4">
+                            <span className="text-gray-600">{stock.name}</span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <span className="font-semibold text-gray-900">
+                              ${stock.current_price.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <div
+                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-semibold ${
+                                percentChange >= 0
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {percentChange >= 0 ? (
+                                <TrendingUp className="w-4 h-4" />
+                              ) : (
+                                <TrendingDown className="w-4 h-4" />
+                              )}
+                              {percentChange >= 0 ? "+" : ""}
+                              {percentChange.toFixed(2)}%
+                            </div>
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="min-w-[200px]">
+                              <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                                <span>${stock.week_52_low.toFixed(2)}</span>
+                                <span>${stock.week_52_high.toFixed(2)}</span>
+                              </div>
+                              <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+                                {/* Range bar */}
+                                <div
+                                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-400 via-yellow-400 to-green-400 rounded-full"
+                                  style={{ width: "100%" }}
+                                ></div>
+                                {/* Current price indicator */}
+                                <div
+                                  className="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-gray-900 rounded-full shadow-lg"
+                                  style={{ left: `${stock.range_position}%` }}
+                                ></div>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1 text-center">
+                                {stock.range_position.toFixed(0)}% of range
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveTicker(stock.ticker);
+                              }}
+                              className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
