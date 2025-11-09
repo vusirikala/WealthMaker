@@ -618,38 +618,42 @@ async def generate_portfolio(
     # Build CLEAR and FOCUSED prompt
     prompt = f"""You are a portfolio allocation expert. Create a portfolio that EXACTLY matches these sector percentages.
 
-USER'S PORTFOLIO PROFILE:
-- Name: {portfolio_name}
-- Investment Goal: {goal}
-- Risk Tolerance: {risk_tolerance.upper()}
-- Investment Amount: ${investment_amount:,.2f}
-- Time Horizon: {time_horizon} years
-- Expected ROI Target: {roi_expectations}% annually
-- Monitoring Frequency: {monitoring_frequency}
-
-USER'S SECTOR ALLOCATION (MUST MATCH EXACTLY):
-{sector_allocation_str}
-
-CALCULATED DOLLAR AMOUNTS (Based on investment amount):
+REQUIRED SECTOR ALLOCATIONS (MUST MATCH EXACTLY):
 """
     
-    for sector, (pct, amount) in sector_amounts.items():
-        prompt += f"  - {sector.replace('_', ' ').title()}: ${amount:,.2f} ({pct}%)\n"
+    # Show clear sector requirements
+    for sector, pct in sector_requirements.items():
+        prompt += f"{sector.upper()}: {pct}%\n"
     
     prompt += f"""
-USER'S SELECTED INVESTMENT STRATEGIES:
-{strategy_str}
+INVESTMENT STRATEGIES: {strategy_str}
+GOAL: {goal}
+RISK: {risk_tolerance.upper()}
+TIME: {time_horizon} years
+ROI TARGET: {roi_expectations}%
 
-YOUR CRITICAL TASK:
-Generate a portfolio where the TOTAL allocation percentages for each sector category EXACTLY match the user's specified percentages.
+YOUR TASK - FOLLOW EXACTLY:
+Create stock/ETF allocations where percentages sum to EXACTLY the required amounts above.
 
-MANDATORY CALCULATION RULES:
-1. Calculate how much % should go to each sector
-2. Select stocks/ETFs that together add up to EXACTLY that sector's percentage
-3. If Stocks = 60%, then ALL stock allocations MUST sum to 60%
-4. If Bonds = 30%, then ALL bond allocations MUST sum to 30%
-5. If Crypto = 10%, then ALL crypto allocations MUST sum to 10%
-6. TOTAL allocation_percentage MUST sum to 100%
+EXAMPLE (if user wants Stocks 60%, Bonds 30%, Crypto 10%):
+CORRECT:
+- AAPL: 15% (stocks)
+- MSFT: 20% (stocks)  
+- VOO: 25% (stocks)
+= 60% total stocks ✓
+
+- AGG: 20% (bonds)
+- BND: 10% (bonds)
+= 30% total bonds ✓
+
+- BITO: 10% (crypto)
+= 10% total crypto ✓
+
+TOTAL = 100% ✓
+
+WRONG:
+- Stock picks that sum to 45% when user wants 60% ✗
+- Bond picks that sum to 35% when user wants 30% ✗
 
 SECTOR-TO-TICKER MAPPING (Choose from these based on strategy):
 
