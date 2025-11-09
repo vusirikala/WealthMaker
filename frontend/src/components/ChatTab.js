@@ -393,15 +393,15 @@ export default function ChatTab({ portfolioId = null }) {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-200 p-4 bg-white">
-        <div className="flex gap-3">
+      <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
+        <div className="flex gap-2">
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Describe your investment goals..."
+            placeholder="Ask about your portfolio or investment goals..."
             data-testid="chat-input"
-            className="resize-none rounded-xl border-2 border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-cyan-500 smooth-transition"
+            className="resize-none rounded-lg border-2 border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-cyan-500 smooth-transition text-sm"
             rows={2}
             disabled={isLoading}
           />
@@ -409,9 +409,13 @@ export default function ChatTab({ portfolioId = null }) {
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || isLoading}
             data-testid="send-button"
-            className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white rounded-xl px-8 shadow-md"
+            className="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white rounded-lg px-4 shadow-md flex-shrink-0"
           >
-            <Send className="w-5 h-5" />
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
           </Button>
         </div>
       </div>
