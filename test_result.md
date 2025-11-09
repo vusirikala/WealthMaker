@@ -369,7 +369,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Stock Detail Modal in New Portfolio View"
+    - "Portfolio Performance Chart with S&P 500 Comparison"
+    - "Invest $X Button Feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
