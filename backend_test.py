@@ -2351,6 +2351,289 @@ print('Empty portfolio created');
                     {"soft_delete_working": portfolio_not_in_list}
                 )
 
+    def test_portfolio_performance_recalibration_fix(self):
+        """Test portfolio performance chart recalibration fix as per review request"""
+        print("\n🔧 Testing Portfolio Performance Chart Recalibration Fix...")
+        
+        # Step 1: Create a test portfolio with allocations (AAPL 50%, GOOGL 50%)
+        print("\n📊 Step 1: Creating test portfolio with AAPL 50%, GOOGL 50%...")
+        
+        try:
+            import subprocess
+            portfolio_id = str(uuid.uuid4())
+            
+            # Create MongoDB script to insert test portfolio
+            mongo_script = f'''
+use('test_database');
+var portfolioId = '{portfolio_id}';
+var userId = '{self.user_id}';
+db.user_portfolios.insertOne({{
+  _id: portfolioId,
+  user_id: userId,
+  name: "Recalibration Test Portfolio",
+  goal: "Test recalibration fix",
+  type: "manual",
+  risk_tolerance: "moderate",
+  roi_expectations: 10,
+  allocations: [
+    {{
+      "ticker": "AAPL",
+      "allocation_percentage": 50,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }},
+    {{
+      "ticker": "GOOGL", 
+      "allocation_percentage": 50,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }}
+  ],
+  holdings: [],
+  total_invested: 0,
+  current_value: 0,
+  total_return: 0,
+  total_return_percentage: 0,
+  is_active: true,
+  created_at: new Date(),
+  updated_at: new Date(),
+  last_invested_at: null
+}});
+print('Recalibration test portfolio created');
+'''
+            
+            # Execute MongoDB script
+            result = subprocess.run(
+                ['mongosh', '--eval', mongo_script],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                print(f"✅ Test portfolio created: {portfolio_id}")
+                self.log_test(
+                    "Create test portfolio (AAPL 50%, GOOGL 50%)", 
+                    True,
+                    "",
+                    {"portfolio_id": portfolio_id}
+                )
+            else:
+                print(f"❌ Failed to create test portfolio: {result.stderr}")
+                self.log_test(
+                    "Create test portfolio", 
+                    False,
+                    f"MongoDB error: {result.stderr}",
+                    {}
+                )
+                return
+                
+        except Exception as e:
+            print(f"❌ Setup error: {str(e)}")
+            self.log_test(
+                "Create test portfolio", 
+                False,
+                f"Exception: {str(e)}",
+                {}
+            )
+            return
+        
+        # Step 2: Test 6 months performance
+        print("\n📅 Step 2: Testing 6 months performance...")
+        
+        status, data_6m = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=6m')
+        success = status == 200 and isinstance(data_6m, dict)
+        
+        if success:
+            return_percentage_6m = data_6m.get('return_percentage')
+            time_series_6m = data_6m.get('time_series', [])
+            sp500_comparison_6m = data_6m.get('sp500_comparison', {})
+            sp500_time_series_6m = sp500_comparison_6m.get('time_series', [])
+            
+            # Verify return_percentage is different from other periods (will check later)
+            # Verify first time_series entry starts near 0%
+            first_return_6m = time_series_6m[0].get('return_percentage', None) if time_series_6m else None
+            first_return_near_zero_6m = first_return_6m is not None and abs(first_return_6m) <= 1.0  # Within 1%
+            
+            # Verify sp500_comparison.time_series first entry starts near 0%
+            first_sp500_return_6m = sp500_time_series_6m[0].get('return_percentage', None) if sp500_time_series_6m else None
+            first_sp500_near_zero_6m = first_sp500_return_6m is not None and abs(first_sp500_return_6m) <= 1.0
+            
+            success = (return_percentage_6m is not None and 
+                      first_return_near_zero_6m and 
+                      first_sp500_near_zero_6m and
+                      len(time_series_6m) > 0)
+            
+            details = f"return_percentage: {return_percentage_6m}, first_return: {first_return_6m} (near_zero: {first_return_near_zero_6m}), first_sp500: {first_sp500_return_6m} (near_zero: {first_sp500_near_zero_6m}), time_series_length: {len(time_series_6m)}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "6m performance - return_percentage valid, time_series starts near 0%, S&P 500 starts near 0%", 
+            success,
+            details if not success else "",
+            {
+                "return_percentage": data_6m.get('return_percentage') if isinstance(data_6m, dict) else None,
+                "first_return": first_return_6m if 'first_return_6m' in locals() else None,
+                "first_sp500_return": first_sp500_return_6m if 'first_sp500_return_6m' in locals() else None,
+                "time_series_length": len(data_6m.get('time_series', [])) if isinstance(data_6m, dict) else 0
+            }
+        )
+        
+        # Step 3: Test 1 year performance
+        print("\n📈 Step 3: Testing 1 year performance...")
+        
+        status, data_1y = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=1y')
+        success = status == 200 and isinstance(data_1y, dict)
+        
+        if success:
+            return_percentage_1y = data_1y.get('return_percentage')
+            time_series_1y = data_1y.get('time_series', [])
+            sp500_comparison_1y = data_1y.get('sp500_comparison', {})
+            sp500_time_series_1y = sp500_comparison_1y.get('time_series', [])
+            
+            # Verify first time_series entry starts near 0%
+            first_return_1y = time_series_1y[0].get('return_percentage', None) if time_series_1y else None
+            first_return_near_zero_1y = first_return_1y is not None and abs(first_return_1y) <= 1.0
+            
+            # Verify sp500_comparison.time_series first entry starts near 0%
+            first_sp500_return_1y = sp500_time_series_1y[0].get('return_percentage', None) if sp500_time_series_1y else None
+            first_sp500_near_zero_1y = first_sp500_return_1y is not None and abs(first_sp500_return_1y) <= 1.0
+            
+            # Verify return_percentage is different from 6m
+            return_different_from_6m = (return_percentage_1y != data_6m.get('return_percentage')) if isinstance(data_6m, dict) else True
+            
+            success = (return_percentage_1y is not None and 
+                      first_return_near_zero_1y and 
+                      first_sp500_near_zero_1y and
+                      return_different_from_6m and
+                      len(time_series_1y) > 0)
+            
+            details = f"return_percentage: {return_percentage_1y} (different_from_6m: {return_different_from_6m}), first_return: {first_return_1y} (near_zero: {first_return_near_zero_1y}), first_sp500: {first_sp500_return_1y} (near_zero: {first_sp500_near_zero_1y})"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "1y performance - different from 6m, starts near 0%, S&P 500 starts near 0%", 
+            success,
+            details if not success else "",
+            {
+                "return_percentage": data_1y.get('return_percentage') if isinstance(data_1y, dict) else None,
+                "different_from_6m": return_different_from_6m if 'return_different_from_6m' in locals() else None,
+                "first_return": first_return_1y if 'first_return_1y' in locals() else None,
+                "first_sp500_return": first_sp500_return_1y if 'first_sp500_return_1y' in locals() else None
+            }
+        )
+        
+        # Step 4: Test 3 years performance
+        print("\n📊 Step 4: Testing 3 years performance...")
+        
+        status, data_3y = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=3y')
+        success = status == 200 and isinstance(data_3y, dict)
+        
+        if success:
+            return_percentage_3y = data_3y.get('return_percentage')
+            time_series_3y = data_3y.get('time_series', [])
+            sp500_comparison_3y = data_3y.get('sp500_comparison', {})
+            sp500_time_series_3y = sp500_comparison_3y.get('time_series', [])
+            
+            # Verify first time_series entry starts near 0%
+            first_return_3y = time_series_3y[0].get('return_percentage', None) if time_series_3y else None
+            first_return_near_zero_3y = first_return_3y is not None and abs(first_return_3y) <= 1.0
+            
+            # Verify sp500_comparison.time_series first entry starts near 0%
+            first_sp500_return_3y = sp500_time_series_3y[0].get('return_percentage', None) if sp500_time_series_3y else None
+            first_sp500_near_zero_3y = first_sp500_return_3y is not None and abs(first_sp500_return_3y) <= 1.0
+            
+            # Verify return_percentage is different from 1y
+            return_different_from_1y = (return_percentage_3y != data_1y.get('return_percentage')) if isinstance(data_1y, dict) else True
+            
+            success = (return_percentage_3y is not None and 
+                      first_return_near_zero_3y and 
+                      first_sp500_near_zero_3y and
+                      return_different_from_1y and
+                      len(time_series_3y) > 0)
+            
+            details = f"return_percentage: {return_percentage_3y} (different_from_1y: {return_different_from_1y}), first_return: {first_return_3y} (near_zero: {first_return_near_zero_3y}), first_sp500: {first_sp500_return_3y} (near_zero: {first_sp500_near_zero_3y})"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "3y performance - different from 1y, starts near 0%, S&P 500 starts near 0%", 
+            success,
+            details if not success else "",
+            {
+                "return_percentage": data_3y.get('return_percentage') if isinstance(data_3y, dict) else None,
+                "different_from_1y": return_different_from_1y if 'return_different_from_1y' in locals() else True,
+                "first_return": first_return_3y if 'first_return_3y' in locals() else None,
+                "first_sp500_return": first_sp500_return_3y if 'first_sp500_return_3y' in locals() else None
+            }
+        )
+        
+        # Step 5: Verify last value of time_series matches return_percentage
+        print("\n🎯 Step 5: Verify last time_series value matches return_percentage...")
+        
+        if isinstance(data_1y, dict) and data_1y.get('time_series'):
+            time_series = data_1y.get('time_series', [])
+            return_percentage = data_1y.get('return_percentage')
+            
+            if time_series and return_percentage is not None:
+                last_time_series_value = time_series[-1].get('return_percentage')
+                values_match = abs(last_time_series_value - return_percentage) <= 0.1  # Allow small rounding differences
+                
+                success = values_match
+                details = f"return_percentage: {return_percentage}, last_time_series: {last_time_series_value}, match: {values_match}"
+            else:
+                success = False
+                details = "Missing time_series or return_percentage data"
+        else:
+            success = False
+            details = "No 1y data available"
+        
+        self.log_test(
+            "Last time_series value matches return_percentage", 
+            success,
+            details if not success else "",
+            {
+                "return_percentage": return_percentage if 'return_percentage' in locals() else None,
+                "last_time_series_value": last_time_series_value if 'last_time_series_value' in locals() else None,
+                "match": values_match if 'values_match' in locals() else False
+            }
+        )
+        
+        # Step 6: Summary - Verify all time periods show DIFFERENT return_percentage values
+        print("\n📋 Step 6: Summary - Verify different time periods show different returns...")
+        
+        if (isinstance(data_6m, dict) and isinstance(data_1y, dict) and isinstance(data_3y, dict)):
+            return_6m = data_6m.get('return_percentage')
+            return_1y = data_1y.get('return_percentage')
+            return_3y = data_3y.get('return_percentage')
+            
+            # All should be different (allowing for small rounding)
+            six_m_vs_1y_different = abs(return_6m - return_1y) > 0.1 if (return_6m is not None and return_1y is not None) else False
+            one_y_vs_3y_different = abs(return_1y - return_3y) > 0.1 if (return_1y is not None and return_3y is not None) else False
+            six_m_vs_3y_different = abs(return_6m - return_3y) > 0.1 if (return_6m is not None and return_3y is not None) else False
+            
+            all_different = six_m_vs_1y_different and one_y_vs_3y_different and six_m_vs_3y_different
+            
+            success = all_different
+            details = f"6m: {return_6m}%, 1y: {return_1y}%, 3y: {return_3y}% - 6m≠1y: {six_m_vs_1y_different}, 1y≠3y: {one_y_vs_3y_different}, 6m≠3y: {six_m_vs_3y_different}"
+        else:
+            success = False
+            details = "Missing data for comparison"
+        
+        self.log_test(
+            "RECALIBRATION FIX VERIFIED: Different time periods show DIFFERENT return percentages", 
+            success,
+            details if not success else "",
+            {
+                "6m_return": return_6m if 'return_6m' in locals() else None,
+                "1y_return": return_1y if 'return_1y' in locals() else None,
+                "3y_return": return_3y if 'return_3y' in locals() else None,
+                "all_different": all_different if 'all_different' in locals() else False
+            }
+        )
+
     def run_all_tests(self):
         """Run comprehensive test suite"""
         print("🚀 Starting SmartFolio Backend API Tests")
@@ -2365,6 +2648,9 @@ print('Empty portfolio created');
         self.test_auth_endpoints()
         self.test_admin_endpoints()
         self.test_data_endpoints()
+        
+        # Test portfolio performance recalibration fix (PRIORITY TEST from review request)
+        self.test_portfolio_performance_recalibration_fix()
         
         # Test 52-week high/low fix (PRIORITY TEST from review request)
         self.test_52_week_high_low_fix()
