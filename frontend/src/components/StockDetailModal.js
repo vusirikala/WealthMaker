@@ -223,76 +223,119 @@ export default function StockDetailModal({ symbol, holding, isOpen, onClose }) {
                 )}
 
                 {/* For ETFs/Index Funds - Show Fund Info */}
-                {(assetData.assetType === 'etf' || assetData.assetType === 'fund' || !assetData.fundamentals.employees) && (
+                {(assetData.assetType === 'etf' || assetData.assetType === 'fund' || assetData.assetType === 'bond' || !assetData.fundamentals.employees) && (
                   <>
                     <h3 className="text-lg font-bold text-gray-900 mb-4">
-                      {assetData.assetType === 'bond' ? 'Bond Fund Information' : 'Fund Information'}
+                      {assetData.assetType === 'bond' ? 'Bond Fund Information' : 
+                       assetData.assetType === 'etf' ? 'ETF Information' : 
+                       'Fund Information'}
                     </h3>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <div className="text-sm text-gray-600">Fund Type</div>
+                        <div className="text-sm text-gray-600">Type</div>
                         <div className="font-semibold text-gray-900">
-                          {assetData.fundamentals.category || assetData.fundamentals.quoteType || assetData.assetType?.toUpperCase() || 'N/A'}
+                          {assetData.fundamentals.quoteType === 'ETF' ? 'ETF' :
+                           assetData.fundamentals.quoteType === 'MUTUALFUND' ? 'Mutual Fund' :
+                           assetData.fundamentals.category || 
+                           assetData.assetType?.toUpperCase() || 'Fund'}
                         </div>
                       </div>
+                      
+                      {assetData.fundamentals.fundFamily && (
+                        <div>
+                          <div className="text-sm text-gray-600">Fund Family</div>
+                          <div className="font-semibold text-gray-900">
+                            {assetData.fundamentals.fundFamily}
+                          </div>
+                        </div>
+                      )}
+                      
                       <div>
-                        <div className="text-sm text-gray-600">Total Assets</div>
+                        <div className="text-sm text-gray-600">Total Assets (AUM)</div>
                         <div className="font-semibold text-gray-900">
-                          {assetData.fundamentals.totalAssets 
+                          {assetData.fundamentals.totalAssets && assetData.fundamentals.totalAssets > 0
                             ? `$${(assetData.fundamentals.totalAssets / 1e9).toFixed(2)}B` 
-                            : assetData.fundamentals.marketCap 
+                            : assetData.fundamentals.marketCap && assetData.fundamentals.marketCap > 0
                             ? `$${(assetData.fundamentals.marketCap / 1e9).toFixed(2)}B`
                             : 'N/A'}
                         </div>
                       </div>
+                      
                       <div>
                         <div className="text-sm text-gray-600">Expense Ratio</div>
                         <div className="font-semibold text-gray-900">
-                          {assetData.fundamentals.expenseRatio 
+                          {assetData.fundamentals.expenseRatio && assetData.fundamentals.expenseRatio > 0
                             ? `${(assetData.fundamentals.expenseRatio * 100).toFixed(2)}%` 
                             : 'N/A'}
                         </div>
                       </div>
-                      {assetData.assetType === 'bond' && assetData.fundamentals.yield && (
+                      
+                      {assetData.fundamentals.yield && assetData.fundamentals.yield > 0 && (
                         <div>
-                          <div className="text-sm text-gray-600">Yield</div>
+                          <div className="text-sm text-gray-600">Dividend Yield</div>
                           <div className="font-semibold text-gray-900">
                             {(assetData.fundamentals.yield * 100).toFixed(2)}%
                           </div>
                         </div>
                       )}
-                      {assetData.fundamentals.ytdReturn && (
+                      
+                      {assetData.fundamentals.ytdReturn && assetData.fundamentals.ytdReturn !== 0 && (
                         <div>
                           <div className="text-sm text-gray-600">YTD Return</div>
-                          <div className="font-semibold text-gray-900">
-                            {(assetData.fundamentals.ytdReturn * 100).toFixed(2)}%
+                          <div className={`font-semibold ${assetData.fundamentals.ytdReturn > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {assetData.fundamentals.ytdReturn > 0 ? '+' : ''}{(assetData.fundamentals.ytdReturn * 100).toFixed(2)}%
                           </div>
                         </div>
                       )}
-                      {assetData.fundamentals.threeYearAverageReturn && (
+                      
+                      {assetData.fundamentals.threeYearAverageReturn && assetData.fundamentals.threeYearAverageReturn !== 0 && (
                         <div>
                           <div className="text-sm text-gray-600">3-Year Avg Return</div>
-                          <div className="font-semibold text-gray-900">
-                            {(assetData.fundamentals.threeYearAverageReturn * 100).toFixed(2)}%
+                          <div className={`font-semibold ${assetData.fundamentals.threeYearAverageReturn > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {assetData.fundamentals.threeYearAverageReturn > 0 ? '+' : ''}{(assetData.fundamentals.threeYearAverageReturn * 100).toFixed(2)}%
                           </div>
                         </div>
                       )}
-                      {assetData.fundamentals.fiveYearAverageReturn && (
+                      
+                      {assetData.fundamentals.fiveYearAverageReturn && assetData.fundamentals.fiveYearAverageReturn !== 0 && (
                         <div>
                           <div className="text-sm text-gray-600">5-Year Avg Return</div>
-                          <div className="font-semibold text-gray-900">
-                            {(assetData.fundamentals.fiveYearAverageReturn * 100).toFixed(2)}%
+                          <div className={`font-semibold ${assetData.fundamentals.fiveYearAverageReturn > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {assetData.fundamentals.fiveYearAverageReturn > 0 ? '+' : ''}{(assetData.fundamentals.fiveYearAverageReturn * 100).toFixed(2)}%
                           </div>
                         </div>
                       )}
                     </div>
+                    
                     {assetData.fundamentals.longBusinessSummary && (
-                      <div>
+                      <div className="mb-4">
                         <div className="text-sm text-gray-600 mb-2">About This Fund</div>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                          {assetData.fundamentals.longBusinessSummary?.slice(0, 400) || assetData.fundamentals.description?.slice(0, 400)}
-                          {(assetData.fundamentals.longBusinessSummary?.length > 400 || assetData.fundamentals.description?.length > 400) && '...'}
+                          {assetData.fundamentals.longBusinessSummary?.slice(0, 500) || assetData.fundamentals.description?.slice(0, 500)}
+                          {(assetData.fundamentals.longBusinessSummary?.length > 500 || assetData.fundamentals.description?.length > 500) && '...'}
                         </p>
+                      </div>
+                    )}
+                    
+                    {/* Top Holdings */}
+                    {assetData.fundamentals.topHoldings && assetData.fundamentals.topHoldings.length > 0 && (
+                      <div className="mt-4">
+                        <div className="text-sm text-gray-600 mb-3 font-semibold">Top Holdings</div>
+                        <div className="space-y-2">
+                          {assetData.fundamentals.topHoldings.map((holding, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                              <div>
+                                <div className="font-semibold text-gray-900 text-sm">{holding.symbol || holding.name}</div>
+                                {holding.name && holding.symbol && (
+                                  <div className="text-xs text-gray-600">{holding.name}</div>
+                                )}
+                              </div>
+                              <div className="font-semibold text-cyan-600">
+                                {(holding.percentage * 100).toFixed(2)}%
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </>
