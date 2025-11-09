@@ -52,6 +52,9 @@ export default function PortfolioTab() {
   const [selectedRange, setSelectedRange] = useState('6M');
   const [performanceData, setPerformanceData] = useState([]);
   const [fullData] = useState(generatePortfolioData(730)); // Generate 2 years of data
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedHolding, setSelectedHolding] = useState(null);
+  const [showStockDetail, setShowStockDetail] = useState(false);
 
   useEffect(() => {
     loadPortfolio();
