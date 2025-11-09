@@ -367,19 +367,30 @@ async def add_stock_to_portfolio(
         new_cost_basis = old_cost_basis + cost_basis
         new_avg_price = new_cost_basis / new_quantity if new_quantity > 0 else purchase_price
         
-        new_holding['quantity'] = new_quantity
-        new_holding['cost_basis'] = new_cost_basis
-        new_holding['purchase_price'] = new_avg_price  # Average price
-        new_holding['total_value'] = new_quantity * current_price
-        new_holding['unrealized_gain_loss'] = new_holding['total_value'] - new_cost_basis
-        new_holding['unrealized_gain_loss_percentage'] = round(
-            ((new_holding['total_value'] - new_cost_basis) / new_cost_basis * 100), 2
-        ) if new_cost_basis > 0 else 0
-        
-        my_portfolio['holdings'][existing_holding_idx] = new_holding
+        # If quantity becomes 0 or negative, remove the holding
+        if new_quantity <= 0:
+            my_portfolio['holdings'].pop(existing_holding_idx)
+            logger.info(f"Removed {symbol} from portfolio (quantity = 0)")
+        else:
+            new_holding['quantity'] = new_quantity
+            new_holding['cost_basis'] = new_cost_basis
+            new_holding['purchase_price'] = new_avg_price  # Average price
+            new_holding['total_value'] = new_quantity * current_price
+            new_holding['unrealized_gain_loss'] = new_holding['total_value'] - new_cost_basis
+            new_holding['unrealized_gain_loss_percentage'] = round(
+                ((new_holding['total_value'] - new_cost_basis) / new_cost_basis * 100), 2
+            ) if new_cost_basis > 0 else 0
+            
+            my_portfolio['holdings'][existing_holding_idx] = new_holding
     else:
-        # Add new holding
-        my_portfolio['holdings'].append(new_holding)
+        # Add new holding (only if quantity > 0)
+        if quantity > 0:
+            my_portfolio['holdings'].append(new_holding)
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot add stock with 0 or negative quantity"
+            )
     
     # Recalculate portfolio totals
     total_value = sum(h.get('total_value', 0) for h in my_portfolio['holdings'])
