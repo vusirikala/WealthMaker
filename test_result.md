@@ -138,6 +138,21 @@ backend:
         agent: "testing"
         comment: "UPDATED TESTING COMPLETE: ✅ Tested UPDATED simplified initial message (191 chars, under 300 limit). ✅ Initial message now asks only ONE question about main financial goal. ✅ One-by-one question flow working - AI asks single focused follow-up questions. ✅ Context extraction automatically saves retirement goals to liquidity_requirements. ✅ Multi-turn conversations retain context progressively. ✅ System prompt guidance ensures conversational responses without question lists. ✅ Fixed minor backend bugs with None value formatting. 17/18 tests passed (94.4% success rate). Updated chat auto-initiation feature meets all requirements."
 
+  - task: "Update initial message to be simplified and ask one question"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated initial greeting message to be simple and conversational - now asks just ONE opening question about main financial goal. Reduced message length from 375 to 191 characters (under 300 limit). Removed example questions to focus on single clear question."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: ✅ Initial message is 191 characters (under 300 limit). ✅ Asks only ONE question about main financial goal. ✅ Friendly and conversational tone maintained. ✅ Message properly saved to chat_messages. ✅ One-by-one question flow verified - AI asks single focused follow-ups. ✅ Context extraction working automatically. ✅ Multi-turn conversations build context progressively. ✅ System follows 'one question at a time' guidance. All requirements from user feedback successfully implemented."
+
 frontend:
   - task: "Auto-initiate chat conversation in ChatTab component"
     implemented: true
