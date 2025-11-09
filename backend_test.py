@@ -1781,6 +1781,9 @@ print('Empty portfolio created');
         """Test portfolio functionality - updated for bug fix verification"""
         print("\n📊 Testing Portfolio Endpoints...")
         
+        # Run 5-year return calculation fix test (PRIORITY TEST)
+        self.test_5_year_return_calculation_fix()
+        
         # Run comprehensive portfolio accept and load tests
         self.test_portfolio_accept_and_load_functionality()
         
