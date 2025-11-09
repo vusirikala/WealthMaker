@@ -256,26 +256,31 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
       </div>
 
       {/* Chart */}
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={merged_time_series} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+      <div className="h-80 w-full">
+        <ResponsiveContainer width="100%" height="100%" key={chartKey}>
+          <LineChart 
+            data={merged_time_series} 
+            margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 11 }}
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return `${date.getMonth() + 1}/${date.getFullYear().toString().slice(2)}`;
               }}
+              minTickGap={30}
             />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 11 }}
               tickFormatter={(value) => `${value}%`}
               domain={['auto', 'auto']}
+              width={60}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+              wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
               iconType="line"
             />
             <ReferenceLine y={0} stroke="#6b7280" strokeDasharray="3 3" />
@@ -284,9 +289,9 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
               dataKey="portfolio_return"
               name="Your Portfolio"
               stroke="#0891b2"
-              strokeWidth={3}
+              strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 6 }}
+              activeDot={{ r: 5 }}
             />
             <Line
               type="monotone"
@@ -296,7 +301,7 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
-              activeDot={{ r: 6 }}
+              activeDot={{ r: 5 }}
             />
           </LineChart>
         </ResponsiveContainer>
