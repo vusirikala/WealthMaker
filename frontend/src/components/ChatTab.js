@@ -248,6 +248,21 @@ export default function ChatTab({ portfolioId = null }) {
 
   return (
     <div className="clean-card rounded-2xl overflow-hidden shadow-sm" data-testid="chat-interface">
+      {/* Portfolio Context Header */}
+      {portfolioContext && (
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-200 px-6 py-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            <span className="text-sm font-semibold text-gray-900">
+              Chatting about: {portfolioContext.name}
+            </span>
+            {portfolioContext.goal && (
+              <span className="text-xs text-gray-600">• {portfolioContext.goal}</span>
+            )}
+          </div>
+        </div>
+      )}
+      
       {/* Messages Area */}
       <div className="h-[600px] overflow-y-auto p-6 space-y-6 bg-gray-50" data-testid="chat-messages">
         {messages.length === 0 ? (
@@ -256,10 +271,12 @@ export default function ChatTab({ portfolioId = null }) {
               <Bot className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Welcome to Your AI Financial Advisor!
+              {portfolioContext ? `Chat about ${portfolioContext.name}` : 'Welcome to Your AI Financial Advisor!'}
             </h3>
             <p className="text-base text-gray-600 max-w-md mx-auto">
-              Tell me about your investment preferences, risk tolerance, and financial goals.
+              {portfolioContext 
+                ? `Ask me anything about your ${portfolioContext.name} portfolio or request adjustments to your allocations.`
+                : 'Tell me about your investment preferences, risk tolerance, and financial goals.'}
             </p>
           </div>
         ) : (
