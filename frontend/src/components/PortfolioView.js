@@ -272,12 +272,17 @@ export default function PortfolioView({ portfolioId, onChatToggle }) {
                 ))
               ) : hasAllocations ? (
                 portfolio.allocations.map((alloc, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div 
+                    key={idx} 
+                    onClick={() => setShowEditAllocationModal(true)}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors group"
+                  >
                     <div className="font-bold text-gray-900">{alloc.ticker}</div>
-                    <div className="text-right">
+                    <div className="text-right flex items-center gap-2">
                       <div className="font-bold gradient-text">
                         {alloc.allocation_percentage}%
                       </div>
+                      <Edit className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
                 ))
