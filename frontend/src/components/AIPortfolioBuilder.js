@@ -346,6 +346,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                   {riskToleranceOptions.map((option) => (
                     <div key={option.value} className="relative">
                       <button
+                        type="button"
                         onClick={() => setRiskTolerance(option.value)}
                         className={`w-full p-4 rounded-lg border-2 transition-all ${
                           riskTolerance === option.value
@@ -355,7 +356,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                       >
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <span className="text-lg">{option.emoji}</span>
-                          <div className="font-semibold text-gray-900">{option.label}</div>
+                          <div className="font-semibold text-gray-900 text-sm">{option.label.replace(' Risk', '')}</div>
                         </div>
                         <div className="text-xs text-gray-600">{option.description}</div>
                       </button>
@@ -365,6 +366,7 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                             <button
                               type="button"
                               className="absolute top-2 right-2 p-1 hover:bg-purple-100 rounded-full transition-colors"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <HelpCircle className="w-4 h-4 text-purple-600" />
                             </button>
@@ -385,10 +387,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
                                   <span className="text-xs font-semibold text-white">{option.volatility}</span>
                                 </div>
                                 <div className="space-y-1">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-xs text-gray-400">Drawdown Risk:</span>
-                                  </div>
-                                  <p className="text-xs text-gray-400 italic">{option.drawdownRisk}</p>
+                                  <p className="text-xs text-gray-400">Drawdown Risk:</p>
+                                  <p className="text-xs text-gray-300 italic">{option.drawdownRisk}</p>
                                 </div>
                                 <div className="pt-1 border-t border-gray-700">
                                   <p className="text-xs text-gray-400"><span className="font-semibold text-white">Best for:</span> {option.bestFor}</p>
