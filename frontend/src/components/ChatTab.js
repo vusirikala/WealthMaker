@@ -32,6 +32,22 @@ export default function ChatTab({ portfolioId = null }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const loadPortfolioContext = async () => {
+    if (!portfolioId) return;
+    
+    try {
+      const response = await fetch(`${API}/portfolios-v2/${portfolioId}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPortfolioContext(data.portfolio);
+      }
+    } catch (error) {
+      console.error("Error loading portfolio context:", error);
+    }
+  };
+
   const loadChatHistory = async () => {
     try {
       const response = await fetch(`${API}/chat/messages`, {
