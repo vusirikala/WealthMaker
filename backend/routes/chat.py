@@ -6,7 +6,7 @@ import logging
 import uuid
 import json
 import os
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from emergentintegrations.llm.chat import LlmChat, UserMessage, SystemMessage
 from dateutil.relativedelta import relativedelta
 
 from models.user import User
@@ -18,6 +18,10 @@ from services.chat_helpers import (
     analyze_context_completeness,
     generate_smart_question,
     get_default_allocations
+)
+from services.portfolio_context_builder import (
+    build_portfolio_context,
+    build_portfolio_system_message
 )
 
 router = APIRouter(prefix="/chat", tags=["chat"])
