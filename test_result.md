@@ -492,7 +492,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Portfolio Onboarding Enhancement with AI Recommendations"
+    - "AI-Powered Investment Strategy Recommendations"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
