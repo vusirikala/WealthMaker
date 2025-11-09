@@ -147,27 +147,27 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
           {/* All metrics in one line */}
           <div className="flex items-center gap-6">
             {/* Portfolio Return */}
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-600 mb-1">Your Portfolio</span>
-              <div className={`flex items-center gap-2 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                <span className="text-2xl font-bold">
+            <div className="flex flex-col min-w-[140px]">
+              <span className="text-xs text-gray-600 mb-1 whitespace-nowrap">Your Portfolio</span>
+              <div className={`flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                {isPositive ? <TrendingUp className="w-5 h-5 flex-shrink-0" /> : <TrendingDown className="w-5 h-5 flex-shrink-0" />}
+                <span className="text-2xl font-bold whitespace-nowrap">
                   {isPositive ? '+' : ''}{return_percentage.toFixed(2)}%
                 </span>
               </div>
             </div>
 
             {/* Divider */}
-            <div className="h-12 w-px bg-gray-300"></div>
+            <div className="h-12 w-px bg-gray-300 flex-shrink-0"></div>
 
             {/* S&P 500 Return */}
             {sp500_comparison && (
               <>
-                <div className="flex flex-col">
-                  <span className="text-xs text-gray-600 mb-1">S&P 500</span>
-                  <div className={`flex items-center gap-2 ${sp500Return >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
-                    {sp500Return >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                    <span className="text-2xl font-bold">
+                <div className="flex flex-col min-w-[100px]">
+                  <span className="text-xs text-gray-600 mb-1 whitespace-nowrap">S&P 500</span>
+                  <div className={`flex items-center gap-1 ${sp500Return >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
+                    {sp500Return >= 0 ? <TrendingUp className="w-5 h-5 flex-shrink-0" /> : <TrendingDown className="w-5 h-5 flex-shrink-0" />}
+                    <span className="text-2xl font-bold whitespace-nowrap">
                       {sp500Return >= 0 ? '+' : ''}{sp500Return.toFixed(2)}%
                     </span>
                   </div>
