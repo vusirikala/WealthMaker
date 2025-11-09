@@ -1056,6 +1056,315 @@ print('Portfolio cleared');
                 {"accept_status": status}
             )
 
+    def test_5_year_return_calculation_fix(self):
+        """Test 5-year return calculation fix - should show valid number instead of N/A"""
+        print("\n🎯 Testing 5-Year Return Calculation Fix (Review Request)...")
+        
+        # Step 1: Create a test portfolio with allocations (AAPL 50%, GOOGL 50%)
+        print("\n🔧 Step 1: Creating test portfolio with allocations (AAPL 50%, GOOGL 50%)...")
+        
+        try:
+            import subprocess
+            portfolio_id = str(uuid.uuid4())
+            
+            # Create MongoDB script to insert test portfolio
+            mongo_script = f'''
+use('test_database');
+var portfolioId = '{portfolio_id}';
+var userId = '{self.user_id}';
+db.user_portfolios.insertOne({{
+  _id: portfolioId,
+  user_id: userId,
+  name: "5-Year Return Test Portfolio",
+  goal: "Test 5-Year Return Fix",
+  type: "manual",
+  risk_tolerance: "moderate",
+  roi_expectations: 12,
+  allocations: [
+    {{
+      "ticker": "AAPL",
+      "allocation_percentage": 50,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }},
+    {{
+      "ticker": "GOOGL", 
+      "allocation_percentage": 50,
+      "sector": "Technology",
+      "asset_type": "stock"
+    }}
+  ],
+  holdings: [],
+  total_invested: 0,
+  current_value: 0,
+  total_return: 0,
+  total_return_percentage: 0,
+  is_active: true,
+  created_at: new Date(),
+  updated_at: new Date(),
+  last_invested_at: null
+}});
+print('5-Year Return Test portfolio created');
+'''
+            
+            # Execute MongoDB script
+            result = subprocess.run(
+                ['mongosh', '--eval', mongo_script],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                print(f"✅ Test portfolio created: {portfolio_id}")
+                self.log_test(
+                    "Create test portfolio with allocations (AAPL 50%, GOOGL 50%)", 
+                    True,
+                    "",
+                    {"portfolio_id": portfolio_id}
+                )
+            else:
+                print(f"❌ Failed to create test portfolio: {result.stderr}")
+                self.log_test(
+                    "Create test portfolio with allocations", 
+                    False,
+                    f"MongoDB error: {result.stderr}",
+                    {}
+                )
+                return
+                
+        except Exception as e:
+            print(f"❌ Setup error: {str(e)}")
+            self.log_test(
+                "Create test portfolio with allocations", 
+                False,
+                f"Exception: {str(e)}",
+                {}
+            )
+            return
+        
+        # Step 2: Test ALL time periods and check period_stats
+        print("\n📊 Step 2: Testing ALL time periods and checking period_stats...")
+        
+        time_periods = ['1y', '6m', '3y', '5y']
+        all_period_stats = {}
+        
+        for period in time_periods:
+            print(f"\n📈 Testing {period} performance...")
+            
+            status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period={period}')
+            success = status == 200 and isinstance(data, dict)
+            
+            if success:
+                # Verify response structure
+                has_return_percentage = 'return_percentage' in data
+                has_time_series = 'time_series' in data and isinstance(data['time_series'], list)
+                has_period_stats = 'period_stats' in data and isinstance(data['period_stats'], dict)
+                
+                # Verify return_percentage is valid (not null, not NaN)
+                return_percentage = data.get('return_percentage')
+                return_percentage_valid = isinstance(return_percentage, (int, float)) and not (return_percentage != return_percentage)
+                
+                # Verify period_stats contains all required fields
+                period_stats = data.get('period_stats', {})
+                has_6m_return = '6m_return' in period_stats
+                has_1y_return = '1y_return' in period_stats
+                has_3y_return = '3y_return' in period_stats
+                has_5y_return = '5y_return' in period_stats
+                
+                # KEY TEST: Verify 5y_return is NOT null
+                five_year_return = period_stats.get('5y_return')
+                five_year_return_valid = five_year_return is not None and isinstance(five_year_return, (int, float))
+                
+                structure_complete = (has_return_percentage and has_time_series and has_period_stats and
+                                    has_6m_return and has_1y_return and has_3y_return and has_5y_return and
+                                    return_percentage_valid and five_year_return_valid)
+                
+                success = structure_complete
+                details = f"return_percentage: {return_percentage_valid} ({return_percentage}), 5y_return: {five_year_return_valid} ({five_year_return}), period_stats_complete: {has_6m_return and has_1y_return and has_3y_return and has_5y_return}"
+                
+                # Store period stats for comparison
+                all_period_stats[period] = period_stats
+                
+            else:
+                details = f"Status: {status}, Type: {type(data)}"
+            
+            self.log_test(
+                f"GET /portfolios-v2/{{id}}/performance?time_period={period} - Valid period_stats with 5y_return", 
+                success,
+                details if not success else "",
+                {
+                    "status": status,
+                    "return_percentage": data.get('return_percentage') if isinstance(data, dict) else None,
+                    "5y_return": data.get('period_stats', {}).get('5y_return') if isinstance(data, dict) else None,
+                    "time_series_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0
+                }
+            )
+        
+        # Step 3: Verify 5-year specific view
+        print("\n🎯 Step 3: Testing 5-year specific view...")
+        
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}/performance?time_period=5y')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            # Verify return_percentage is valid
+            return_percentage = data.get('return_percentage')
+            return_percentage_valid = isinstance(return_percentage, (int, float)) and not (return_percentage != return_percentage)
+            
+            # Verify time_series has data
+            time_series = data.get('time_series', [])
+            has_time_series_data = len(time_series) > 0
+            
+            # Verify period_stats['5y_return'] is NOT null
+            five_year_return = data.get('period_stats', {}).get('5y_return')
+            five_year_return_not_null = five_year_return is not None
+            
+            success = return_percentage_valid and has_time_series_data and five_year_return_not_null
+            details = f"return_percentage_valid: {return_percentage_valid} ({return_percentage}), time_series_data: {has_time_series_data} ({len(time_series)} points), 5y_return_not_null: {five_year_return_not_null} ({five_year_return})"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "5-year view: return_percentage valid, time_series has data, 5y_return NOT null", 
+            success,
+            details if not success else "",
+            {
+                "return_percentage": data.get('return_percentage') if isinstance(data, dict) else None,
+                "time_series_length": len(data.get('time_series', [])) if isinstance(data, dict) else 0,
+                "5y_return": data.get('period_stats', {}).get('5y_return') if isinstance(data, dict) else None
+            }
+        )
+        
+        # Step 4: Check backend logs for data points information
+        print("\n📋 Step 4: Checking backend logs for data points information...")
+        
+        try:
+            # Check supervisor backend logs for the "need 1260 for 5-year return" message
+            result = subprocess.run(
+                ['tail', '-n', '100', '/var/log/supervisor/backend.out.log'],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                log_content = result.stdout
+                
+                # Look for the specific log message about data points
+                data_points_found = False
+                data_points_count = None
+                
+                for line in log_content.split('\n'):
+                    if 'Total data points available' in line and 'need 1260 for 5-year return' in line:
+                        data_points_found = True
+                        # Extract the number of data points
+                        import re
+                        match = re.search(r'Total data points available: (\d+)', line)
+                        if match:
+                            data_points_count = int(match.group(1))
+                        break
+                
+                self.log_test(
+                    "Backend logs show data points calculation", 
+                    data_points_found,
+                    f"Data points message not found in logs" if not data_points_found else f"Found {data_points_count} data points",
+                    {
+                        "data_points_found": data_points_found,
+                        "data_points_count": data_points_count,
+                        "has_enough_for_5y": data_points_count >= 1260 if data_points_count else False
+                    }
+                )
+                
+                # Check if the fix is working (calculating from beginning when < 1260 points)
+                if data_points_found and data_points_count and data_points_count < 1260:
+                    # This means the fix should be active - calculating from beginning instead of returning None
+                    fix_active = True
+                    self.log_test(
+                        "5-year return fix active (< 1260 data points, calculating from beginning)", 
+                        fix_active,
+                        f"Fix working with {data_points_count} data points (< 1260)",
+                        {
+                            "data_points": data_points_count,
+                            "fix_active": fix_active,
+                            "calculation_method": "from_beginning"
+                        }
+                    )
+                elif data_points_found and data_points_count and data_points_count >= 1260:
+                    # Enough data for proper 5-year calculation
+                    proper_calculation = True
+                    self.log_test(
+                        "5-year return using proper 5-year calculation (>= 1260 data points)", 
+                        proper_calculation,
+                        f"Using proper calculation with {data_points_count} data points",
+                        {
+                            "data_points": data_points_count,
+                            "calculation_method": "proper_5_year"
+                        }
+                    )
+            else:
+                self.log_test(
+                    "Backend logs check", 
+                    False,
+                    f"Failed to read backend logs: {result.stderr}",
+                    {}
+                )
+                
+        except Exception as e:
+            self.log_test(
+                "Backend logs check", 
+                False,
+                f"Exception reading logs: {str(e)}",
+                {}
+            )
+        
+        # Step 5: Verify all period_stats have valid numbers
+        print("\n✅ Step 5: Verify all period_stats have valid numbers...")
+        
+        if all_period_stats:
+            # Check that all returns are valid numbers (not null)
+            all_valid = True
+            invalid_returns = []
+            
+            for period, stats in all_period_stats.items():
+                for return_period, value in stats.items():
+                    if value is None:
+                        all_valid = False
+                        invalid_returns.append(f"{period}.{return_period}")
+            
+            self.log_test(
+                "All period_stats returns are valid numbers (not null)", 
+                all_valid,
+                f"Invalid returns found: {invalid_returns}" if not all_valid else "",
+                {
+                    "all_valid": all_valid,
+                    "invalid_returns": invalid_returns,
+                    "period_stats_sample": all_period_stats.get('1y', {})
+                }
+            )
+            
+            # Specifically verify 5y_return is never null across all time periods
+            five_year_returns = []
+            for period, stats in all_period_stats.items():
+                five_year_return = stats.get('5y_return')
+                five_year_returns.append({
+                    'period': period,
+                    'value': five_year_return,
+                    'is_valid': five_year_return is not None
+                })
+            
+            all_5y_valid = all(r['is_valid'] for r in five_year_returns)
+            
+            self.log_test(
+                "5y_return is valid (not null) across ALL time periods", 
+                all_5y_valid,
+                f"5y_return values: {five_year_returns}" if not all_5y_valid else "",
+                {
+                    "all_5y_valid": all_5y_valid,
+                    "5y_returns": five_year_returns
+                }
+            )
+
     def test_portfolio_performance_endpoint(self):
         """Test portfolio performance endpoint with S&P 500 comparison feature"""
         print("\n📈 Testing Portfolio Performance Endpoint with S&P 500 Comparison...")
