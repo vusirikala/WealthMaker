@@ -91,7 +91,13 @@ export default function OnboardingForm({ onComplete }) {
 
       // Check if age is reasonable (not more than 120 years)
       if (age > 120) {
-        toast.error("Please enter a valid date of birth");
+        toast.error("Please enter a valid date of birth. Age cannot exceed 120 years.");
+        return false;
+      }
+      
+      // Additional check for negative age (shouldn't happen but just in case)
+      if (age < 0) {
+        toast.error("Date of birth cannot be in the future");
         return false;
       }
     }
