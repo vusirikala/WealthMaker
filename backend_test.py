@@ -1585,6 +1585,357 @@ print('Portfolio cleared');
             data
         )
 
+    def test_multi_portfolio_management_system(self):
+        """Test comprehensive multi-portfolio management system as per review request"""
+        print("\n🏦 Testing Multi-Portfolio Management System (Review Request)...")
+        
+        # Test 1: Portfolio CRUD Operations
+        print("\n📊 Test 1: Portfolio CRUD Operations...")
+        
+        # Test 1a: Create Manual Portfolio
+        create_request = {
+            "name": "Test Growth Portfolio",
+            "goal": "Long-term wealth building",
+            "type": "manual",
+            "risk_tolerance": "medium",
+            "roi_expectations": 12.0,
+            "allocations": [
+                {"ticker": "AAPL", "allocation_percentage": 40, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "GOOGL", "allocation_percentage": 35, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "BND", "allocation_percentage": 25, "sector": "Bonds", "asset_type": "bond"}
+            ]
+        }
+        
+        status, data = self.make_request('POST', 'portfolios-v2/create', create_request)
+        success = status == 200 and data.get('success') == True and 'portfolio' in data
+        
+        if success:
+            created_portfolio = data['portfolio']
+            portfolio_id = created_portfolio.get('portfolio_id')
+            
+            # Verify portfolio structure
+            has_name = created_portfolio.get('name') == "Test Growth Portfolio"
+            has_goal = created_portfolio.get('goal') == "Long-term wealth building"
+            has_risk = created_portfolio.get('risk_tolerance') == "medium"
+            has_roi = created_portfolio.get('roi_expectations') == 12.0
+            has_allocations = len(created_portfolio.get('allocations', [])) == 3
+            
+            success = has_name and has_goal and has_risk and has_roi and has_allocations and portfolio_id
+            details = f"Name: {has_name}, Goal: {has_goal}, Risk: {has_risk}, ROI: {has_roi}, Allocations: {has_allocations}, ID: {bool(portfolio_id)}"
+        else:
+            details = f"Status: {status}, Response: {data}"
+            portfolio_id = None
+        
+        self.log_test(
+            "POST /api/portfolios-v2/create (manual portfolio)", 
+            success,
+            details if not success else "",
+            {
+                "portfolio_id": portfolio_id,
+                "allocations_count": len(created_portfolio.get('allocations', [])) if success else 0
+            }
+        )
+        
+        if not success or not portfolio_id:
+            print("❌ Portfolio creation failed, skipping remaining tests")
+            return
+        
+        # Test 1b: List All Portfolios
+        status, data = self.make_request('GET', 'portfolios-v2/list')
+        success = status == 200 and 'portfolios' in data and 'count' in data
+        
+        if success:
+            portfolios = data.get('portfolios', [])
+            count = data.get('count', 0)
+            found_portfolio = any(p.get('portfolio_id') == portfolio_id for p in portfolios)
+            
+            success = count > 0 and found_portfolio
+            details = f"Count: {count}, Found created portfolio: {found_portfolio}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            "GET /api/portfolios-v2/list", 
+            success,
+            details if not success else "",
+            {"portfolio_count": data.get('count', 0) if isinstance(data, dict) else 0}
+        )
+        
+        # Test 1c: Get Specific Portfolio
+        status, data = self.make_request('GET', f'portfolios-v2/{portfolio_id}')
+        success = status == 200 and 'portfolio' in data
+        
+        if success:
+            portfolio = data['portfolio']
+            correct_id = portfolio.get('portfolio_id') == portfolio_id
+            correct_name = portfolio.get('name') == "Test Growth Portfolio"
+            has_allocations = len(portfolio.get('allocations', [])) == 3
+            
+            success = correct_id and correct_name and has_allocations
+            details = f"ID match: {correct_id}, Name match: {correct_name}, Allocations: {has_allocations}"
+        else:
+            details = f"Status: {status}"
+        
+        self.log_test(
+            f"GET /api/portfolios-v2/{portfolio_id}", 
+            success,
+            details if not success else "",
+            {"portfolio_found": success}
+        )
+        
+        # Test 1d: Update Portfolio
+        update_request = {
+            "name": "Updated Growth Portfolio",
+            "goal": "Updated goal",
+            "type": "manual",
+            "risk_tolerance": "high",
+            "roi_expectations": 15.0,
+            "allocations": [
+                {"ticker": "AAPL", "allocation_percentage": 50, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "MSFT", "allocation_percentage": 30, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "BND", "allocation_percentage": 20, "sector": "Bonds", "asset_type": "bond"}
+            ]
+        }
+        
+        status, data = self.make_request('PUT', f'portfolios-v2/{portfolio_id}', update_request)
+        success = status == 200 and data.get('success') == True
+        
+        self.log_test(
+            f"PUT /api/portfolios-v2/{portfolio_id}", 
+            success,
+            f"Status: {status}, Response: {data}" if not success else "",
+            {"updated": success}
+        )
+        
+        # Test 2: Investment Feature
+        print("\n💰 Test 2: Investment Feature...")
+        
+        # First, create a fresh portfolio with specific allocations for investment testing
+        investment_portfolio_request = {
+            "name": "Investment Test Portfolio",
+            "goal": "Investment testing",
+            "type": "manual",
+            "risk_tolerance": "medium",
+            "roi_expectations": 10.0,
+            "allocations": [
+                {"ticker": "AAPL", "allocation_percentage": 40, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "GOOGL", "allocation_percentage": 35, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "BND", "allocation_percentage": 25, "sector": "Bonds", "asset_type": "bond"}
+            ]
+        }
+        
+        status, data = self.make_request('POST', 'portfolios-v2/create', investment_portfolio_request)
+        if status == 200 and data.get('success'):
+            investment_portfolio_id = data['portfolio']['portfolio_id']
+            
+            # Test 2a: Invest $10,000 in Portfolio
+            investment_request = {"amount": 10000.0}
+            
+            status, data = self.make_request('POST', f'portfolios-v2/{investment_portfolio_id}/invest', investment_request)
+            success = status == 200 and data.get('success') == True
+            
+            if success:
+                investments = data.get('investments', [])
+                portfolio_summary = data.get('portfolio_summary', {})
+                
+                # Verify investment calculations
+                has_three_investments = len(investments) == 3
+                total_invested = portfolio_summary.get('total_invested', 0)
+                investment_close_to_10k = abs(total_invested - 10000) < 100  # Allow for rounding
+                
+                # Verify allocations match expected percentages
+                aapl_investment = next((inv for inv in investments if inv['ticker'] == 'AAPL'), None)
+                googl_investment = next((inv for inv in investments if inv['ticker'] == 'GOOGL'), None)
+                bnd_investment = next((inv for inv in investments if inv['ticker'] == 'BND'), None)
+                
+                aapl_amount_correct = aapl_investment and abs(aapl_investment['amount_allocated'] - 4000) < 100  # 40% of $10k
+                googl_amount_correct = googl_investment and abs(googl_investment['amount_allocated'] - 3500) < 100  # 35% of $10k
+                bnd_amount_correct = bnd_investment and abs(bnd_investment['amount_allocated'] - 2500) < 100  # 25% of $10k
+                
+                # Verify shares were calculated
+                has_shares = all(inv.get('shares_purchased', 0) > 0 for inv in investments)
+                has_prices = all(inv.get('current_price', 0) > 0 for inv in investments)
+                
+                success = (has_three_investments and investment_close_to_10k and 
+                          aapl_amount_correct and googl_amount_correct and bnd_amount_correct and
+                          has_shares and has_prices)
+                
+                details = f"Investments: {len(investments)}, Total: ${total_invested:.2f}, AAPL: {aapl_amount_correct}, GOOGL: {googl_amount_correct}, BND: {bnd_amount_correct}, Shares: {has_shares}, Prices: {has_prices}"
+            else:
+                details = f"Status: {status}, Response: {data}"
+            
+            self.log_test(
+                f"POST /api/portfolios-v2/{investment_portfolio_id}/invest ($10,000)", 
+                success,
+                details if not success else "",
+                {
+                    "total_invested": portfolio_summary.get('total_invested', 0) if success else 0,
+                    "investments_count": len(investments) if success else 0,
+                    "aapl_allocation": aapl_investment.get('amount_allocated', 0) if success and aapl_investment else 0
+                }
+            )
+            
+            # Test 2b: Verify Holdings Created
+            if success:
+                status, data = self.make_request('GET', f'portfolios-v2/{investment_portfolio_id}')
+                if status == 200 and 'portfolio' in data:
+                    portfolio = data['portfolio']
+                    holdings = portfolio.get('holdings', [])
+                    
+                    has_holdings = len(holdings) == 3
+                    holdings_have_shares = all(h.get('shares', 0) > 0 for h in holdings)
+                    holdings_have_cost_basis = all(h.get('cost_basis', 0) > 0 for h in holdings)
+                    portfolio_totals_updated = portfolio.get('total_invested', 0) > 0
+                    
+                    success = has_holdings and holdings_have_shares and holdings_have_cost_basis and portfolio_totals_updated
+                    details = f"Holdings: {len(holdings)}, Shares: {holdings_have_shares}, Cost basis: {holdings_have_cost_basis}, Totals: {portfolio_totals_updated}"
+                else:
+                    success = False
+                    details = f"Failed to fetch portfolio: Status {status}"
+                
+                self.log_test(
+                    "Holdings created with correct shares and cost_basis", 
+                    success,
+                    details if not success else "",
+                    {
+                        "holdings_count": len(holdings) if success else 0,
+                        "total_invested": portfolio.get('total_invested', 0) if success else 0
+                    }
+                )
+        else:
+            self.log_test(
+                "Create investment test portfolio", 
+                False,
+                f"Failed to create portfolio for investment testing: Status {status}",
+                {}
+            )
+        
+        # Test 3: AI Portfolio Generation
+        print("\n🤖 Test 3: AI Portfolio Generation...")
+        
+        ai_portfolio_request = {
+            "portfolio_name": "Test Growth Portfolio",
+            "goal": "Long-term wealth building",
+            "risk_tolerance": "medium",
+            "investment_amount": 50000,
+            "time_horizon": "5-10",
+            "roi_expectations": 12,
+            "sector_preferences": "Technology and Healthcare focus"
+        }
+        
+        status, data = self.make_request('POST', 'chat/generate-portfolio', ai_portfolio_request)
+        success = status == 200 and data.get('success') == True and 'portfolio_suggestion' in data
+        
+        if success:
+            portfolio_suggestion = data['portfolio_suggestion']
+            has_reasoning = 'reasoning' in portfolio_suggestion and len(portfolio_suggestion['reasoning']) > 10
+            has_allocations = 'allocations' in portfolio_suggestion and len(portfolio_suggestion['allocations']) > 0
+            
+            # Verify allocations sum to 100%
+            allocations = portfolio_suggestion.get('allocations', [])
+            total_allocation = sum(alloc.get('allocation_percentage', 0) for alloc in allocations)
+            allocations_sum_to_100 = abs(total_allocation - 100) < 1  # Allow small rounding errors
+            
+            # Verify ticker symbols are valid (basic check)
+            valid_tickers = all(
+                isinstance(alloc.get('ticker'), str) and 
+                len(alloc.get('ticker', '')) > 0 and
+                alloc.get('ticker', '').isupper()
+                for alloc in allocations
+            )
+            
+            success = has_reasoning and has_allocations and allocations_sum_to_100 and valid_tickers
+            details = f"Reasoning: {has_reasoning}, Allocations: {len(allocations)}, Sum to 100%: {allocations_sum_to_100} (total: {total_allocation}%), Valid tickers: {valid_tickers}"
+        else:
+            details = f"Status: {status}, Response: {data}"
+        
+        self.log_test(
+            "POST /api/chat/generate-portfolio", 
+            success,
+            details if not success else "",
+            {
+                "has_portfolio_suggestion": 'portfolio_suggestion' in data if isinstance(data, dict) else False,
+                "allocations_count": len(portfolio_suggestion.get('allocations', [])) if success else 0,
+                "total_allocation": total_allocation if success else 0
+            }
+        )
+        
+        # Test 4: Allocation Updates
+        print("\n📊 Test 4: Allocation Updates...")
+        
+        # Test 4a: Valid allocation update (sums to 100%)
+        valid_allocation_update = {
+            "allocations": [
+                {"ticker": "AAPL", "allocation_percentage": 45, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "MSFT", "allocation_percentage": 35, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "BND", "allocation_percentage": 20, "sector": "Bonds", "asset_type": "bond"}
+            ]
+        }
+        
+        status, data = self.make_request('PUT', f'portfolios-v2/{portfolio_id}/allocations', valid_allocation_update)
+        success = status == 200 and data.get('success') == True
+        
+        self.log_test(
+            f"PUT /api/portfolios-v2/{portfolio_id}/allocations (valid - sums to 100%)", 
+            success,
+            f"Status: {status}, Response: {data}" if not success else "",
+            {"allocation_update_success": success}
+        )
+        
+        # Test 4b: Invalid allocation update (doesn't sum to 100%)
+        invalid_allocation_update = {
+            "allocations": [
+                {"ticker": "AAPL", "allocation_percentage": 45, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "MSFT", "allocation_percentage": 35, "sector": "Technology", "asset_type": "stock"},
+                {"ticker": "BND", "allocation_percentage": 30, "sector": "Bonds", "asset_type": "bond"}  # Total = 110%
+            ]
+        }
+        
+        status, data = self.make_request('PUT', f'portfolios-v2/{portfolio_id}/allocations', invalid_allocation_update)
+        success = status == 400  # Should return 400 Bad Request
+        
+        if success:
+            error_message = data.get('detail', '') if isinstance(data, dict) else str(data)
+            mentions_100_percent = '100' in error_message
+            success = mentions_100_percent
+            details = f"Error message mentions 100%: {mentions_100_percent}, Message: {error_message}"
+        else:
+            details = f"Expected 400, got {status}"
+        
+        self.log_test(
+            f"PUT /api/portfolios-v2/{portfolio_id}/allocations (invalid - sums to 110%)", 
+            success,
+            details if not success else "",
+            {"proper_validation": success}
+        )
+        
+        # Test 5: Delete Portfolio (Soft Delete)
+        print("\n🗑️ Test 5: Delete Portfolio...")
+        
+        status, data = self.make_request('DELETE', f'portfolios-v2/{portfolio_id}')
+        success = status == 200 and data.get('success') == True
+        
+        self.log_test(
+            f"DELETE /api/portfolios-v2/{portfolio_id} (soft delete)", 
+            success,
+            f"Status: {status}, Response: {data}" if not success else "",
+            {"deleted": success}
+        )
+        
+        # Verify portfolio is no longer in list (soft deleted)
+        if success:
+            status, data = self.make_request('GET', 'portfolios-v2/list')
+            if status == 200 and 'portfolios' in data:
+                portfolios = data.get('portfolios', [])
+                portfolio_not_in_list = not any(p.get('portfolio_id') == portfolio_id for p in portfolios)
+                
+                self.log_test(
+                    "Deleted portfolio not in list (soft delete verified)", 
+                    portfolio_not_in_list,
+                    f"Portfolio still found in list" if not portfolio_not_in_list else "",
+                    {"soft_delete_working": portfolio_not_in_list}
+                )
+
     def run_all_tests(self):
         """Run comprehensive test suite"""
         print("🚀 Starting SmartFolio Backend API Tests")
