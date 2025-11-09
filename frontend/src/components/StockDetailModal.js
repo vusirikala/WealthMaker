@@ -182,39 +182,120 @@ export default function StockDetailModal({ symbol, holding, isOpen, onClose }) {
               </div>
             </div>
 
-            {/* Company Info */}
+            {/* Asset-Type Specific Information */}
             {assetData?.fundamentals && (
               <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Company Information</h3>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <div className="text-sm text-gray-600">Sector</div>
-                    <div className="font-semibold text-gray-900">{assetData.fundamentals.sector}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Industry</div>
-                    <div className="font-semibold text-gray-900">{assetData.fundamentals.industry}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Market Cap</div>
-                    <div className="font-semibold text-gray-900">
-                      ${(assetData.fundamentals.marketCap / 1e9).toFixed(2)}B
+                {/* For Regular Stocks - Show Company Info */}
+                {assetData.assetType === 'stock' && assetData.fundamentals.employees && (
+                  <>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Company Information</h3>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <div className="text-sm text-gray-600">Sector</div>
+                        <div className="font-semibold text-gray-900">{assetData.fundamentals.sector || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Industry</div>
+                        <div className="font-semibold text-gray-900">{assetData.fundamentals.industry || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Market Cap</div>
+                        <div className="font-semibold text-gray-900">
+                          {assetData.fundamentals.marketCap ? `$${(assetData.fundamentals.marketCap / 1e9).toFixed(2)}B` : 'N/A'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Employees</div>
+                        <div className="font-semibold text-gray-900">
+                          {assetData.fundamentals.employees?.toLocaleString() || 'N/A'}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">Employees</div>
-                    <div className="font-semibold text-gray-900">
-                      {assetData.fundamentals.employees?.toLocaleString() || 'N/A'}
+                    {assetData.fundamentals.description && (
+                      <div>
+                        <div className="text-sm text-gray-600 mb-2">About</div>
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                          {assetData.fundamentals.description.slice(0, 300)}...
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* For ETFs/Index Funds - Show Fund Info */}
+                {(assetData.assetType === 'etf' || assetData.assetType === 'fund' || !assetData.fundamentals.employees) && (
+                  <>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">
+                      {assetData.assetType === 'bond' ? 'Bond Fund Information' : 'Fund Information'}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <div className="text-sm text-gray-600">Fund Type</div>
+                        <div className="font-semibold text-gray-900">
+                          {assetData.fundamentals.category || assetData.fundamentals.quoteType || assetData.assetType?.toUpperCase() || 'N/A'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Total Assets</div>
+                        <div className="font-semibold text-gray-900">
+                          {assetData.fundamentals.totalAssets 
+                            ? `$${(assetData.fundamentals.totalAssets / 1e9).toFixed(2)}B` 
+                            : assetData.fundamentals.marketCap 
+                            ? `$${(assetData.fundamentals.marketCap / 1e9).toFixed(2)}B`
+                            : 'N/A'}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Expense Ratio</div>
+                        <div className="font-semibold text-gray-900">
+                          {assetData.fundamentals.expenseRatio 
+                            ? `${(assetData.fundamentals.expenseRatio * 100).toFixed(2)}%` 
+                            : 'N/A'}
+                        </div>
+                      </div>
+                      {assetData.assetType === 'bond' && assetData.fundamentals.yield && (
+                        <div>
+                          <div className="text-sm text-gray-600">Yield</div>
+                          <div className="font-semibold text-gray-900">
+                            {(assetData.fundamentals.yield * 100).toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
+                      {assetData.fundamentals.ytdReturn && (
+                        <div>
+                          <div className="text-sm text-gray-600">YTD Return</div>
+                          <div className="font-semibold text-gray-900">
+                            {(assetData.fundamentals.ytdReturn * 100).toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
+                      {assetData.fundamentals.threeYearAverageReturn && (
+                        <div>
+                          <div className="text-sm text-gray-600">3-Year Avg Return</div>
+                          <div className="font-semibold text-gray-900">
+                            {(assetData.fundamentals.threeYearAverageReturn * 100).toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
+                      {assetData.fundamentals.fiveYearAverageReturn && (
+                        <div>
+                          <div className="text-sm text-gray-600">5-Year Avg Return</div>
+                          <div className="font-semibold text-gray-900">
+                            {(assetData.fundamentals.fiveYearAverageReturn * 100).toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </div>
-                {assetData.fundamentals.description && (
-                  <div>
-                    <div className="text-sm text-gray-600 mb-2">About</div>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      {assetData.fundamentals.description.slice(0, 300)}...
-                    </p>
-                  </div>
+                    {assetData.fundamentals.longBusinessSummary && (
+                      <div>
+                        <div className="text-sm text-gray-600 mb-2">About This Fund</div>
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                          {assetData.fundamentals.longBusinessSummary?.slice(0, 400) || assetData.fundamentals.description?.slice(0, 400)}
+                          {(assetData.fundamentals.longBusinessSummary?.length > 400 || assetData.fundamentals.description?.length > 400) && '...'}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
