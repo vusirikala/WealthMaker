@@ -218,7 +218,7 @@ def calculate_portfolio_historical_returns(
         })
     
     # Calculate period returns
-    current_return = float(returns.iloc[-1])
+    current_return = float(portfolio_returns_display.iloc[-1])
     
     period_stats = {}
     
