@@ -212,10 +212,19 @@ async def calculate_portfolio_historical_returns(
             display_start_date = display_start_date.replace(tzinfo=None)
     
     display_mask = df.index >= display_start_date
-    portfolio_returns_display = portfolio_returns[display_mask]
+    portfolio_returns_display = portfolio_returns[display_mask].copy()
     
     if sp500_returns is not None:
-        sp500_returns_display = sp500_returns[display_mask]
+        sp500_returns_display = sp500_returns[display_mask].copy()
+    
+    # Recalibrate returns to start from 0% at the beginning of the selected period
+    if len(portfolio_returns_display) > 0:
+        start_return = portfolio_returns_display.iloc[0]
+        portfolio_returns_display = portfolio_returns_display - start_return
+    
+    if sp500_returns is not None and len(sp500_returns_display) > 0:
+        start_sp500_return = sp500_returns_display.iloc[0]
+        sp500_returns_display = sp500_returns_display - start_sp500_return
     
     # Build time series for charting
     time_series = []
@@ -225,8 +234,8 @@ async def calculate_portfolio_historical_returns(
             'return_percentage': round(float(return_pct), 2)
         })
     
-    # Calculate period returns
-    current_return = float(portfolio_returns_display.iloc[-1])
+    # Calculate period returns (now this is the actual return for the selected period)
+    current_return = float(portfolio_returns_display.iloc[-1]) if len(portfolio_returns_display) > 0 else 0
     
     period_stats = {}
     
