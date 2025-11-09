@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, TrendingUp, TrendingDown, Calendar, DollarSign, Newspaper, BarChart3 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { toast } from "sonner";
+import InfoTooltip from "./InfoTooltip";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
