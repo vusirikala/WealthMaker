@@ -39,7 +39,7 @@ export default function MultiPortfolioDashboard() {
       {/* Left Sidebar - Portfolio List */}
       <PortfolioSidebar
         selectedPortfolioId={selectedPortfolioId}
-        onSelectPortfolio={setSelectedPortfolioId}
+        onSelectPortfolio={handlePortfolioSelect}
         onAddPortfolio={() => setShowAddModal(true)}
       />
 
