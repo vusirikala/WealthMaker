@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-export default function ChatTab({ portfolioId = null }) {
+export default function ChatTab({ portfolioId = null, isVisible = true }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,20 +18,26 @@ export default function ChatTab({ portfolioId = null }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Clear messages when portfolio changes to avoid showing old messages
-    setMessages([]);
-    setIsLoadingHistory(true);
+    // Clear messages when portfolio changes or chat becomes visible
+    // This ensures fresh data when reopening the chat
+    console.log(`[ChatTab] useEffect triggered - portfolioId: ${portfolioId}, isVisible: ${isVisible}`);
     
-    // Load chat history for this specific portfolio
-    loadChatHistory();
-    
-    // Load portfolio context if portfolioId is provided
-    if (portfolioId) {
-      loadPortfolioContext();
-    } else {
-      setPortfolioContext(null);
+    if (isVisible) {
+      console.log(`[ChatTab] Clearing messages and reloading for portfolio: ${portfolioId || 'global'}`);
+      setMessages([]);
+      setIsLoadingHistory(true);
+      
+      // Load chat history for this specific portfolio
+      loadChatHistory();
+      
+      // Load portfolio context if portfolioId is provided
+      if (portfolioId) {
+        loadPortfolioContext();
+      } else {
+        setPortfolioContext(null);
+      }
     }
-  }, [portfolioId]);
+  }, [portfolioId, isVisible]);
 
   useEffect(() => {
     scrollToBottom();
@@ -64,14 +70,16 @@ export default function ChatTab({ portfolioId = null }) {
         ? `${API}/chat/messages?portfolio_id=${portfolioId}`
         : `${API}/chat/messages`;
       
-      console.log(`Loading chat history for portfolio: ${portfolioId || 'global'}`);
+      console.log(`[ChatTab] Loading chat history for portfolio: ${portfolioId || 'global'}`);
+      console.log(`[ChatTab] Request URL: ${url}`);
       
       const response = await fetch(url, {
         credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(`Loaded ${data.length} messages for portfolio: ${portfolioId || 'global'}`);
+        console.log(`[ChatTab] Loaded ${data.length} messages for portfolio: ${portfolioId || 'global'}`);
+        console.log(`[ChatTab] First message (if any):`, data[0]);
         setMessages(data);
         
         // If no messages, try to initialize chat with AI greeting
