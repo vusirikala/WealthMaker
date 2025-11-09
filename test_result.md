@@ -492,7 +492,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Add Investment Strategies to Portfolio Creation with Help Tooltips"
+    - "Portfolio Onboarding Enhancement with AI Recommendations"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
