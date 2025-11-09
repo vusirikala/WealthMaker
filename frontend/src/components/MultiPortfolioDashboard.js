@@ -86,7 +86,6 @@ export default function MultiPortfolioDashboard() {
           </div>
         </>
       )}
-    </div>
 
       {/* Modals */}
       <AddPortfolioModal
