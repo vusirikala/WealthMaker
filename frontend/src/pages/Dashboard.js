@@ -175,7 +175,7 @@ export default function Dashboard({ user, setIsAuthenticated }) {
         {currentView === "settings" && <SettingsPage />}
         {currentView === "dashboard" && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-white border border-gray-200 w-full sm:w-auto grid grid-cols-3 mb-8 p-1 rounded-xl shadow-sm">
+            <TabsList className="bg-white border border-gray-200 w-full sm:w-auto grid grid-cols-4 mb-8 p-1 rounded-xl shadow-sm">
               <TabsTrigger
                 value="chat"
                 data-testid="tab-chat"
@@ -193,6 +193,14 @@ export default function Dashboard({ user, setIsAuthenticated }) {
                 <span className="hidden sm:inline">Portfolio</span>
               </TabsTrigger>
               <TabsTrigger
+                value="watchlist"
+                data-testid="tab-watchlist"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Watchlist</span>
+              </TabsTrigger>
+              <TabsTrigger
                 value="news"
                 data-testid="tab-news"
                 className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-md smooth-transition font-semibold text-gray-600"
@@ -208,6 +216,10 @@ export default function Dashboard({ user, setIsAuthenticated }) {
 
             <TabsContent value="portfolio" className="mt-0">
               <PortfolioTab />
+            </TabsContent>
+
+            <TabsContent value="watchlist" className="mt-0">
+              <WatchlistTab />
             </TabsContent>
 
             <TabsContent value="news" className="mt-0">
