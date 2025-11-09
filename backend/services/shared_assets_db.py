@@ -96,8 +96,8 @@ class SharedAssetsService:
             if hist.empty:
                 return None
             
-            # Determine asset type
-            asset_type = self._get_asset_type(symbol)
+            # Determine asset type (pass info for better detection)
+            asset_type = self._get_asset_type(symbol, info)
             
             # Build complete asset structure
             asset_data = {
