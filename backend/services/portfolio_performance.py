@@ -223,22 +223,22 @@ def calculate_portfolio_historical_returns(
     period_stats = {}
     
     # 6 month return
-    if len(returns) >= 126:  # ~6 months of trading days
-        six_month_return = float(returns.iloc[-1] - returns.iloc[-126])
+    if len(portfolio_returns) >= 126:  # ~6 months of trading days
+        six_month_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-126])
         period_stats['6m_return'] = round(six_month_return, 2)
     else:
         period_stats['6m_return'] = round(current_return, 2)
     
     # 1 year return
-    if len(returns) >= 252:  # ~1 year of trading days
-        one_year_return = float(returns.iloc[-1] - returns.iloc[-252])
+    if len(portfolio_returns) >= 252:  # ~1 year of trading days
+        one_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-252])
         period_stats['1y_return'] = round(one_year_return, 2)
     else:
         period_stats['1y_return'] = round(current_return, 2)
     
     # 3 year return
-    if len(returns) >= 756:  # ~3 years of trading days
-        three_year_return = float(returns.iloc[-1] - returns.iloc[-756])
+    if len(portfolio_returns) >= 756:  # ~3 years of trading days
+        three_year_return = float(portfolio_returns.iloc[-1] - portfolio_returns.iloc[-756])
         period_stats['3y_return'] = round(three_year_return, 2)
     else:
         period_stats['3y_return'] = None
