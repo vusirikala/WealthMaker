@@ -1116,6 +1116,173 @@ print('Portfolio cleared');
                 data
             )
 
+    def test_stock_detail_auto_initialization(self):
+        """Test stock detail auto-initialization fix as per review request"""
+        print("\n🔧 Testing Stock Detail Auto-Initialization Fix...")
+        
+        # Test Scenario 1: Stock NOT in Database (should auto-initialize)
+        print("\n📊 Test Scenario 1: Stock NOT in Database (Auto-Initialize)...")
+        
+        # Test with NVDA (likely not in database)
+        status, data = self.make_request('GET', 'data/asset/NVDA')
+        success = status == 200 and isinstance(data, dict)
+        
+        if success:
+            # Verify complete asset data structure
+            has_symbol = 'symbol' in data and data['symbol'] == 'NVDA'
+            has_name = 'name' in data and len(data.get('name', '')) > 0
+            has_asset_type = 'assetType' in data
+            has_fundamentals = 'fundamentals' in data and isinstance(data['fundamentals'], dict)
+            has_historical = 'historical' in data and isinstance(data['historical'], dict)
+            has_live = 'live' in data and isinstance(data['live'], dict)
+            
+            # Check fundamentals structure
+            fundamentals = data.get('fundamentals', {})
+            has_sector = 'sector' in fundamentals
+            has_industry = 'industry' in fundamentals
+            has_market_cap = 'marketCap' in fundamentals
+            
+            # Check historical structure
+            historical = data.get('historical', {})
+            has_price_history = 'priceHistory' in historical
+            
+            # Check live structure
+            live = data.get('live', {})
+            has_current_price = 'currentPrice' in live
+            has_recent_news = 'recentNews' in live
+            
+            complete_structure = (has_symbol and has_name and has_asset_type and 
+                                has_fundamentals and has_historical and has_live and
+                                has_sector and has_industry and has_market_cap and
+                                has_price_history and has_current_price and has_recent_news)
+            
+            success = complete_structure
+            details = f"Symbol: {has_symbol}, Name: {has_name}, AssetType: {has_asset_type}, Fundamentals: {has_fundamentals}, Historical: {has_historical}, Live: {has_live}, Sector: {has_sector}, Industry: {has_industry}, MarketCap: {has_market_cap}, PriceHistory: {has_price_history}, CurrentPrice: {has_current_price}, RecentNews: {has_recent_news}"
+        else:
+            details = f"Status: {status}, Response type: {type(data)}"
+        
+        self.log_test(
+            "GET /data/asset/NVDA (auto-initialize new stock)", 
+            success,
+            details if not success else "",
+            {
+                "symbol": data.get('symbol') if isinstance(data, dict) else None,
+                "name": data.get('name') if isinstance(data, dict) else None,
+                "has_complete_structure": success
+            }
+        )
+        
+        # Test with AMD (another likely new stock)
+        status, data = self.make_request('GET', 'data/asset/AMD')
+        success = status == 200 and isinstance(data, dict) and data.get('symbol') == 'AMD'
+        self.log_test(
+            "GET /data/asset/AMD (auto-initialize new stock)", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"symbol": data.get('symbol') if isinstance(data, dict) else None}
+        )
+        
+        # Test with BA (Boeing - another test stock)
+        status, data = self.make_request('GET', 'data/asset/BA')
+        success = status == 200 and isinstance(data, dict) and data.get('symbol') == 'BA'
+        self.log_test(
+            "GET /data/asset/BA (auto-initialize new stock)", 
+            success,
+            f"Status: {status}" if not success else "",
+            {"symbol": data.get('symbol') if isinstance(data, dict) else None}
+        )
+        
+        # Test Scenario 2: Stock Already in Database (should return immediately)
+        print("\n📈 Test Scenario 2: Stock Already in Database...")
+        
+        # Test with AAPL (should already exist from previous tests)
+        start_time = time.time()
+        status, data = self.make_request('GET', 'data/asset/AAPL')
+        response_time = time.time() - start_time
+        
+        success = status == 200 and isinstance(data, dict) and data.get('symbol') == 'AAPL'
+        fast_response = response_time < 5.0  # Should be fast since already in DB
+        
+        self.log_test(
+            "GET /data/asset/AAPL (existing stock - fast response)", 
+            success and fast_response,
+            f"Status: {status}, Response time: {response_time:.2f}s" if not (success and fast_response) else "",
+            {
+                "symbol": data.get('symbol') if isinstance(data, dict) else None,
+                "response_time": response_time,
+                "fast_response": fast_response
+            }
+        )
+        
+        # Test Scenario 3: Invalid Symbol (should return 404)
+        print("\n❌ Test Scenario 3: Invalid Symbol...")
+        
+        status, data = self.make_request('GET', 'data/asset/INVALIDXYZ123')
+        success = status == 404
+        
+        if success and isinstance(data, dict):
+            # Check for user-friendly error message
+            error_detail = data.get('detail', '')
+            user_friendly = 'Invalid ticker symbol' in error_detail or 'not found' in error_detail
+            success = user_friendly
+            details = f"Error message: {error_detail}" if not user_friendly else ""
+        else:
+            details = f"Status: {status}, Expected 404"
+        
+        self.log_test(
+            "GET /data/asset/INVALIDXYZ123 (invalid symbol - 404 error)", 
+            success,
+            details if not success else "",
+            {"status": status, "error_detail": data.get('detail') if isinstance(data, dict) else None}
+        )
+        
+        # Test Scenario 4: Multiple New Stocks (batch auto-initialization)
+        print("\n🔄 Test Scenario 4: Multiple New Stocks...")
+        
+        # Test three different new stocks in sequence
+        test_symbols = ["TSLA", "NFLX", "AMZN"]
+        successful_initializations = 0
+        
+        for symbol in test_symbols:
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            success = status == 200 and isinstance(data, dict) and data.get('symbol') == symbol
+            
+            if success:
+                successful_initializations += 1
+            
+            self.log_test(
+                f"GET /data/asset/{symbol} (multiple new stocks test)", 
+                success,
+                f"Status: {status}" if not success else "",
+                {"symbol": data.get('symbol') if isinstance(data, dict) else None}
+            )
+        
+        # Verify all stocks were successfully initialized
+        all_successful = successful_initializations == len(test_symbols)
+        self.log_test(
+            "Multiple new stocks auto-initialization (all successful)", 
+            all_successful,
+            f"Only {successful_initializations}/{len(test_symbols)} stocks initialized successfully" if not all_successful else "",
+            {"successful_count": successful_initializations, "total_count": len(test_symbols)}
+        )
+        
+        # Test Scenario 5: Verify stocks are now saved in shared_assets collection
+        print("\n💾 Test Scenario 5: Verify Stocks Saved in Database...")
+        
+        # Test that previously auto-initialized stocks now return quickly (cached)
+        for symbol in ["NVDA", "AMD", "BA"]:
+            start_time = time.time()
+            status, data = self.make_request('GET', f'data/asset/{symbol}')
+            response_time = time.time() - start_time
+            
+            success = status == 200 and response_time < 3.0  # Should be fast now
+            self.log_test(
+                f"GET /data/asset/{symbol} (now cached - fast response)", 
+                success,
+                f"Status: {status}, Response time: {response_time:.2f}s" if not success else "",
+                {"response_time": response_time, "cached": success}
+            )
+
     def test_error_handling(self):
         """Test error handling"""
         print("\n🚨 Testing Error Handling...")
@@ -1137,16 +1304,6 @@ print('Portfolio cleared');
             "POST /data/assets/batch (malformed)", 
             success,
             f"Expected 400/422, got {status}" if not success else "",
-            data
-        )
-        
-        # Test non-existent asset
-        status, data = self.make_request('GET', 'data/asset/NONEXISTENT')
-        success = status == 404
-        self.log_test(
-            "GET /data/asset/NONEXISTENT", 
-            success,
-            f"Expected 404, got {status}" if not success else "",
             data
         )
 
