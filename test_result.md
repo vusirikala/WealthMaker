@@ -525,6 +525,19 @@ agent_communication:
   - task: "Portfolio Onboarding Enhancement with AI Recommendations"
     implemented: true
 
+
+  - task: "Context-Aware Portfolio Generation with Sector & Strategy Alignment"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/AIPortfolioBuilder.js, /app/backend/routes/chat.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced AI portfolio generation to strictly respect user's sector allocations and investment strategies from Steps 2 & 3. Backend Changes - Enhanced /api/chat/generate-portfolio Endpoint: 1) Added sector_allocation (full object with enabled/allocation) and investment_strategies (array of IDs) parameters. 2) Parse sector_allocation to extract enabled sectors and their exact percentages. Format as readable string for prompt. 3) Map investment strategy IDs to full names using strategy_names_map. 4) Comprehensive prompt rewrite with 4 main sections: USER'S PORTFOLIO PROFILE (8 parameters), USER'S SECTOR ALLOCATION (formatted percentages), USER'S SELECTED INVESTMENT STRATEGIES, YOUR TASK (4 requirements). 5) ALLOCATION RULES section with specific stock/ETF recommendations for each sector: Stocks (growth→AAPL/MSFT/NVDA, value→BRK.B/JPM, income→dividend stocks, index→SPY/VOO), Bonds (AGG/BND for conservative, HYG/LQD for income), Crypto (BITO/ETHE/COIN), Real Estate (VNQ/SCHH/IYR REITs), Commodities (GLD/USO/DBC), Forex (UUP/FXE/FXY). 6) STRATEGY ALIGNMENT section mapping each strategy to appropriate tickers: Value→BRK.B/JPM/XOM, Growth→AAPL/MSFT/NVDA/TSLA, Income→VYM/SCHD/JNJ, Index→SPY/VOO/VTI, Momentum→recent high performers. 7) Enhanced reasoning requirement: must reference specific sector percentages, strategies, and ROI target. 8) CRITICAL REQUIREMENTS: allocations must sum to 100%, number of holdings should match sector diversity, asset_type must match sector, use liquid tickers only, combine <5% allocations into ETFs. Frontend Changes: 1) Updated handleGeneratePortfolio to send sectorPreferences object directly (with enabled/allocation structure) as sector_allocation parameter. 2) Send investmentStrategies array directly instead of converting to string. 3) Removed sector_preferences string parameter (replaced with structured sector_allocation). Example Flow: User selects 60% stocks, 30% bonds, 10% real estate with growth_investing + index_funds strategies → Backend generates: SPY (30%), VOO (15%), NVDA (10%), MSFT (5%) for 60% stocks, BND (20%), AGG (10%) for 30% bonds, VNQ (10%) for real estate. Reasoning explains: 'This allocation matches your 60-30-10 sector split across stocks-bonds-real estate, implements growth and index investing through tech leaders and broad market ETFs, targeting 12% returns with medium risk over 5-10 years.' Both services restarted successfully."
+
   - task: "AI-Powered Investment Strategy Recommendations"
     implemented: true
     working: "NA"
