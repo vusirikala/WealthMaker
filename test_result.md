@@ -189,11 +189,11 @@ frontend:
 
   - task: "Portfolio accept and load functionality with ObjectId serialization fix"
     implemented: true
-    working: true
-    file: "/app/backend/routes/portfolios.py"
+    working: "NA"
+    file: "/app/backend/routes/portfolios.py, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -201,6 +201,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "TESTED: Portfolio accept and load functionality working perfectly after ObjectId serialization bug fix. ✅ POST /api/portfolios/accept successfully accepts portfolio suggestions with proper data validation. ✅ GET /api/portfolios loads AI-generated portfolios without ObjectId serialization errors. ✅ Portfolio _id field properly serialized as string (not ObjectId). ✅ GET /api/portfolios/my-portfolio returns proper response for existing portfolios. ✅ End-to-end flow verified: Accept portfolio → Load portfolio → Data integrity maintained. ✅ All portfolio data (risk_tolerance, roi_expectations, allocations) correctly preserved through accept/load cycle. Portfolio functionality is production-ready."
+      - working: "NA"
+        agent: "main"
+        comment: "Added missing GET /api/portfolio endpoint in server.py. Frontend was calling /api/portfolio but only /api/portfolios/ existed. Added legacy endpoint for frontend compatibility with proper ObjectId serialization. Backend restarted."
 
 metadata:
   created_by: "main_agent"
