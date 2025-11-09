@@ -858,8 +858,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
             </div>
           )}
 
-          {/* Step 3: AI Suggestion Review */}
-          {step === 3 && (
+          {/* Step 4: AI Suggestion Review */}
+          {step === 4 && (
             <div className="space-y-6">
               {isGenerating ? (
                 <div className="text-center py-12">
