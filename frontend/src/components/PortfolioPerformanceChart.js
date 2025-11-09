@@ -83,15 +83,28 @@ export default function PortfolioPerformanceChart({ portfolioId }) {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-      const returnValue = data.return_percentage;
-      const isPositive = returnValue >= 0;
+      const portfolioReturn = data.portfolio_return || 0;
+      const sp500Return = data.sp500_return || 0;
+      const portfolioPositive = portfolioReturn >= 0;
+      const sp500Positive = sp500Return >= 0;
 
       return (
         <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
-          <p className="text-xs text-gray-600 mb-1">{data.date}</p>
-          <p className={`text-sm font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-            {isPositive ? '+' : ''}{returnValue.toFixed(2)}%
-          </p>
+          <p className="text-xs text-gray-600 mb-2">{data.date}</p>
+          <div className="space-y-1">
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-xs text-gray-600">Portfolio:</span>
+              <span className={`text-sm font-bold ${portfolioPositive ? 'text-cyan-600' : 'text-red-600'}`}>
+                {portfolioPositive ? '+' : ''}{portfolioReturn.toFixed(2)}%
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-xs text-gray-600">S&P 500:</span>
+              <span className={`text-sm font-bold ${sp500Positive ? 'text-blue-600' : 'text-orange-600'}`}>
+                {sp500Positive ? '+' : ''}{sp500Return.toFixed(2)}%
+              </span>
+            </div>
+          </div>
         </div>
       );
     }
