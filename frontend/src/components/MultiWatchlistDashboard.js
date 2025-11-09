@@ -20,6 +20,7 @@ export default function MultiWatchlistDashboard() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [timePeriod, setTimePeriod] = useState("24h"); // 24h, 1m, 1y
 
   useEffect(() => {
     loadWatchlists();
