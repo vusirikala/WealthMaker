@@ -376,8 +376,16 @@ export default function PortfolioTab() {
             </thead>
             <tbody>
               {portfolio.allocations?.map((alloc, idx) => (
-                <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 smooth-transition">
-                  <td className="py-4 px-4 font-bold text-gray-900">{alloc.ticker}</td>
+                <tr 
+                  key={idx} 
+                  onClick={() => {
+                    setSelectedStock(alloc.ticker);
+                    setSelectedHolding(alloc);
+                    setShowStockDetail(true);
+                  }}
+                  className="border-b border-gray-100 hover:bg-cyan-50 smooth-transition cursor-pointer"
+                >
+                  <td className="py-4 px-4 font-bold text-cyan-600 hover:text-cyan-700">{alloc.ticker}</td>
                   <td className="py-4 px-4 text-gray-600">{alloc.asset_type}</td>
                   <td className="py-4 px-4 text-gray-600">{alloc.sector}</td>
                   <td className="py-4 px-4 text-right font-bold gradient-text">{alloc.allocation}%</td>
