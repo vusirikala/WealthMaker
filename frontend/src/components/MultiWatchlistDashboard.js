@@ -17,6 +17,9 @@ export default function MultiWatchlistDashboard() {
   const [newTicker, setNewTicker] = useState("");
   const [selectedStock, setSelectedStock] = useState(null);
   const [showStockDetail, setShowStockDetail] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     loadWatchlists();
