@@ -256,6 +256,6 @@ def calculate_portfolio_historical_returns(
         'return_percentage': round(current_return, 2),
         'time_series': time_series,
         'period_stats': period_stats,
-        'start_date': start_date.strftime('%Y-%m-%d'),
+        'start_date': display_start_date.strftime('%Y-%m-%d'),
         'end_date': end_date.strftime('%Y-%m-%d')
     }
