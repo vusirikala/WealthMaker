@@ -294,10 +294,13 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
     setIsLoading(true);
 
     try {
-      // Prepare sector preferences
+      // Prepare sector preferences with allocations
       const selectedSectors = Object.keys(sectorPreferences).reduce((acc, key) => {
-        if (sectorPreferences[key]) {
-          acc[key] = { allowed: true };
+        if (sectorPreferences[key].enabled) {
+          acc[key] = { 
+            allowed: true, 
+            allocation: sectorPreferences[key].allocation 
+          };
         }
         return acc;
       }, {});
@@ -314,6 +317,8 @@ export default function AIPortfolioBuilder({ isOpen, onClose, onSuccess }) {
           type: "ai",
           risk_tolerance: riskTolerance,
           roi_expectations: roiExpectations,
+          time_horizon: timeHorizon,
+          monitoring_frequency: monitoringFrequency,
           sector_preferences: Object.keys(selectedSectors).length > 0 ? selectedSectors : null,
           investment_strategy: investmentStrategies.length > 0 ? investmentStrategies : null,
           allocations: aiSuggestion.allocations || [],
