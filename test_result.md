@@ -283,9 +283,21 @@ metadata:
         agent: "main"
         comment: "Implemented portfolio deletion, edit info, and export features. Created DeletePortfolioModal with confirmation (user must type portfolio name to confirm deletion). Created EditPortfolioInfoModal to edit portfolio name, goal, risk tolerance, and ROI. Created ExportPortfolioModal with PDF and CSV export options. Added backend endpoints: GET /api/portfolios-v2/{id}/export/csv (exports to CSV) and GET /api/portfolios-v2/{id}/export/json (provides data for PDF generation). Integrated jspdf and jspdf-autotable for frontend PDF generation. Updated PortfolioView with dropdown menu for all actions (Edit Info, Edit Allocations, Export, Delete). All services restarted successfully."
 
+  - task: "Redesigned Chat Panel UI"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/MultiPortfolioDashboard.js, /app/frontend/src/components/ChatTab.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Redesigned chat panel to be a modern sliding sidebar instead of covering entire screen. Chat now slides in from the right side (500px width on desktop, full width on mobile) with backdrop overlay. Added professional header with gradient background, AI advisor icon, and close button. Made chat easily closable by clicking backdrop or close button. Updated ChatTab to use flex layout for proper height management. Reduced padding and spacing for more compact design. Made message bubbles smaller and more modern. Added loading spinner to send button. Portfolio view remains visible when chat is open. Frontend restarted successfully."
+
 test_plan:
   current_focus:
-    - "Portfolio Deletion, Edit Info, and Export Features"
+    - "Redesigned Chat Panel UI"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
