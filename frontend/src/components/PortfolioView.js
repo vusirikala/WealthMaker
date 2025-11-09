@@ -10,6 +10,10 @@ import DeletePortfolioModal from "./DeletePortfolioModal";
 import ExportPortfolioModal from "./ExportPortfolioModal";
 import StockDetailModal from "./StockDetailModal";
 import PortfolioPerformanceChart from "./PortfolioPerformanceChart";
+import RiskMetricsDashboard from "./RiskMetricsDashboard";
+import CorrelationHeatmap from "./CorrelationHeatmap";
+import PortfolioDistributions from "./PortfolioDistributions";
+import DividendTracker from "./DividendTracker";
 import {
   DropdownMenu,
   DropdownMenuContent,
