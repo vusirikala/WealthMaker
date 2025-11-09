@@ -231,7 +231,12 @@ async def get_portfolio(user: User = Depends(require_auth)):
     """Get user's AI-generated portfolio"""
     portfolio = await db.portfolios.find_one({"user_id": user.id})
     if not portfolio:
-        return None
+        return {"portfolio": None, "message": "No portfolio found"}
+    
+    # Convert ObjectId to string for JSON serialization
+    if '_id' in portfolio:
+        portfolio['_id'] = str(portfolio['_id'])
+    
     return portfolio
 
 
