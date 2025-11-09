@@ -235,8 +235,12 @@ async def send_message(chat_request: ChatRequest, user: User = Depends(require_a
     # Add portfolio_id if provided
     if portfolio_id:
         ai_msg_doc["portfolio_id"] = portfolio_id
+        logger.info(f"Saving AI response WITH portfolio_id: {portfolio_id}")
+    else:
+        logger.info("Saving AI response WITHOUT portfolio_id (global chat)")
     
     await db.chat_messages.insert_one(ai_msg_doc)
+    logger.info(f"AI response saved to database")
     
     return ChatResponse(
         message=clean_response, 
