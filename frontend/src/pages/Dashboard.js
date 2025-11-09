@@ -26,7 +26,7 @@ const API = `${BACKEND_URL}/api`;
 
 export default function Dashboard({ user, setIsAuthenticated }) {
   const [currentView, setCurrentView] = useState("dashboard"); // dashboard, profile, settings
-  const [activeTab, setActiveTab] = useState("chat");
+  const [activeTab, setActiveTab] = useState("portfolios");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [checkingContext, setCheckingContext] = useState(true);
   const [userContext, setUserContext] = useState(null);
